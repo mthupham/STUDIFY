@@ -1,6 +1,6 @@
 [
   {
-    "lesson_id": "lesson_01",
+    "lesson_id": "lesson_01_question",
     "topic": "Computer Hardware & Peripherals",
     "level": "A1",
     "reading_questions": [
@@ -185,7 +185,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_02",
+    "lesson_id": "lesson_02_question",
     "topic": "UI/UX Elements Basics",
     "level": "A1",
     "reading_questions": [
@@ -370,7 +370,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_03",
+    "lesson_id": "lesson_03_question",
     "topic": "Coding Characters & Symbols",
     "level": "A1",
     "reading_questions": [
@@ -555,7 +555,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_04",
+    "lesson_id": "lesson_04_question",
     "topic": "Basic Action Verbs in IT",
     "level": "A1",
     "reading_questions": [
@@ -710,7 +710,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_05",
+    "lesson_id": "lesson_05_question",
     "topic": "Software & Operating Systems",
     "level": "A2",
     "reading_questions": [
@@ -850,7 +850,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_06",
+    "lesson_id": "lesson_06_question",
     "topic": "File Management & Storage",
     "level": "A2",
     "reading_questions": [
@@ -990,7 +990,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_07",
+    "lesson_id": "lesson_07_question",
     "topic": "Basic Command Line Interface (CLI)",
     "level": "A2",
     "reading_questions": [
@@ -1130,7 +1130,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_08",
+    "lesson_id": "lesson_08_question",
     "topic": "Common Error Messages",
     "level": "A2",
     "reading_questions": [
@@ -1270,7 +1270,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_09",
+    "lesson_id": "lesson_09_question",
     "topic": "Internet & Networking Basics",
     "level": "A2",
     "reading_questions": [
@@ -1410,7 +1410,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_10",
+    "lesson_id": "lesson_10_question",
     "topic": "Programming Core Concepts",
     "level": "B1",
     "reading_questions": [
@@ -1510,7 +1510,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_11",
+    "lesson_id": "lesson_11_question",
     "topic": "Web Development Foundations (HTML/CSS)",
     "level": "B1",
     "reading_questions": [
@@ -1610,7 +1610,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_12",
+    "lesson_id": "lesson_12_question",
     "topic": "Relational Databases & Basic SQL",
     "level": "B1",
     "reading_questions": [
@@ -1710,7 +1710,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_13",
+    "lesson_id": "lesson_13_question",
     "topic": "Version Control with Git (Basics)",
     "level": "B1",
     "reading_questions": [
@@ -1810,7 +1810,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_14",
+    "lesson_id": "lesson_14_question",
     "topic": "Technical Reading - Documentation & Readme",
     "level": "B1",
     "reading_questions": [
@@ -1910,7 +1910,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_15",
+    "lesson_id": "lesson_15_question",
     "topic": "Object-Oriented Programming (OOP) & Advanced Coding",
     "level": "B2",
     "reading_questions": [
@@ -2010,7 +2010,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_16",
+    "lesson_id": "lesson_16_question",
     "topic": "Backend Development & RESTful APIs",
     "level": "B2",
     "reading_questions": [
@@ -2110,7 +2110,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_17",
+    "lesson_id": "lesson_17_question",
     "topic": "Software Testing & QA/QC",
     "level": "B2",
     "reading_questions": [
@@ -2210,7 +2210,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_18",
+    "lesson_id": "lesson_18_question",
     "topic": "Agile/Scrum Framework & Project Management",
     "level": "B2",
     "reading_questions": [
@@ -2310,7 +2310,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_19",
+    "lesson_id": "lesson_19_question",
     "topic": "Technical Writing - Bug Reports & Task Description",
     "level": "B2",
     "reading_questions": [
@@ -2410,7 +2410,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_20",
+    "lesson_id": "lesson_20_question",
     "topic": "System Architecture & Scalability",
     "level": "C1",
     "reading_questions": [
@@ -2510,7 +2510,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_11",
+    "lesson_id": "lesson_11_question",
     "topic": "Cloud Computing & DevOps",
     "level": "C1",
     "reading_questions": [
@@ -2610,7 +2610,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_22",
+    "lesson_id": "lesson_22_question",
     "topic": "Cyber Security & Cryptography",
     "level": "C1",
     "reading_questions": [
@@ -2710,7 +2710,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_23",
+    "lesson_id": "lesson_23_question",
     "topic": "Data Science, AI & Machine Learning",
     "level": "C1",
     "reading_questions": [
@@ -2810,7 +2810,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_24",
+    "lesson_id": "lesson_24_question",
     "topic": "Tech Pitching & RFP (Request for Proposal)",
     "level": "C1",
     "reading_questions": [
@@ -2910,7 +2910,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_25",
+    "lesson_id": "lesson_25_question",
     "topic": "IT Governance, Compliance & Standards",
     "level": "C2",
     "reading_questions": [
@@ -3010,7 +3010,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_26",
+    "lesson_id": "lesson_26_question",
     "topic": "Tech Ethics & AI Regulation",
     "level": "C2",
     "reading_questions": [
@@ -3110,7 +3110,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_27",
+    "lesson_id": "lesson_27_question",
     "topic": "Enterprise Technical Strategy & Vendor Management",
     "level": "C2",
     "reading_questions": [
@@ -3210,7 +3210,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_28",
+    "lesson_id": "lesson_28_question",
     "topic": "R&D (Research & Development) & Academic Papers",
     "level": "C2",
     "reading_questions": [
@@ -3310,7 +3310,7 @@
     ]
   },
   {
-    "lesson_id": "lesson_29",
+    "lesson_id": "lesson_29_question",
     "topic": "Crisis Management & High-Stakes Negotiation",
     "level": "C2",
     "reading_questions": [
