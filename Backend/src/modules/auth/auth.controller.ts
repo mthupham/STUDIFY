@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
+import { RegisterDto } from '../user/dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -9,21 +9,11 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    return await this.authService.login(loginDto.email, loginDto.password);
-  }
-
-  @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
-    return await this.authService.register(
-      registerDto.email,
-      registerDto.password,
-      registerDto.name,
+    const user = await this.authService.validateUser(
+      loginDto.email, 
+      loginDto.password
     );
   }
 
-  @Post('refresh')
-  async refresh(@Body('refreshToken') refreshToken: string) {
-    if (!refreshToken) throw new UnauthorizedException('No refresh token provided.');
-    return await this.authService.refreshToken(refreshToken);
-  }
+  
 }

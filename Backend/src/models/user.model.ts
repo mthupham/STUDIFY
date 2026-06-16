@@ -12,31 +12,31 @@ export class User extends Model<User> {
         unique:true,
         type: DataType.STRING,
     })
-    email: string = ' ';
+    declare email: string;
 
     @Column({
         allowNull: false,
         type: DataType.STRING,
     })
-    password: string = ' ';
+    declare password: string;
 
     @Column({
         allowNull: false,
         type: DataType.STRING,
     })
-    name: string = ' ';
+    declare name: string;
 
     @Column({
         allowNull: true,
         type: DataType.STRING,
     })
-    avatar: string = ' ';
+    declare avatar: string;
 
     @Column({
         allowNull: true,
         type: DataType.STRING,
     })
-    phone: string = ' ';
+    declare phone: string;
 
     @Column({
         allowNull: true,
@@ -49,7 +49,7 @@ export class User extends Model<User> {
         allowNull: true,
         type: DataType.STRING,
     })
-    provider: string = ' ';
+    declare provider: string;
 
     
 
