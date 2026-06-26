@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useAuthStore } from '../store/useAuthStore';
 
 export default function RegisterForm() {
     // 1. Khai báo State để lưu thông tin người dùng gõ vào
@@ -13,6 +15,8 @@ export default function RegisterForm() {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
+    const setAuthSession = useAuthStore((state) => state.setAuthSession);
+    const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
     // 2. Hàm xử lý khi người dùng bấm nút "Create Account"
     const handleSubmit = async (e: React.FormEvent) => {
@@ -30,17 +34,18 @@ export default function RegisterForm() {
         setError('');
 
         try {
-            // 💡 Khúc này đang "vibe code" giả lập đợi Backend trong 1.5 giây
-            // Sau khi Kim Hằng viết xong API, bạn chỉ cần dùng Axios gọi POST ở đây
-            console.log('Dữ liệu gửi lên Backend:', { username, email, password });
-            
-            await new Promise((resolve) => setTimeout(resolve, 1500)); 
+            const response = await axios.post(`${apiBaseUrl}/auth/register`, {
+                name: username,
+                email,
+                password,
+            });
 
-            // Giả lập đăng ký thành công
-            alert('Tạo tài khoản thành công! Quay lại trang đăng nhập thôi.');
-            navigate('/login'); // Tự động chuyển sang màn hình Login
+            const { accessToken, data: user } = response.data;
+            setAuthSession(user, accessToken);
+            navigate('/dashboard');
         } catch (err: any) {
-            setError('Đăng ký thất bại, email này có thể đã được sử dụng!');
+            const message = err?.response?.data?.message;
+            setError(Array.isArray(message) ? message.join(', ') : message || 'Đăng ký thất bại, email này có thể đã được sử dụng!');
         } finally {
             setIsLoading(false);
         }

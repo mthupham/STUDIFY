@@ -20,7 +20,7 @@ export default function LoginForm() {
 
         const success = await loginAction({ email, password });
         if (success) {
-            navigate('/dashboard'); 
+            navigate('/dashboard');
         }
     };
 

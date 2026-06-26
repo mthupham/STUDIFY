@@ -1,10 +1,16 @@
-// src/store/useAuthStore.ts
 import { create } from 'zustand';
+import axios from 'axios';
 
 interface User {
-  id: string;
-  username: string;
+  id: number;
+  name: string;
   email: string;
+  role?: string;
+}
+
+interface AuthResponse {
+  accessToken: string;
+  data: User;
 }
 
 interface AuthState {
@@ -13,35 +19,49 @@ interface AuthState {
   isLoading: boolean;
   error: string | null;
   loginAction: (credentials: { email: string; password: string }) => Promise<boolean>;
+  setAuthSession: (user: User, token: string) => void;
   logoutAction: () => void;
 }
 
+const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
+const storedUser = localStorage.getItem('authUser');
+
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
+  user: storedUser ? JSON.parse(storedUser) : null,
   token: localStorage.getItem('accessToken') || null,
   isLoading: false,
   error: null,
-
+  
   loginAction: async (credentials) => {
     set({ isLoading: true, error: null });
     try {
-      // Khi nào có API của Kim Hằng thì mình đổi URL này sau, giờ để chạy thử
-      if (credentials.email === "admin@gmail.com" && credentials.password === "123456") {
-        const mockUser = { id: "1", username: "Thien Phuoc", email: credentials.email };
-        localStorage.setItem('accessToken', 'mock-token-xyz');
-        set({ user: mockUser, token: 'mock-token-xyz', isLoading: false });
-        return true;
-      } else {
-        throw new Error("Tài khoản hoặc mật khẩu không đúng!");
-      }
-    } catch (err: any) {
-      set({ error: err.message, isLoading: false });
+      const { data } = await axios.post<AuthResponse>(`${apiBaseUrl}/auth/login`, credentials);
+      const { accessToken, data: user } = data;
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('authUser', JSON.stringify(user));
+      set({ user, token: accessToken, isLoading: false });
+      return true;
+    } catch (err: unknown) {
+      const message = axios.isAxiosError(err) ? err.response?.data?.message : null;
+      set({
+        error: Array.isArray(message) ? message.join(', ') : message || 'Tài khoản hoặc mật khẩu không đúng!',
+        isLoading: false,
+      });
       return false;
     }
   },
 
+  setAuthSession: (user, token) => {
+    localStorage.setItem('accessToken', token);
+    localStorage.setItem('authUser', JSON.stringify(user));
+    set({ user, token, error: null });
+  },
+
   logoutAction: () => {
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('authUser');
     set({ user: null, token: null });
   },
 }));
