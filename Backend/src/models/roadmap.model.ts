@@ -12,3 +12,4 @@ export class Roadmap extends Model<Roadmap> {
   @HasMany(() => Level)
   declare levels: Level[];
 }
+

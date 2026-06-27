@@ -7,8 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { sequelizeConfig } from './utils/sequelize.config';
-import { UserProgress } from './models/userProgress.model';
-import { Lesson } from './models/lesson.model';
+import { VocabularyLesson } from './models/vocab_lesson.model';
 import { Level } from './models/level.model';
 import { Roadmap } from './models/roadmap.model';
 import { User } from './models/user.model';
@@ -20,10 +19,7 @@ import { User } from './models/user.model';
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        ...sequelizeConfig(configService),
-        models: [User, Roadmap, Level, Lesson, UserProgress], 
-      }),
+      useFactory: (configService: ConfigService) => sequelizeConfig(configService),
     }),
     UserModule,
     AuthModule,

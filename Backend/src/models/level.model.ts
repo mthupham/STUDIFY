@@ -1,22 +1,31 @@
-import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Model, Table, HasMany, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { VocabularyLesson } from './vocab_lesson.model';
+import { GrammarLesson } from './grammar_lesson.model';
+import { QuestionBank } from './question_bank.model';
+import { RequiredLevelTest } from './required_level_test.model';
 import { Roadmap } from './roadmap.model';
-import { Lesson } from './lesson.model';
 
 @Table
 export class Level extends Model<Level> {
   @Column({ allowNull: false, type: DataType.STRING })
-  declare name: string; // A1, A2, B1...
-
-  @Column({ allowNull: false, type: DataType.INTEGER })
-  declare order: number; // 1, 2, 3...
+  declare levelTitle: string;
 
   @ForeignKey(() => Roadmap)
-  @Column({ type: DataType.INTEGER })
+  @Column({ allowNull: false, type: DataType.INTEGER })
   declare roadmapId: number;
 
   @BelongsTo(() => Roadmap)
   declare roadmap: Roadmap;
 
-  @HasMany(() => Lesson)
-  declare lessons: Lesson[];
+  @HasMany(() => VocabularyLesson)
+  declare vocabularyLessons: VocabularyLesson[];
+
+  @HasMany(() => GrammarLesson)
+  declare grammarLessons: GrammarLesson[];
+
+  @HasMany(() => QuestionBank)
+  declare questionBanks: QuestionBank[];
+
+  @HasMany(() => RequiredLevelTest)
+  declare requiredLevelTests: RequiredLevelTest[];
 }
