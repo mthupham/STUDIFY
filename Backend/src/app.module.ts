@@ -6,11 +6,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { ProgressModule } from './modules/progress/progress.module';
 import { sequelizeConfig } from './utils/sequelize.config';
-import { VocabularyLesson } from './models/vocab_lesson.model';
-import { Level } from './models/level.model';
-import { Roadmap } from './models/roadmap.model';
-import { User } from './models/user.model';
 
 @Module({
   controllers: [AppController],
@@ -23,6 +20,7 @@ import { User } from './models/user.model';
     }),
     UserModule,
     AuthModule,
+    ProgressModule,
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],
