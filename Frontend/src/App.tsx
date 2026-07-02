@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginForm from './features/auth/components/LoginForm';
 import RegisterForm from './features/auth/components/RegisterForm';
+import MainLayout from './layouts/MainLayout.jsx';
+import DashboardPage from './features/learning/dashboard/DashboardPage.jsx';
+import RoadmapPage from './features/learning/roadmap/RoadmapPage.jsx';
 
 function App() {
   return (
@@ -13,8 +16,22 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         
-        {/* Tạm thời để một trang Dashboard trống để lát test chức năng đăng nhập */}
-        <Route path="/dashboard" element={<div className="p-10 text-2xl font-bold">Chào mừng Phước đến với Dashboard Studify!</div>} />
+        <Route
+          path="/dashboard"
+          element={
+            <MainLayout>
+              <DashboardPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/roadmap"
+          element={
+            <MainLayout>
+              <RoadmapPage />
+            </MainLayout>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
