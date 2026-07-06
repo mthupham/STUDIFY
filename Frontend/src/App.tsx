@@ -4,6 +4,7 @@ import RegisterForm from './features/auth/components/RegisterForm';
 import MainLayout from './layouts/MainLayout.jsx';
 import DashboardPage from './features/learning/dashboard/DashboardPage.jsx';
 import RoadmapPage from './features/learning/roadmap/RoadmapPage.jsx';
+import LessonPage from './features/learning/lesson/LessonPage.tsx';
 
 function App() {
   return (
@@ -29,6 +30,14 @@ function App() {
           element={
             <MainLayout>
               <RoadmapPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/lessons"
+          element={
+            <MainLayout>
+              <LessonPage />
             </MainLayout>
           }
         />
