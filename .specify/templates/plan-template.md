@@ -12,35 +12,52 @@
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
+**Language/Version**: TypeScript 5.7.3 (Backend), JavaScript/TypeScript (Frontend)
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]
+**Primary Dependencies**: 
+- Backend: NestJS 11.0.1, Sequelize 6.37.8 with sequelize-typescript 2.1.6, JWT (passport-jwt 4.0.1), bcryptjs 3.0.3
+- Frontend: React 19.2.6, Vite 8.0.12, React Router 7.18.0, Tailwind CSS 4.3.1, Zustand 5.0.14, Axios 1.18.1
 
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
+**Storage**: PostgreSQL via Sequelize ORM (sequelize-typescript models in Backend/src/models)
 
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+**Testing**: Jest (backend test setup available), Vite preview for frontend
 
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]
+**Target Platform**: Web application (browser-based for both desktop and mobile web)
 
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: Full-stack web service (Backend API + Frontend SPA)
 
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]
+**Performance Goals**: 
+- API response times: <200ms p95 for standard endpoints
+- Support 100 concurrent virtual study rooms with 50 members each
+- Dashboard page load: <3 seconds on 4G connection
+- Progress calculations: <5 second latency after lesson submission
 
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]
+**Constraints**: 
+- Database connections managed by Sequelize connection pool
+- JWT token expiration configurable via .env
+- File uploads capped at 20MB per file
+- Pomodoro synchronization accuracy: ±1 second across all room members
+- API rate limiting: 100 requests per minute per user
 
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]
-
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Scale/Scope**: 
+- Target 10,000+ active users
+- Support multiple concurrent virtual study rooms per user
+- Complex progress tracking with real-time dashboard updates
+- Integration of AI-based speaking feedback (post-MVP)
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+✅ **Architecture Boundaries**: All features must integrate within existing Backend and Frontend directories per STUDIFY constitution (v1.0.0, 2026-07-01).
+
+✅ **Stack-First Implementation**: All new features must use React 19.2.6 (Frontend) and NestJS 11.0.1 with Sequelize 6.37.8 (Backend). No new third-party libraries without explicit approval.
+
+✅ **Naming Discipline**: camelCase for variables/functions, PascalCase for React components, follow existing file organization patterns.
+
+✅ **API Contract**: All new Backend routes must follow `/api/v1/[resource]` pattern and return JSON envelope `{ success, data, message }`.
+
+✅ **Safe Code**: All configuration via .env files, no hardcoded secrets, Vietnamese comments for complex logic.
 
 ## Project Structure
 
@@ -57,51 +74,47 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
-
-tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
+Backend/
 ├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
+│   ├── models/          # Sequelize ORM models (Place new entities here)
+│   ├── services/        # Business logic services
+│   ├── features/        # Feature-based modules (onboarding, auth, etc.)
+│   ├── config/          # Configuration files including sequelize.config.ts
+│   ├── common/          # Shared decorators, exceptions, interceptors
+│   ├── messages/        # Email/notification services
+│   ├── utils/           # Utility functions
+│   ├── app.module.ts    # Root NestJS module
+│   ├── app.controller.ts
+│   ├── app.service.ts
+│   └── main.ts          # Application entry point
+├── database/
+│   └── data/            # Migration scripts and seed data (JSON files)
+├── test/                # E2E tests
+├── tsconfig.json        # TypeScript configuration
+├── nest-cli.json        # NestJS CLI config
+└── package.json
 
-frontend/
+Frontend/
 ├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+│   ├── components/      # Reusable React components
+│   ├── pages/           # Page components (per route)
+│   ├── features/        # Feature-specific modules (auth, dashboard, etc.)
+│   ├── layouts/         # Layout wrapper components
+│   ├── services/        # API service layer (Axios calls)
+│   ├── assets/          # Static images, icons, media
+│   ├── App.tsx          # Root component
+│   ├── main.tsx         # React DOM render entry
+│   └── index.css        # Global styles
+├── index.html           # HTML template
+├── vite.config.js       # Vite bundler config
+├── tailwind.config.js   # Tailwind CSS config
+├── tsconfig.json        # TypeScript configuration
+└── package.json
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**Structure Decision**: Option 2 (Web application with Backend/Frontend separation) selected per existing STUDIFY project layout. This allows independent development and testing of API contracts and UI components while sharing the same user models and authentication context.
 
 ## Complexity Tracking
 

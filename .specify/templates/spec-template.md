@@ -162,13 +162,16 @@ As a student navigating the platform, I want the Dashboard widget to automatical
 
 ### Edge Cases
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
--->
-
-- What happens when [boundary condition]?
-- How does system handle [error scenario]?
+- What happens when a user tries to join a room with an invalid/expired code?
+- How does the system handle network disconnection during real-time Pomodoro synchronization?
+- What occurs if a Room Master leaves the room while members are studying?
+- How does the system handle concurrent task assignments if multiple masters have permission?
+- What happens when a user resets their onboarding preferences after initial setup?
+- How does the system manage file uploads exceeding the maximum size limit?
+- What occurs if a user's authentication token expires during an active Virtual Study Room session?
+- How does the system handle simultaneous progress updates from multiple devices of the same user?
+- What happens when an AI Speaking session loses audio input mid-conversation?
+- How does the system handle timezone differences when scheduling deadline notifications across users?
 
 ## Requirements *(mandatory)*
 
@@ -179,35 +182,53 @@ As a student navigating the platform, I want the Dashboard widget to automatical
 
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
-
-*Example of marking unclear requirements:*
-
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-001**: System MUST allow new users to complete a personalized onboarding survey with minimum 2 questions about time commitment and current English level
+- **FR-002**: System MUST automatically generate an IT-focused CEFR-standardized learning roadmap after onboarding completion
+- **FR-003**: Users MUST be able to access self-study lessons and complete interactive quizzes with immediate scoring
+- **FR-004**: System MUST track and display real-time progress percentage (%) on the main dashboard based on completed lessons
+- **FR-005**: System MUST persist user onboarding preferences and bypass survey for returning users
+- **FR-006**: System MUST allow users to create virtual study rooms and receive a unique 6-character room code
+- **FR-007**: System MUST allow users to join existing rooms using a valid room code
+- **FR-008**: System MUST enable Room Masters to assign tasks to members with deadline tracking
+- **FR-009**: System MUST display assigned tasks in a notification widget on the member's dashboard
+- **FR-010**: System MUST support file upload/download (PDFs, images) within study rooms up to 20MB per file
+- **FR-011**: System MUST provide a synchronized Pomodoro timer (25 min focus / 5 min break) with real-time countdown across all room members
+- **FR-012**: System MUST allow users to record voice and receive AI-generated feedback on pronunciation and grammar for professional English contexts
+- **FR-013**: System MUST validate email addresses and enforce unique user accounts per email
+- **FR-014**: System MUST store and encrypt user authentication credentials using bcryptjs
+- **FR-015**: System MUST use JWT tokens for session management with configurable expiration
+- **FR-016**: System MUST log all critical system events for debugging and audit purposes
+- **FR-017**: System MUST return consistent JSON API responses with success/data/message envelope structure
 
 ### Key Entities *(include if feature involves data)*
 
-- **[Entity 1]**: [What it represents, key attributes without implementation]
-- **[Entity 2]**: [What it represents, relationships to other entities]
+- **User**: Represents an authenticated user with profile, onboarding preferences (time commitment, English level), and authentication credentials
+- **Onboarding**: Stores user's survey responses capturing time commitment level and English proficiency self-assessment
+- **Roadmap**: CEFR-aligned learning pathway customized by profession (IT, etc.) and user's English level
+- **Lesson**: Self-study unit containing vocabulary, grammar rules, and contextual examples organized by CEFR level
+- **Quiz**: Interactive assessment with multiple-choice questions tied to specific lessons
+- **QuestionBank**: Central repository of pre-built questions categorized by profession and CEFR level
+- **VirtualStudyRoom**: Represents a collaborative study space with a unique room code, master, and members
+- **Task**: Assignment created by Room Master specifying lesson/activity requirements and deadlines for members
+- **PlacementTest**: Initial assessment for new users to determine starting English level
+- **PomodoroSession**: Tracks synchronized focus/break intervals across room members with countdown state
+- **FileRepository**: Stores uploaded study materials (PDFs, images) with access control per room
+- **AIDialogue**: Logs user's voice input and AI responses for speaking practice with pronunciation feedback
 
 ## Success Criteria *(mandatory)*
 
-<!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
--->
-
 ### Measurable Outcomes
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-001**: New users complete onboarding survey in under 3 minutes and are immediately routed to their personalized roadmap
+- **SC-002**: Dashboard displays accurate progress percentage (within ±2% tolerance) updated within 5 seconds of lesson completion
+- **SC-003**: Room creation generates unique codes with 99.9% uniqueness rate across 10k+ simultaneous rooms
+- **SC-004**: 95% of Room Masters can assign tasks to all members within first 2 attempts without support
+- **SC-005**: Pomodoro timer maintains ±1 second synchronization drift across all room members in real-time
+- **SC-006**: System handles 100 concurrent virtual rooms with 50 members each without API response degradation
+- **SC-007**: File uploads/downloads complete in under 10 seconds for files up to 20MB
+- **SC-008**: 90% of users report improved study consistency within 2 weeks of using virtual study rooms
+- **SC-009**: AI Speaking feedback is delivered within 5 seconds of voice submission
+- **SC-010**: User retention increases by 40% when using group study rooms vs solo study mode
 
 ## Assumptions
 
