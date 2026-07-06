@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LandingPage from './features/landing page/LandingPage';
 import LoginForm from './features/auth/components/LoginForm';
 import RegisterForm from './features/auth/components/RegisterForm';
+import ForgotPasswordForm from './features/auth/components/ForgotPasswordForm';
 import MainLayout from './layouts/MainLayout.jsx';
 import DashboardPage from './features/learning/dashboard/DashboardPage.jsx';
 import RoadmapPage from './features/learning/roadmap/RoadmapPage.jsx';
@@ -9,12 +11,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Nếu người dùng vào đường dẫn gốc (localhost:5173), tự động đá sang /login */}
-        <Route path="/" element={<Navigate to="/login" />} />
-        
-        {/* Cấu hình các đường dẫn tương ứng với giao diện bạn vừa làm */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
+        <Route path="/forgot-password" element={<ForgotPasswordForm />} />
         
         <Route
           path="/dashboard"
@@ -32,6 +33,7 @@ function App() {
             </MainLayout>
           }
         />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
