@@ -139,7 +139,7 @@ export default function LessonPage() {
                   </div>
 
                   {/* Bài 3 (Kèm Marker Ổ khóa) */}
-                  <div className="relative w-full">
+                  <div className="relative w-full md:pl-14">
                     <LessonCard {...section.lessons[2]} />
                     <span className="hidden md:flex absolute -left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border-4 border-[#faf8ff] bg-slate-300 text-white z-20 items-center justify-center">
                       <svg
