@@ -2,6 +2,7 @@ import { LessonCard } from "./LessonCard";
 import type { LessonProps } from "./LessonCard";
 import { TheoryCard } from "./TheoryCard";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TheoryDetail } from "./TheoryDetail";
 
 // Dữ liệu giả lập
@@ -72,6 +73,7 @@ const skillSections = [
 
 export default function LessonPage() {
   const [viewMode, setViewMode] = useState<"list" | "theory-detail">("list");
+  const navigate = useNavigate();
 
   // Nếu click Review, render giao diện chi tiết lý thuyết
   if (viewMode === "theory-detail") {
@@ -125,12 +127,18 @@ export default function LessonPage() {
 
                   {/* Bài 1 */}
                   <div className="relative w-full">
-                    <LessonCard {...section.lessons[0]} />
+                    <LessonCard
+                      {...section.lessons[0]}
+                      onClick={() => navigate("/lessons/practice")}
+                    />
                   </div>
 
                   {/* Bài 2 (Kèm Marker Mũi tên) */}
                   <div className="relative w-full md:pl-14">
-                    <LessonCard {...section.lessons[1]} />
+                    <LessonCard
+                      {...section.lessons[1]}
+                      onClick={() => navigate("/lessons/practice")}
+                    />
                     <span className="hidden md:flex absolute -left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border-4 border-[#faf8ff] bg-blue-600 text-white z-20 items-center justify-center">
                       <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
                         <path d="M8 6L18 12L8 18V6Z" />
@@ -140,7 +148,10 @@ export default function LessonPage() {
 
                   {/* Bài 3 (Kèm Marker Ổ khóa) */}
                   <div className="relative w-full md:pl-14">
-                    <LessonCard {...section.lessons[2]} />
+                    <LessonCard
+                      {...section.lessons[2]}
+                      onClick={() => navigate("/lessons/practice")}
+                    />
                     <span className="hidden md:flex absolute -left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border-4 border-[#faf8ff] bg-slate-300 text-white z-20 items-center justify-center">
                       <svg
                         viewBox="0 0 24 24"

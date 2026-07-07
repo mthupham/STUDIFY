@@ -10,6 +10,7 @@ export interface LessonProps {
   statusText: string;
   progress?: number;
   highlight?: boolean;
+  onClick?: () => void;
 }
 
 export const LessonCard: React.FC<LessonProps> = ({
@@ -19,6 +20,7 @@ export const LessonCard: React.FC<LessonProps> = ({
   statusText,
   progress = 0,
   highlight,
+  onClick,
 }) => {
   const baseCardStyle = "relative z-10 rounded-2xl p-5 md:p-6 transition-all";
   let statusCardStyle = "";
@@ -40,8 +42,21 @@ export const LessonCard: React.FC<LessonProps> = ({
       break;
   }
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClick?.();
+    }
+  };
+
   return (
-    <article className={`${baseCardStyle} ${statusCardStyle}`}>
+    <article
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      className={`${baseCardStyle} ${statusCardStyle} cursor-pointer select-none hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]`}
+    >
       <header className="flex flex-col md:flex-row md:items-start justify-between gap-2 md:gap-3">
         <h3 className="m-0 text-slate-900 text-lg md:text-xl font-semibold leading-snug">
           {title}
