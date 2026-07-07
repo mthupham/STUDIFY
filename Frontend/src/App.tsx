@@ -6,6 +6,7 @@ import ForgotPasswordForm from './features/auth/components/ForgotPasswordForm';
 import MainLayout from './layouts/MainLayout.jsx';
 import DashboardPage from './features/learning/dashboard/DashboardPage.jsx';
 import RoadmapPage from './features/learning/roadmap/RoadmapPage.jsx';
+import UserProfile from './features/user-profile/profile.jsx';
 
 function App() {
   return (
@@ -30,6 +31,14 @@ function App() {
           element={
             <MainLayout>
               <RoadmapPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <MainLayout>
+              <UserProfile />
             </MainLayout>
           }
         />
