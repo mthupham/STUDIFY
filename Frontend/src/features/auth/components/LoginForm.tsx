@@ -37,7 +37,7 @@ export default function LoginForm() {
                 <form onSubmit={handleSubmit} className="inline-flex flex-col justify-start items-start gap-8 w-full">
                     
                     <div className="self-stretch flex flex-col justify-start items-start gap-2 text-center w-full">
-                        <h2 className="text-gray-900 text-3xl font-bold font-['Inter'] w-full">Welcome Back</h2>
+                        <h2 className="text-gray-900 text-3xl font-bold font-['Inter'] w-full" style={{ color: '#151C27' }}>Welcome Back</h2>
                         <p className="text-gray-700 text-base font-normal font-['Inter'] w-full">Please enter your details to sign in.</p>
                     </div>
 
@@ -66,7 +66,12 @@ export default function LoginForm() {
                                     <img src={lockIcon} alt="password" className="size-4" />
                                     Password
                                 </label>
-                                <span className="text-sky-700 text-sm font-semibold font-['Inter'] cursor-pointer hover:underline">Forgot password?</span>
+                                <span
+                                    onClick={() => navigate('/forgot-password')}
+                                    className="text-sky-700 text-sm font-semibold font-['Inter'] cursor-pointer hover:underline"
+                                >
+                                    Forgot password?
+                                </span>
                             </div>
                             <input 
                                 type="password"
