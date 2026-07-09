@@ -7,6 +7,8 @@ import MainLayout from './layouts/MainLayout.jsx';
 import DashboardPage from './features/learning/dashboard/DashboardPage.jsx';
 import RoadmapPage from './features/learning/roadmap/RoadmapPage.jsx';
 import UserProfile from './features/user-profile/profile.jsx';
+import LessonPage from './features/learning/lesson/LessonPage.tsx';
+import PracticeQuestions from './features/learning/lesson/PracticeQuestions';
 
 function App() {
   return (
@@ -43,6 +45,21 @@ function App() {
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
+          path="/lessons"
+          element={
+            <MainLayout>
+              <LessonPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/lessons/practice"
+          element={
+            <MainLayout>
+              <PracticeQuestions />
+            </MainLayout>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

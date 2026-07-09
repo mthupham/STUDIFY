@@ -1,6 +1,8 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import logoUrl from "../assets/Studify_icon/hat.svg";
+import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 // Cấu hình danh sách Menu (Giữ nguyên thông số width/height của Icon từ Figma bạn gửi)
 const navItems = [
@@ -347,10 +349,60 @@ export default function MainLayout({ children }) {
               <div style={styles.avatar}>A</div>
             </NavLink>
           </div>
-        </header>
 
-        {/* Khối hiển thị nội dung các trang con */}
-        <main style={styles.mainContent}>{children}</main>
+          <nav style={{ ...styles.navList, ...(isMobile ? styles.navListMobile : {}) }}>
+            {navItems.map((item) => {
+              return (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  style={({ isActive }) => ({
+                    ...styles.navItem,
+                    ...(isActive ? styles.navItemActive : {}),
+                    ...(isMobile ? styles.navItemMobile : {}),
+                    textDecoration: 'none'
+                  })}
+                >
+                  {({ isActive }) => (
+                    <>
+                      <span style={styles.navIconWrap}>
+                        <NavIcon type={item.icon} color={isActive ? '#0058BE' : '#424754'} />
+                      </span>
+                      <span style={{ ...styles.navLabel, ...(isActive ? styles.navLabelActive : {}) }}>{item.name}</span>
+                    </>
+                  )}
+                </NavLink>
+              );
+            })}
+          </nav>
+
+          {!isMobile ? (
+            <button type="button" style={styles.signOutButton}>Sign out</button>
+          ) : null}
+        </aside>
+
+        <div style={styles.mainArea}>
+          <header style={styles.header}>
+            <div style={{ ...styles.searchPill, ...(isMobile ? styles.searchPillMobile : {}) }}>
+              <span style={styles.searchIcon}>⌕</span>
+              <input
+                type="search"
+                placeholder="Search lessons..."
+                style={styles.searchInput}
+              />
+            </div>
+
+            <div style={styles.headerRight}>
+              <button type="button" style={styles.notificationButton} aria-label="Notifications">
+                <BellIcon />
+                <span style={styles.notificationDot} />
+              </button>
+              <div style={styles.avatar}>LP</div>
+            </div>
+          </header>
+
+          <main style={styles.mainContent}>{children}</main>
+        </div>
       </div>
     </div>
   );
@@ -358,6 +410,10 @@ export default function MainLayout({ children }) {
 
 // ================= HỆ THỐNG STYLES GỐC TỪ FIGMA =================
 const styles = {
+  appBackground: {
+    background: '#FAF8FF',
+    minHeight: '100vh'
+  },
   shell: {
     minHeight: "100vh",
     width: "100%",
@@ -375,6 +431,10 @@ const styles = {
     boxSizing: "border-box",
     position: "sticky",
     top: 0,
+  },
+  sidebarMobile: {
+    width: 220,
+    padding: '16px 12px'
   },
   logoArea: {
     display: "flex",
