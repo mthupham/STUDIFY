@@ -9,6 +9,7 @@ import RoadmapPage from "./features/learning/roadmap/RoadmapPage.jsx";
 import UserProfile from "./features/user-profile/profile.jsx";
 import LessonPage from "./features/learning/lesson/LessonPage.tsx";
 import PracticeQuestions from "./features/learning/lesson/PracticeQuestions";
+import OnboardingApp from "./features/onboarding/Onboarding";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+        <Route path="/onboarding" element={<OnboardingApp />} />
 
         <Route
           path="/dashboard"

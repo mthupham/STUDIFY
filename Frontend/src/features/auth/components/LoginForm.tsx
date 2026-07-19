@@ -25,16 +25,16 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="w-full min-h-screen py-20 relative bg-slate-50 inline-flex justify-center items-center">
+        <div className="relative flex min-h-screen w-full items-center justify-center bg-slate-50 px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-20">
             {/* Background effects */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-50">
                 <div className="size-72 absolute right-10 top-1/4 bg-blue-600/10 rounded-full blur-2xl" />
                 <div className="size-64 absolute left-16 bottom-1/4 bg-emerald-300/10 rounded-full blur-2xl" />
             </div>
 
-            <div className="flex-1 max-w-lg bg-white rounded-xl shadow-lg p-12 z-10">
+            <div className="z-10 w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-lg sm:p-8 lg:p-12">
                 {/* 🔴 BỌC TOÀN BỘ BẰNG THẺ FORM 🔴 */}
-                <form onSubmit={handleSubmit} className="inline-flex flex-col justify-start items-start gap-8 w-full">
+                <form onSubmit={handleSubmit} className="flex w-full flex-col items-start justify-start gap-6 sm:gap-8">
                     
                     <div className="self-stretch flex flex-col justify-start items-start gap-2 text-center w-full">
                         <h2 className="text-gray-900 text-3xl font-bold font-['Inter'] w-full" style={{ color: '#151C27' }}>Welcome Back</h2>

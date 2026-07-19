@@ -12,21 +12,21 @@ const userData = {
 
 export default function ProfilePage() {
   return (
-    <div className="w-full h-full p-8 flex flex-col gap-8 bg-gray-50">
+    <div className="flex min-h-screen w-full flex-col gap-8 bg-gray-50 p-4 sm:p-6 lg:p-8">
       {/* --- PROFILE HEADER SECTION --- */}
-      <header className="w-full p-10 bg-white rounded-xl shadow-sm flex gap-8 items-start">
+      <header className="flex w-full flex-col gap-6 rounded-xl bg-white p-6 shadow-sm sm:p-8 lg:flex-row lg:items-start lg:p-10">
         {/* Avatar */}
-        <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-md bg-[#0058BE]">
+        <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-white bg-[#0058BE] shadow-md sm:h-32 sm:w-32 lg:h-40 lg:w-40">
           {/* Nếu có ảnh: <img src="..." alt={userData.username} className="w-full h-full object-cover" /> */}
         </div>
 
         {/* User Info */}
-        <div className="flex-1 pt-2 flex flex-col gap-4">
+        <div className="flex flex-1 flex-col gap-4 pt-2">
           <h1 className="text-3xl font-bold text-[#131B2E] font-inter">
             {userData.username}
           </h1>
 
-          <button className="px-8 py-3 bg-[#004AC6] text-white font-medium text-sm rounded-lg shadow-sm hover:bg-[#003da4] transition-colors w-max">
+          <button className="w-full rounded-lg bg-[#004AC6] px-8 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#003da4] sm:w-max">
             Edit Profile
           </button>
         </div>
@@ -35,7 +35,7 @@ export default function ProfilePage() {
       {/* --- MAIN CONTENT AREA (Bento Grid) --- */}
       <main className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {/* Left Column: General Settings & Change Password (Chiếm 2 phần) */}
-        <section className="md:col-span-2 p-8 bg-white rounded-xl shadow-sm flex flex-col gap-8">
+        <section className="flex flex-col gap-8 rounded-xl bg-white p-6 shadow-sm sm:p-8 md:col-span-2">
           {/* --- Part 1: General Settings --- */}
           <div className="flex flex-col gap-6">
             <div className="pb-4 border-b border-[#C3C6D7] flex items-center gap-3">
@@ -141,14 +141,14 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <button className="px-6 py-3 bg-[#004AC6] text-white font-medium text-sm rounded-lg shadow-sm hover:bg-[#003da4] transition-colors w-max self-end">
+            <button className="w-full rounded-lg bg-[#004AC6] px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#003da4] sm:w-max sm:self-end">
               Update Password
             </button>
           </div>
         </section>
 
         {/* Right Column: Learning Progress (Chiếm 1 phần) */}
-        <aside className="p-6 bg-white rounded-xl shadow-sm flex flex-col gap-6">
+        <aside className="flex flex-col gap-6 rounded-xl bg-white p-6 shadow-sm">
           <div className="flex flex-col gap-4">
             {/* Level info */}
             <div className="flex justify-between items-center text-sm">
@@ -176,7 +176,7 @@ export default function ProfilePage() {
             </div>
           </div>
           <NavLink to="/lessons" style={{ textDecoration: "none" }}>
-            <button className="w-full py-3 border border-[#C3C6D7] rounded-lg text-sm font-medium text-[#434655] hover:bg-gray-50 transition-colors">
+            <button className="w-full rounded-lg border border-[#C3C6D7] py-3 text-sm font-medium text-[#434655] transition-colors hover:bg-gray-50">
               Let's keep going!
             </button>
           </NavLink>

@@ -43,7 +43,7 @@ export default function RegisterForm() {
 
       const { accessToken, data: user } = response.data;
       setAuthSession(user, accessToken);
-      navigate("/dashboard");
+      navigate("/onboarding");
     } catch (err: any) {
       const message = err?.response?.data?.message;
       setError(
@@ -57,7 +57,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="w-full min-h-screen py-20 relative bg-slate-50 inline-flex justify-center items-center">
+    <div className="relative flex min-h-screen w-full items-center justify-center bg-slate-50 px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-20">
       {/* Hiệu ứng vòng tròn màu nền background giống Figma */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
         <div className="size-64 absolute left-16 top-24 bg-sky-700/10 rounded-full blur-3xl" />
@@ -65,9 +65,9 @@ export default function RegisterForm() {
       </div>
 
       {/* Container chính bọc toàn bộ Form */}
-      <div className="flex-1 max-w-4xl bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden inline-flex justify-start items-stretch">
+      <div className="mx-auto flex w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg md:flex-row">
         {/* Panel bên trái: Hình ảnh hoặc Banner trang trí */}
-        <div className="hidden md:flex flex-1 bg-gradient-to-br from-blue-600 to-sky-800 p-12 flex-col justify-end items-start relative overflow-hidden min-h-[650px]">
+        <div className="relative flex min-h-[280px] flex-1 flex-col items-start justify-end overflow-hidden bg-gradient-to-br from-blue-600 to-sky-800 p-6 sm:p-8 md:min-h-[650px] md:p-12">
           {/* ĐÃ SỬA: Xóa hạt chấm cũ, thêm bg-cover và bg-no-repeat */}
           <div
             className="absolute inset-0 opacity-20 bg-cover bg-no-repeat bg-center pointer-events-none"
@@ -88,7 +88,7 @@ export default function RegisterForm() {
         {/* Panel bên phải: Khu vực điền Form thực tế */}
         <form
           onSubmit={handleSubmit}
-          className="flex-1 p-12 flex flex-col justify-center items-start gap-6"
+          className="flex flex-1 flex-col items-start justify-center gap-6 p-6 sm:p-8 lg:p-12"
         >
           <div className="self-stretch flex flex-col justify-start items-start gap-2">
             <h2 className="text-gray-900 text-2xl font-bold font-['Inter']" style={{ color: '#151C27' }}>

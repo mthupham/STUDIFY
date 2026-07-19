@@ -51,14 +51,14 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center bg-slate-50 py-20">
+    <div className="relative flex min-h-screen w-full items-center justify-center bg-slate-50 px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-20">
       <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-40">
         <div className="absolute left-16 top-24 size-64 rounded-full bg-sky-700/10 blur-3xl" />
         <div className="absolute bottom-24 right-32 size-96 rounded-full bg-emerald-800/10 blur-3xl" />
       </div>
 
-      <div className="flex max-w-4xl flex-1 items-stretch overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
-        <div className="relative hidden min-h-[650px] flex-1 flex-col items-start justify-end overflow-hidden bg-gradient-to-br from-blue-600 to-sky-800 p-12 md:flex">
+      <div className="mx-auto flex w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg md:flex-row">
+        <div className="relative flex min-h-[280px] flex-1 flex-col items-start justify-end overflow-hidden bg-gradient-to-br from-blue-600 to-sky-800 p-6 sm:p-8 md:min-h-[650px] md:p-12">
           <div
             className="pointer-events-none absolute inset-0 bg-center bg-no-repeat bg-cover opacity-20"
             style={{ backgroundImage: `url(${Image01})` }}
@@ -74,7 +74,7 @@ export default function ForgotPasswordForm() {
 
         <form
           onSubmit={currentStep === 'email' ? handleEmailSubmit : handleResetSubmit}
-          className="flex flex-1 flex-col items-start justify-center gap-6 p-12"
+          className="flex flex-1 flex-col items-start justify-center gap-6 p-6 sm:p-8 lg:p-12"
         >
           <div className="flex flex-col items-start gap-2 self-stretch">
             <h2 className="font-['Inter'] text-2xl font-bold text-gray-900" style={{ color: '#151C27' }}>

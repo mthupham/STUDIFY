@@ -55,9 +55,9 @@ export default function Dashboard() {
 
   return (
     /* MAIN CONTENT CANVAS: Toàn bộ vùng hiển thị chính của Dashboard */
-    <div className="inline-flex min-h-[1088px] w-full max-w-[1536px] flex-col items-start justify-start gap-8 px-8 pb-32 pt-8 font-['Inter',_sans-serif]">
+    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-6 pb-16 font-['Inter',_sans-serif] sm:px-6 sm:py-8 lg:px-8">
       {/* WELCOME SECTION: Banner chào mừng người dùng lấy từ AuthStore */}
-      <div className="relative flex w-full flex-col items-start justify-start overflow-hidden rounded-2xl bg-gradient-to-r from-sky-700 to-blue-600 p-8 shadow-lg">
+      <div className="relative flex w-full flex-col items-start justify-start overflow-hidden rounded-2xl bg-gradient-to-r from-sky-700 to-blue-600 p-6 shadow-lg sm:p-8">
         {/* Hình khối trang trí ẩn phía sau */}
         <div className="absolute right-4 top-2 pointer-events-none opacity-25">
           <svg
@@ -95,7 +95,7 @@ export default function Dashboard() {
         {/* LEFT COLUMN (Span 8): Chiếm 8/12 cột ở màn hình lớn */}
         <div className="flex flex-col gap-6 lg:col-span-8">
           {/* MASTERY PROGRESS CARD: Thẻ hiển thị mức độ thành thạo và tiến độ học */}
-          <div className="flex flex-col gap-8 rounded-2xl border border-slate-300 bg-slate-50 p-8 shadow-sm">
+          <div className="flex flex-col gap-8 rounded-2xl border border-slate-300 bg-slate-50 p-6 shadow-sm sm:p-8">
             {/* Header của thẻ Progress */}
             <div className="flex w-full items-start justify-between">
               <div>
@@ -217,7 +217,7 @@ export default function Dashboard() {
           {/* TODAY'S STUDY PLAN: Kế hoạch học tập trong ngày */}
           <div className="flex flex-col gap-6 rounded-2xl border border-slate-300 bg-slate-50 p-8 shadow-sm">
             {/* Header của Study Plan */}
-            <div className="flex w-full items-center justify-between">
+            <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="text-2xl font-semibold text-gray-900">
                 Today's Study Plan
               </h3>
@@ -243,7 +243,7 @@ export default function Dashboard() {
               {tasks.map((task) => (
                 <div
                   key={task.id}
-                  className={`flex items-center justify-between rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition ${
+                  className={`flex flex-col gap-3 rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition sm:flex-row sm:items-center sm:justify-between ${
                     task.isOptional ? "opacity-60 hover:opacity-100" : ""
                   }`}
                 >
@@ -292,7 +292,7 @@ export default function Dashboard() {
         {/* RIGHT COLUMN (Span 4): Chiếm 4/12 cột ở màn hình lớn (Sidebar) */}
         <div className="flex flex-col gap-6 lg:col-span-4">
           {/* GROUP TASK WIDGET: Thời hạn hoạt động nhóm */}
-          <div className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-slate-300 bg-slate-50 p-6 shadow-sm">
+          <div className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-slate-300 bg-slate-50 p-5 shadow-sm sm:p-6">
             {/* Vòng tròn trang trí góc trên bên phải */}
             <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-emerald-300/10"></div>
 
