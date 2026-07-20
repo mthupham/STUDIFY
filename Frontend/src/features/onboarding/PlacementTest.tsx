@@ -140,7 +140,7 @@ export default function PlacementTest({ onComplete, selectedPace }: PlacementTes
                 <div className="text-xs text-slate-500 font-medium uppercase tracking-[0.24em]">
                   Your chosen pace: {paceLabel}
                 </div>
-                <h1 className="text-gray-900 text-xl sm:text-2xl font-semibold leading-relaxed">
+                <h1 className="!text-black !text-3xl !sm:text-2xl !font-semibold !leading-relaxed">
                   Choose the correct preposition:<br />
                   <span className="text-sky-700">"She is interested ___ learning new languages."</span>
                 </h1>

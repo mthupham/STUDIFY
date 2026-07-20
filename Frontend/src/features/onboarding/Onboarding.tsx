@@ -69,7 +69,7 @@ export default function OnboardingGoalSetting() {
           <div className="w-full flex flex-col items-center space-y-8 animate-fadeIn">
             {/* Tiêu đề chính */}
             <div className="text-center space-y-2 sm:space-y-3">
-              <h1 className="text-gray-900 text-2xl sm:text-3xl font-bold tracking-tight">
+              <h1 className="!text-sky-700 !text-4xl !font-bold !tracking-tight">
                 Set your pace
               </h1>
               <p className="text-gray-600 text-base sm:text-lg font-normal leading-relaxed max-w-[540px] mx-auto">
@@ -150,8 +150,8 @@ export default function OnboardingGoalSetting() {
             
             {/* Headline & Description */}
             <div className="w-full text-center space-y-2">
-              <h1 className="text-gray-900 text-2xl sm:text-3xl font-bold leading-tight">
-                Do you know your current English<br />level?
+              <h1 className="!text-sky-700 !text-4xl !sm:text-3xl !font-bold !leading-tight">
+                Do you know your current English level?
               </h1>
               <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
                 We&apos;ll tailor your learning path based on where you are today.
