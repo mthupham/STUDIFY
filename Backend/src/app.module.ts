@@ -1,39 +1,32 @@
 // import { Module } from '@nestjs/common';
 // import { AppController } from './app.controller';
 // import { AppService } from './app.service';
-
+// import { PlacementTestModule } from './features/placement-test/placement-test.module';
 // @Module({
-//   imports: [],
+//   imports: [PlacementTestModule],
 //   controllers: [AppController],
 //   providers: [AppService],
 // })
 // export class AppModule {}
 
-// moi them
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
-// Import các Module dự án của bạn (điều chỉnh lại đường dẫn cho đúng với thư mục của bạn)
-import { PlacementTestModule } from 'src/features/placement-test/placement-test.module';
-// import { AuthModule } from './modules/auth/auth.module';
-// import { SequelizeModule } from '@nestjs/sequelize';
+import { PlacementTestModule } from './features/placement-test/placement-test.module';
+import { sequelizeConfig } from './config/sequelize.config';
 
 @Module({
   imports: [
-    // 1. Tải ConfigModule TOÀN CỤC để đọc file .env đầu tiên
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
+    SequelizeModule.forRoot({
+      dialect: 'postgres', // <--- THÊM DÒNG NÀY (hoặc 'mysql' nếu dự án bạn dùng MySQL)
+      ...sequelizeConfig,
+      autoLoadModels: true,
+      synchronize: true,
     }),
-
-    // 2. Import các module chức năng khác của dự án
     PlacementTestModule,
-
-    // Mở comment các module bên dưới nếu project của bạn có dùng:
-    // AuthModule,
-    // SequelizeModule.forRoot({ ... }),
+    RoadmapModule,
+    LessonModule, // <-- Thêm LessonModule vào đây
   ],
   controllers: [AppController],
   providers: [AppService],
