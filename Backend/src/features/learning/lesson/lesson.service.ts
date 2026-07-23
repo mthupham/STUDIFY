@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Lesson } from './models/lesson.model';
-import { VocabularyItem } from './models/vocabulary-item.model';
-import { GrammarItem } from './models/grammar-item.model';
+import { Lesson } from '../../../models/lesson.model';
+import { VocabularyItem } from '../../../models/vocabulary-item.model';
+import { GrammarItem } from '../../../models/grammar-item.model';
 
 @Injectable()
 export class LessonService {

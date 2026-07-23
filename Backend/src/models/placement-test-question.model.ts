@@ -1,7 +1,7 @@
 import { Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 @Table({ tableName: 'placement_test_questions', timestamps: true })
-export class PlacementTestQuestion extends Model {  // <-- ĐẢM BẢO CÓ TỪ KHÓA "export" Ở ĐÂY
+export class PlacementTestQuestion extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

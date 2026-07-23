@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { RoadmapLevel } from './models/roadmap-level.model';
-import { RoadmapLesson } from './models/roadmap-lesson.model';
+import { RoadmapLevel } from '../../../models/roadmap-level.model';
+import { RoadmapLesson } from '../../../models/roadmap-lesson.model';
 
 @Injectable()
 export class RoadmapService {
