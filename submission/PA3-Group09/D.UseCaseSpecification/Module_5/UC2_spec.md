@@ -42,7 +42,7 @@
 ---
 
 ## 1. Use-Case Name
-**UC5.1: Speech recognition**
+**UC5.2: Generate appropriate reply**
 
 ### 1.1 Brief Description
 This use case captures the end-to-end process in which the AI Speaking Assistant receives the Learner's transcribed input, evaluates the context of the active practice scenario (e.g., Business, Casual, Interview), and uses the AI Engine to construct a natural, contextually relevant response in both text and synthesized audio forms.
