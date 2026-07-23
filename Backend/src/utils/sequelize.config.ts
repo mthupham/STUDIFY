@@ -18,8 +18,8 @@ import { UserProgress } from '../models/user_progress.model';
 export const sequelizeConfig = (configService: ConfigService): SequelizeModuleOptions => ({
   dialect: 'postgres',
   host: configService.get<string>('DB_HOST'),
-  port: configService.get<number>('DB_PORT'),
-  username: configService.get<string>('DB_USER'),
+  port: configService.get<number>('DB_PORT') ? Number(configService.get<number>('DB_PORT')) : 5432,
+  username: configService.get<string>('DB_USERNAME') ?? configService.get<string>('DB_USER'),
   password: configService.get<string>('DB_PASSWORD'),
   database: configService.get<string>('DB_NAME'),
   models: [

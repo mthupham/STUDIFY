@@ -51,8 +51,17 @@ export class UserService {
 
   async updateProfile(id: number, dto: UpdateProfileDto) {
     const user = await this.getUserById(id);
+
+    if (dto.email && dto.email !== user.email) {
+      const existedUser = await this.findByEmail(dto.email);
+      if (existedUser && existedUser.id !== user.id) {
+        throw new BadRequestException('Email already in use.');
+      }
+    }
+
     await user.update({
       ...(dto.name && { name: dto.name }),
+      ...(dto.email && { email: dto.email }),
       ...(dto.avatar && { avatar: dto.avatar }),
       ...(dto.phone && { phone: dto.phone }),
     });
