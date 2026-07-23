@@ -10,30 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@tanstack/react-query": "^5.101.0",
-=======
-    "@tailwindcss/postcss": "^4.3.1",
-    "@tailwindcss/vite": "^4.3.1",
-    "autoprefixer": "^10.5.2",
->>>>>>> b1f0dde6863ff7a99260bf0d01e643242990d3f2
     "axios": "^1.18.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router": "^7.18.0",
     "react-router-dom": "^7.18.0",
-    "tailwindcss": "^4.3.1",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-<<<<<<< HEAD
-    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^24.13.0",
-=======
     "@tailwindcss/postcss": "^4.3.1",
     "@tailwindcss/vite": "^4.3.1",
->>>>>>> b1f0dde6863ff7a99260bf0d01e643242990d3f2
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",

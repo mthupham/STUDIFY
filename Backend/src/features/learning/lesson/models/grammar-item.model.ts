@@ -4,21 +4,21 @@ import { Lesson } from './lesson.model';
 @Table({ tableName: 'grammar_items', timestamps: false })
 export class GrammarItem extends Model {
   @Column({ type: DataType.INTEGER, autoIncrement: true, primaryKey: true })
-  id: number;
+  declare id: number;
 
   @ForeignKey(() => Lesson)
   @Column({ type: DataType.STRING, allowNull: false })
-  lesson_id: string;
+  declare lesson_id: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
-  rule: string; // VD: 'Verb (Base Form) + Object'
+  declare rule: string; // VD: 'Verb (Base Form) + Object'
 
   @Column({ type: DataType.TEXT, allowNull: false })
-  explanation: string;
+  declare explanation: string;
 
   @Column({ type: DataType.JSON, allowNull: true })
-  examples: string[]; // Mảng ví dụ: ["Click the button.", "Open the window."]
+  declare examples: string[]; // Mảng ví dụ: ["Click the button.", "Open the window."]
 
   @BelongsTo(() => Lesson)
-  lesson: Lesson;
+  declare lesson: Lesson;
 }
