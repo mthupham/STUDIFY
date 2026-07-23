@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../features/auth/store/useAuthStore';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard' },
@@ -13,6 +14,14 @@ const navItems = [
 
 export default function MainLayout({ children }) {
   const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
+  const displayName = user?.name || 'User';
+  const userInitials = displayName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('') || 'U';
 
   return (
     <div style={styles.shell}>
@@ -61,7 +70,15 @@ export default function MainLayout({ children }) {
             <button type="button" style={styles.iconButton} aria-label="Notifications">
               <span style={styles.bellIcon}>🔔</span>
             </button>
-            <div style={styles.avatar}>LP</div>
+            <button
+              type="button"
+              style={styles.profileButton}
+              onClick={() => navigate('/profile')}
+              aria-label="Open profile"
+            >
+              <div style={styles.avatar}>{userInitials}</div>
+              <span style={styles.profileName}>{displayName}</span>
+            </button>
           </div>
         </header>
 
@@ -193,6 +210,15 @@ const styles = {
     justifyContent: 'center',
     cursor: 'pointer',
   },
+  profileButton: {
+    border: 'none',
+    background: 'transparent',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    cursor: 'pointer',
+    padding: 0,
+  },
   bellIcon: {
     fontSize: 18,
     color: '#374151',
@@ -208,6 +234,15 @@ const styles = {
     color: '#FFFFFF',
     fontWeight: 700,
     fontSize: 14,
+  },
+  profileName: {
+    color: '#111827',
+    fontSize: 14,
+    fontWeight: 600,
+    maxWidth: 160,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   mainContent: {
     flex: 1,

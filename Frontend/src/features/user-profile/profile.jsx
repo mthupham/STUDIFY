@@ -1,34 +1,132 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useAuthStore } from "../auth/store/useAuthStore";
 import { NavLink } from "react-router-dom";
 
 const userData = {
-  username: "User",
-  email: "user@gmail.com",
   language: "Tiếng Việt (Vietnam)",
   level: "B2 LEVEL",
   progress: 90, // %
 };
 
 export default function ProfilePage() {
+  const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
+  const setAuthSession = useAuthStore((state) => state.setAuthSession);
+  const profileName = user?.name || "User";
+  const profileEmail = user?.email || "user@gmail.com";
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(profileName);
+  const [email, setEmail] = useState(profileEmail);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+
+  useEffect(() => {
+    setName(profileName);
+    setEmail(profileEmail);
+  }, [profileName, profileEmail]);
+
+  const handleSaveProfile = async () => {
+    if (!token) {
+      setError("Session expired. Please sign in again.");
+      return;
+    }
+
+    if (!name.trim() || !email.trim()) {
+      setError("Name and email are required.");
+      return;
+    }
+
+    setIsSaving(true);
+    setError("");
+    setMessage("");
+
+    try {
+      const { data } = await axios.patch(
+        `${apiBaseUrl}/user/profile`,
+        {
+          name: name.trim(),
+          email: email.trim(),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const updatedUser = data?.data || user;
+      setAuthSession(updatedUser, token);
+      setMessage("Profile updated successfully.");
+      setIsEditing(false);
+    } catch (err) {
+      const apiMessage = axios.isAxiosError(err) ? err.response?.data?.message : null;
+      setError(
+        Array.isArray(apiMessage)
+          ? apiMessage.join(", ")
+          : apiMessage || "Unable to update profile."
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="w-full h-full p-8 flex flex-col gap-8 bg-gray-50">
       {/* --- PROFILE HEADER SECTION --- */}
       <header className="w-full p-10 bg-white rounded-xl shadow-sm flex gap-8 items-start">
         {/* Avatar */}
         <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-md bg-[#0058BE]">
-          {/* Nếu có ảnh: <img src="..." alt={userData.username} className="w-full h-full object-cover" /> */}
+          {/* Neu co anh: <img src="..." alt={profileName} className="w-full h-full object-cover" /> */}
         </div>
 
         {/* User Info */}
         <div className="flex-1 pt-2 flex flex-col gap-4">
           <h1 className="text-3xl font-bold text-[#131B2E] font-inter">
-            {userData.username}
+            {profileName}
           </h1>
 
-          <button className="px-8 py-3 bg-[#004AC6] text-white font-medium text-sm rounded-lg shadow-sm hover:bg-[#003da4] transition-colors w-max">
-            Edit Profile
-          </button>
+          {!isEditing ? (
+            <button
+              onClick={() => {
+                setName(profileName);
+                setEmail(profileEmail);
+                setError("");
+                setMessage("");
+                setIsEditing(true);
+              }}
+              className="px-8 py-3 bg-[#004AC6] text-white font-medium text-sm rounded-lg shadow-sm hover:bg-[#003da4] transition-colors w-max"
+            >
+              Edit Profile
+            </button>
+          ) : (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleSaveProfile}
+                disabled={isSaving}
+                className="px-8 py-3 bg-[#004AC6] text-white font-medium text-sm rounded-lg shadow-sm hover:bg-[#003da4] transition-colors disabled:opacity-60"
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </button>
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setError("");
+                  setMessage("");
+                  setName(profileName);
+                  setEmail(profileEmail);
+                }}
+                className="px-8 py-3 border border-[#C3C6D7] text-[#434655] font-medium text-sm rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+
+          {message && <p className="text-sm text-emerald-600">{message}</p>}
+          {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
       </header>
 
@@ -58,14 +156,39 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-[#434655]">Name</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-3 bg-white border border-[#C3C6D7] rounded-lg text-[#131B2E] focus:outline-none focus:border-[#004AC6] focus:ring-1 focus:ring-[#004AC6]"
+                  />
+                ) : (
+                  <div className="w-full px-4 py-3 bg-[#F2F3FF] border border-[#C3C6D7] rounded-lg text-[#131B2E]">
+                    {profileName}
+                  </div>
+                )}
+              </div>
+
               {/* Email Field */}
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-[#434655]">
                   Email Address
                 </label>
-                <div className="w-full px-4 py-3 bg-[#F2F3FF] border border-[#C3C6D7] rounded-lg text-[#131B2E]">
-                  {userData.email}
-                </div>
+                {isEditing ? (
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-3 bg-white border border-[#C3C6D7] rounded-lg text-[#131B2E] focus:outline-none focus:border-[#004AC6] focus:ring-1 focus:ring-[#004AC6]"
+                  />
+                ) : (
+                  <div className="w-full px-4 py-3 bg-[#F2F3FF] border border-[#C3C6D7] rounded-lg text-[#131B2E]">
+                    {profileEmail}
+                  </div>
+                )}
               </div>
 
               {/* Language Field */}
