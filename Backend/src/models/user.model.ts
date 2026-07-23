@@ -27,7 +27,7 @@ export class User extends Model<User> {
         defaultValue: UserRole.USER,
         type: DataType.ENUM(...Object.values(UserRole)),
     })
-    role: string = UserRole.USER;
+    declare role: string;
 
     @Column({ allowNull: true, type: DataType.STRING })
     declare provider: string;
