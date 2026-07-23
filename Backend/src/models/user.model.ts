@@ -38,5 +38,11 @@ export class User extends Model<User> {
     @Column({ allowNull: true, type: DataType.DATE, field: 'reset_otp_expires' })
     declare resetOtpExpires: Date;
 
-   
+    toJSON() {
+        const values = { ...this.get() } as Record<string, unknown>;
+        delete values.password;
+        delete values.resetOtp;
+        delete values.resetOtpExpires;
+        return values;
+    }
 }
