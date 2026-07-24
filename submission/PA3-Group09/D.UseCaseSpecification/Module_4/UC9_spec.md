@@ -1,5 +1,5 @@
-# STUDIFY
-## Use-Case Specification: Flip Card to View Explanation
+﻿# STUDIFY
+## Use-Case Specification: Mark Study Status
 
 **Version:** 1.0
 
@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| `23/07/2026` | `1.0` | Initial version of Flip Card to View Explanation Use-Case Specification | `Group 09` |
+| `23/07/2026` | `1.0` | Initial version of Mark Study Status Use-Case Specification | `Group 09` |
 
 ---
 
@@ -20,9 +20,10 @@
 2. [Flow of Events](#2-flow-of-events)
    1. [Basic Flow](#21-basic-flow)
    2. [Alternative Flows](#22-alternative-flows)
-      1. [Explanation Content is Empty](#221-explanation-content-is-empty)
-      2. [User Flips Back to the Term Side](#222-user-flips-back-to-the-term-side)
-      3. [User Uses Keyboard to Flip the Card](#223-user-uses-keyboard-to-flip-the-card)
+      1. [User Marks "Don't Know"](#221-user-marks-dont-know)
+      2. [User Marks "Review Later"](#222-user-marks-review-later)
+      3. [User Uses Keyboard Shortcut to Mark Status](#223-user-uses-keyboard-shortcut-to-mark-status)
+      4. [User Changes a Previously Marked Status](#224-user-changes-a-previously-marked-status)
 3. [Special Requirements](#3-special-requirements)
 4. [Preconditions](#4-preconditions)
 5. [Postconditions](#5-postconditions)
@@ -34,7 +35,7 @@
 
 ### 1.1 Brief Description
 
-This use case describes the interaction by which a User flips a flashcard during a study session to reveal the **Explanation** (back side) after having viewed the **Term** (front side). This is a core interaction in the flashcard study experience. It simulates the physical act of turning over a traditional paper flashcard to check one's answer or review the associated definition, translation, or note. This use case is included by UC6 (Study Flashcards) and is triggered for every card presented during a session.
+This use case describes the process by which a User self-assesses and records their knowledge of a flashcard after reviewing it during a study session. After flipping a card to view its explanation (UC8 – Flip Card to View Explanation), the User rates how well they knew the answer by selecting a **study status** (e.g., "Know", "Don't Know", "Review Later"). The system records this rating and uses it to update the flashcard's study progress, which may inform a spaced repetition algorithm to schedule future reviews. This use case is included by UC7 (Study Flashcards).
 
 ---
 
@@ -42,86 +43,103 @@ This use case describes the interaction by which a User flips a flashcard during
 
 ### 2.1 Basic Flow
 
-This use case starts when the system displays a flashcard with the **Term** visible on the front side during an active study session (UC6 – Study Flashcards).
+This use case starts immediately after the User has flipped a flashcard to view its Explanation during a study session (upon completion of UC8 – Flip Card to View Explanation).
 
-1. The system displays the flashcard in its **front state**, showing:
-   - The **Term** prominently in the center of the card.
-   - A **"Flip"** button (or a tappable/clickable card surface) inviting the User to reveal the back.
-   - A visual hint text such as "Click to reveal explanation."
+1. The system displays the **Mark Study Status** controls below or alongside the flipped flashcard. The controls consist of three buttons:
+   - ✅ **"Know"** (green): The User knew the answer confidently.
+   - ❌ **"Don't Know"** (red): The User did not know the answer.
+   - 🔁 **"Review Later"** (yellow/amber): The User partially knew the answer or wants to review again soon.
 
-2. The User clicks the **"Flip"** button or clicks/taps the card surface.
+2. The User selects **"Know"** to indicate they knew the term and its explanation confidently.
 
-3. The system plays a flip animation (e.g., a 3D card rotation effect) to visually simulate the card turning over.
+3. The system records the **"Know"** status for this flashcard in the current study session.
 
-4. The system transitions the card from its front state to its **back state**, revealing:
-   - The **Explanation** content as written during flashcard creation (UC8 – Write Explanation).
-   - Optionally, the **Term** displayed in smaller text at the top of the card for reference context.
-   - The **Mark Study Status** controls (UC10 – Mark Study Status) which become available after the flip.
+4. The system updates the flashcard's study metadata:
+   - Increments the "correct" count for this card.
+   - Schedules the next review date according to the spaced repetition algorithm (the next review is set further in the future for well-known cards).
+   - Marks the card as "mastered" if it has been marked "Know" a sufficient number of consecutive times (configurable threshold).
 
-5. The User reads the **Explanation** on the back of the card.
+5. The system advances to the next flashcard in the study session deck (returning control to UC7 – Study Flashcards, Step 8).
 
-6. The use case ends. Control returns to UC6 (Study Flashcards), where the User is expected to mark their study status (UC10).
+6. The use case ends for the current card.
 
 ---
 
 ### 2.2 Alternative Flows
 
-#### 2.2.1 Explanation Content is Empty
+#### 2.2.1 User Marks "Don't Know"
 
-This alternative flow occurs when the flashcard was saved without an explanation (a data integrity edge case).
+This alternative flow describes the behavior when the User did not know the flashcard's term or explanation.
 
-1. The User flips the card (Step 2 of the Basic Flow).
-2. The system transitions the card to the back state.
-3. The system detects that the Explanation field for this flashcard is empty.
-4. The system displays a placeholder message on the back of the card: "No explanation has been added for this card. Tap Edit to add one."
-5. An **"Edit Card"** shortcut button is displayed, linking to the flashcard editing interface.
-6. The Mark Study Status controls still appear, allowing the User to continue the session.
-7. The flow resumes at Step 5 of the Basic Flow.
+1. After viewing the Explanation (Step 1 of the Basic Flow), the User clicks the ❌ **"Don't Know"** button.
+2. The system records the **"Don't Know"** status for this flashcard.
+3. The system updates the flashcard's study metadata:
+   - Increments the "incorrect" count for this card.
+   - Resets or shortens the spaced repetition interval, scheduling the card for an earlier re-review (e.g., within the same session or the next day).
+   - Adds this card to the "Difficult" or "Re-review" pile of the current session.
+4. The system may re-insert this card into the session queue (e.g., it will appear again near the end of the current session).
+5. The system advances to the next new card in the deck.
+6. The flow returns to Step 5 of the Basic Flow (advance to next card).
 
-#### 2.2.2 User Flips Back to the Term Side
+#### 2.2.2 User Marks "Review Later"
 
-This alternative flow occurs when the User wants to re-read the Term after having already flipped to the Explanation side.
+This alternative flow describes the behavior when the User partially knew the answer or wants a second look.
 
-1. After the card has been flipped to show the Explanation (Step 4 of the Basic Flow), the User clicks or taps the card again (or presses the designated keyboard key).
-2. The system plays a reverse flip animation.
-3. The system transitions the card back to its **front state**, showing the Term.
-4. The Mark Study Status controls are hidden while the card is showing the Term side.
-5. The flow returns to Step 2 of the Basic Flow, where the User can flip again to reveal the Explanation.
+1. After viewing the Explanation (Step 1 of the Basic Flow), the User clicks the 🔁 **"Review Later"** button.
+2. The system records the **"Review Later"** status for this flashcard.
+3. The system updates the flashcard's study metadata:
+   - Does not increment the correct count.
+   - Schedules the card for an intermediate re-review date (shorter interval than "Know" but longer than "Don't Know").
+   - Adds the card to a secondary review queue within the same session (it will reappear once near the end).
+4. The system advances to the next card in the primary deck.
+5. The flow returns to Step 5 of the Basic Flow (advance to next card).
 
-#### 2.2.3 User Uses Keyboard to Flip the Card
+#### 2.2.3 User Uses Keyboard Shortcut to Mark Status
 
-This alternative flow describes keyboard-based card flipping for accessibility and power users.
+This alternative flow describes keyboard-based status marking for accessibility and efficient study.
 
-1. The User presses the **Spacebar** key while a flashcard is displayed.
-2. The system recognizes the Spacebar as the flip shortcut.
-3. The system performs the same flip animation and state transition as described in Steps 3–4 of the Basic Flow.
-4. The flow resumes at Step 5 of the Basic Flow.
+1. After the card has been flipped (UC8 completed), the User presses one of the designated keyboard shortcuts:
+   - **Key "1"** or **Arrow Right** → Marks **"Know"**.
+   - **Key "2"** or **Arrow Down** → Marks **"Review Later"**.
+   - **Key "3"** or **Arrow Left** → Marks **"Don't Know"**.
+2. The system recognizes the keypress and processes it as the equivalent button click.
+3. The system records the status and the flow continues as per the corresponding Basic or Alternative flow above.
+
+#### 2.2.4 User Changes a Previously Marked Status
+
+This alternative flow occurs within a session when the User wants to change the status they marked for the most recently reviewed card.
+
+1. After marking a status and being shown the next card, the User clicks an **"Undo"** button (if provided) within a 3-second grace period.
+2. The system cancels the advancement and returns the User to the previously marked card.
+3. The system un-records the previously selected status.
+4. The system re-displays the Mark Study Status controls for the returned card.
+5. The User selects a new status.
+6. The flow resumes at Step 3 of the Basic Flow (or corresponding alternative flow) with the new status.
 
 ---
 
 ## 3. Special Requirements
 
-### 3.1 Animation Requirements
+### 3.1 Usability Requirements
 
-- The card flip animation must use a CSS 3D transform (or equivalent) to simulate a realistic card flip, with a transition duration of 300–500 milliseconds.
-- The animation must be smooth and must not cause layout shifts or visual glitches.
-- The animation must be hardware-accelerated where possible to ensure consistent frame rate.
+- The three status buttons must be large, clearly labeled, and color-coded to minimize the cognitive load during a study session.
+- The buttons must only appear after the card has been flipped (i.e., after UC8 is triggered), to prevent premature marking without reviewing the explanation.
+- The current card's marked status must be visually reflected immediately upon selection (e.g., a brief highlight/animation on the chosen button).
 
-### 3.2 Usability Requirements
+### 3.2 Performance Requirements
 
-- The clickable/tappable area for flipping must cover the entire card surface, not only the "Flip" button, to maximize ease of interaction.
-- The "Flip" button and card surface must have a clear visual affordance (e.g., hover state, shadow lift) indicating that they are interactive.
-- On mobile devices, the flip action must also support a **swipe-up gesture** as an alternative to tapping.
+- The status must be recorded and the next card must be loaded within 300 milliseconds of the User pressing a status button.
+- Study status updates must be saved to the backend asynchronously (non-blocking) to maintain a smooth session experience.
 
-### 3.3 Accessibility Requirements
+### 3.3 Spaced Repetition Algorithm Requirements
 
-- The Spacebar keyboard shortcut for flipping must be documented in a keyboard shortcut help guide within the study interface.
-- The transition from front to back state must be announced to screen readers (e.g., using ARIA live regions): "Card flipped. Explanation: [explanation text]."
-- Users who prefer reduced motion (system preference) must be offered a non-animated instantaneous reveal instead of the 3D flip animation.
+- The system must implement a spaced repetition scheduling algorithm (e.g., SM-2 or a simplified variant) based on the User's marked status history.
+- The next review date for each card must be calculated and stored after each status marking.
+- Cards marked "Don't Know" must be prioritized in future sessions.
 
-### 3.4 Performance Requirements
+### 3.4 Data Persistence Requirements
 
-- The flip action and resulting content reveal must occur within 100 milliseconds of the User's input (excluding the animation duration).
+- All study status records must be durable: once a status is recorded and the User advances, the data must not be lost even in the event of a network interruption (use local storage as a fallback).
 
 ---
 
@@ -129,11 +147,11 @@ This alternative flow describes keyboard-based card flipping for accessibility a
 
 ### 4.1 Active Study Session
 
-- The User must be in an active flashcard study session (UC6 – Study Flashcards).
+- The User must be in an active flashcard study session (UC7 – Study Flashcards).
 
-### 4.2 Card is Displayed in Front State
+### 4.2 Card Has Been Flipped
 
-- A flashcard must currently be displayed with its Term (front side) visible. The flip action is only available when the card is showing the Term side.
+- The flashcard must have been flipped (UC8 – Flip Card to View Explanation must have been completed) before the Mark Study Status controls are made available. The controls must not be accessible before the card is flipped.
 
 ### 4.3 User Authentication
 
@@ -143,24 +161,57 @@ This alternative flow describes keyboard-based card flipping for accessibility a
 
 ## 5. Postconditions
 
-### 5.1 Explanation Revealed
+### 5.1 Status Recorded
 
 After the use case is completed successfully:
 
-- The flashcard's **Explanation** (back side content) is visible to the User.
-- The **Mark Study Status** controls (UC10) are displayed, allowing the User to rate how well they knew the card.
-- The card's visual state is changed to "back/flipped" for the duration of the current card interaction.
+- The selected study status ("Know", "Don't Know", or "Review Later") is recorded for the current flashcard within the current study session.
+- The flashcard's overall study metadata (correct count, incorrect count, review interval, next review date) is updated accordingly.
+- The session progresses to the next flashcard.
 
-### 5.2 Card Returned to Front State
+### 5.2 Session Summary Impact
 
-If the User flips back to the front (Alternative Flow 2.2.2):
+At the end of the study session:
 
-- The Term is again visible.
-- The Mark Study Status controls are hidden.
-- The User can flip again to re-read the explanation.
+- The system's session summary (displayed after the last card in UC7) reflects the breakdown of cards by marked status (e.g., 15 "Know", 3 "Don't Know", 2 "Review Later").
+
+### 5.3 Long-term Study Progress
+
+After persistent saving:
+
+- The User's study progress for each flashcard is updated in the system, influencing the spaced repetition schedule for that card.
+- Cards consistently marked "Know" multiple times may be labeled as **"Mastered"** and deprioritized in future sessions.
 
 ---
 
 ## 6. Extension Points
 
-This use case has no extension points of its own. It is a component included by UC6 (Study Flashcards) and provides the core card-flip interaction that subsequently triggers UC10 (Mark Study Status).
+This use case has no extension points of its own. It is a mandatory component included by UC7 (Study Flashcards), and is triggered after UC8 (Flip Card to View Explanation) completes for each card during a study session.
+
+---
+
+## 7. UI Prototype
+
+### 7.1 Basic Flow — Status Buttons Displayed After Flip
+*Shows the three status buttons (✅ Know / 🔁 Review Later / ❌ Don't Know) visible after the card is flipped.*
+![Mark Status - Status Buttons](../../images/module_4/UC9_status_buttons.png)
+
+### 7.2 Basic Flow — "Know" Button Selected
+*Shows the Know button highlighted green after the User selects it.*
+![Mark Status - Know Selected](../../images/module_4/UC9_know_selected.png)
+
+### 7.3 Alternative Flow 2.2.1 — "Don't Know" Selected
+*Shows the Don't Know button highlighted red; card will be re-queued.*
+![Mark Status - Don't Know](../../images/module_4/UC9_dont_know.png)
+
+### 7.4 Alternative Flow 2.2.2 — "Review Later" Selected
+*Shows the Review Later button highlighted amber.*
+![Mark Status - Review Later](../../images/module_4/UC9_review_later.png)
+
+### 7.5 Alternative Flow 2.2.3 — Keyboard Shortcut Labels on Buttons
+*Shows keyboard shortcuts (1 / 2 / 3 or arrow keys) displayed on each status button.*
+![Mark Status - Keyboard Shortcuts](../../images/module_4/UC9_keyboard_shortcuts.png)
+
+### 7.6 Alternative Flow 2.2.4 — Undo Toast (Grace Period)
+*Shows the brief undo notification allowing the User to revert the last marked status.*
+![Mark Status - Undo Toast](../../images/module_4/UC9_undo_toast.png)
