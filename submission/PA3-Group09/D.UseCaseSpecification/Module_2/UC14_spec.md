@@ -42,6 +42,10 @@
 ### 1.1 Brief Description
 This use case presents a dedicated schedule widget on the main Self-Study Dashboard. Based on the Learner's committed study hours (UC13), the widget displays assigned daily lessons, calculated session durations, and real-time completion checklists for the current day.
 
+![Daily Study Widget Screen](../../Images/Module_2/UC14.png)
+
+*Figure 14.1: "Today's Study Plan" widget showing daily quota progress, assigned lessons (Theory/Practice), and a contextual study tip.*
+
 ---
 
 ## 2. Flow of Events

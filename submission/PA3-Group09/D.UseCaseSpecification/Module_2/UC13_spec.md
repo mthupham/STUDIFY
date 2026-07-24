@@ -42,6 +42,10 @@
 ### 1.1 Brief Description
 This use case allows the Learner to input or modify their committed daily/weekly English study time (e.g., 30 mins/day, 1.5 hours/day). The system uses this setting to dynamically calculate daily task targets on the dashboard widget (F2.5).
 
+![Set Study Commitment Hours Screen](../../Images/Module_2/UC13.png)
+
+*Figure 13.1: "Study Commitment" screen showing Casual / Steady / Intensive presets and a custom minutes-per-day input field.*
+
 ---
 
 ## 2. Flow of Events

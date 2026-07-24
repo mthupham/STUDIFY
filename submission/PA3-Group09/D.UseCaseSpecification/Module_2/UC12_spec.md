@@ -42,6 +42,10 @@
 ### 1.1 Brief Description
 This use case enables a Learner to take a comprehensive assessment test for a specific CEFR level (e.g., A1, A2). Scoring >= 90% on this test allows the Learner to skip directly to the next CEFR level without completing all individual lessons. It utilizes Multiple Choice (UC6) and Fill in the Blank (UC7) question formats.
 
+![Level Assessment Test Screen](../../Images/Module_2/UC12.png)
+
+*Figure 12.1: CEFR Level A1 Formal Assessment — "Reading Comprehension & Grammar" question 7 of 20, with countdown progress bar.*
+
 ---
 
 ## 2. Flow of Events

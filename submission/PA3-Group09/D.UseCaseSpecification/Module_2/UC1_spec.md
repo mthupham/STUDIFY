@@ -44,7 +44,7 @@
 
 This use case allows the Learner to view the overall learning roadmap of the Studify system, organized by proficiency levels (e.g., A1, A2, B1, etc.). The roadmap is displayed as a list or diagram of levels, allowing the Learner to understand the structure of the study program before diving into individual lessons. This use case includes the **View Lesson Details by Level** use case, which allows the Learner to view the detailed lessons contained within a selected level.
 
-![View Learning Roadmap Screen](./image.png)
+![alt text](../../Images/Module_2/UC1.png)
 
 ---
 

@@ -44,6 +44,10 @@
 ### 1.1 Brief Description
 This use case defines the presentation of the Learner's progress across their current learning level (e.g., Level A1 Roadmap). It is invoked as an included use case by UC9 (Track Learning Progress). Its primary responsibility is to render a visual progress bar and display the exact percentage of completion, which it retrieves by triggering UC11 (Calculate Completion %).
 
+![Roadmap Completion Progress Bar Screen](../../Images/Module_2/UC9_10.png)
+
+*Figure 10.1: Circular progress indicator (45% Total) with lessons-completed summary, part of the Student Dashboard rendered by this use case.*
+
 ---
 
 ## 2. Flow of Events

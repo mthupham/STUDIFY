@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft of use-case specification UC2 – View Lesson Details by Level | `<name>` |
+| 23/Jul/26 | 1.0 | Initial draft of use-case specification UC2 – View Lesson Details by Level | `Lê Kim Hằng` |
 
 ---
 
@@ -42,6 +42,10 @@
 ### 1.1 Brief Description
 
 This use case allows the Learner to view a detailed list of lessons belonging to a specific level selected from the Learning Roadmap. For each lesson, the system displays summary information such as the lesson name, overview content, and completion status (Not Started / In Progress / Completed). This use case is included by the **View Learning Roadmap** use case, and it in turn includes the **Study Lesson** use case when the Learner selects a specific lesson to begin studying.
+
+![View Lesson Details by Level Screen](../../Images/Module_2/UC2.png)
+
+*Figure 2.1: Lesson list for Level A1 (Beginner Core), showing per-lesson progress and overall level progress.*
 
 ---
 

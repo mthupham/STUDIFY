@@ -42,6 +42,10 @@
 ### 1.1 Brief Description
 This use case allows the Learner to monitor their overall educational journey within the Self-Study Dashboard. It aggregates data from completed lessons, study time, and quiz scores to provide a comprehensive view of the Learner's performance. It inherently relies on calculating and visualizing the roadmap completion percentage (UC10) and can be extended to view specific past quiz results (UC8).
 
+![Track Learning Progress Screen](../../Images/Module_2/UC9_10.png)
+
+*Figure 9.1: Student Dashboard showing overall completion percentage, current milestone, learning streak, and recent activity.*
+
 ---
 
 ## 2. Flow of Events
