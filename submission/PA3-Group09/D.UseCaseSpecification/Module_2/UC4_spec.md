@@ -43,6 +43,10 @@
 
 This use case allows the Learner to review the condensed theoretical content of a lesson before taking the associated quiz. The theory content is presented in a concise, easy-to-digest format (e.g., key points, short explanations, examples) rather than a long-form article, so the Learner can grasp the core concepts quickly. This use case is included by the **Study Lesson** use case and represents the first stage of the lesson study flow.
 
+![Study Theory Screen](../../Images/Module_2/UC4.png)
+
+*Figure 4.1: Condensed theory content ("Defining the Present Perfect"), Theory Part 1 of 3, with Previous/Next Concept navigation.*
+
 ---
 
 ## 2. Flow of Events

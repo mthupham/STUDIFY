@@ -45,6 +45,10 @@
 ### 1.1 Brief Description
 This use case presents the calculated results, score, and detailed feedback to the Learner after submitting either a lesson practice quiz (UC5) or a comprehensive Level Assessment Test (UC12). It evaluates compliance with pass/fail criteria and triggers progress updates (UC9) or level advancement (UC1).
 
+![Quiz Result Screen](../../Images/Module_2/UC8.png)
+
+*Figure 8.1: "Quiz Complete!" result screen showing final score, accuracy ratio, time expended, and detailed per-question feedback.*
+
 ---
 
 ## 2. Flow of Events

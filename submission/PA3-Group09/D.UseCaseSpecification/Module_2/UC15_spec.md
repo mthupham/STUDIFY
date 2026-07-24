@@ -42,6 +42,10 @@
 ### 1.1 Brief Description
 This is an internal system use case invoked by UC14 (View Daily Study Widget). It calculates how many lessons and practice exercises should be assigned to the Learner for today based on their committed study time (UC13) and estimated average lesson completion times.
 
+![Daily Tasks Schedule Calculation Screen](../../Images/Module_2/UC15.png)
+
+*Figure 15.1: Dashboard loading state — "Calculating your personalized daily schedule..." — representing this internal calculation use case in progress.*
+
 ---
 
 ## 2. Flow of Events

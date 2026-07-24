@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft of use-case specification UC1 – View Learning Roadmap | `<name>` |
+| 23/Jul/26 | 1.0 | Initial draft of use-case specification UC1 – View Learning Roadmap | `Lê Kim Hằng` |
 
 ---
 
@@ -38,9 +38,13 @@
 
 **View Learning Roadmap**
 
+
+
 ### 1.1 Brief Description
 
 This use case allows the Learner to view the overall learning roadmap of the Studify system, organized by proficiency levels (e.g., A1, A2, B1, etc.). The roadmap is displayed as a list or diagram of levels, allowing the Learner to understand the structure of the study program before diving into individual lessons. This use case includes the **View Lesson Details by Level** use case, which allows the Learner to view the detailed lessons contained within a selected level.
+
+![alt text](../../Images/Module_2/UC1.png)
 
 ---
 

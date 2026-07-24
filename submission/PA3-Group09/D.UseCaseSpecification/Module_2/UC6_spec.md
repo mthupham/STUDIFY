@@ -44,6 +44,10 @@
 ### 1.1 Brief Description
 This use case describes the specific interaction when a Learner encounters a Multiple Choice question during a quiz. As a specialization (generalization relationship) of UC5: Take Quiz, it details how the system presents a question with predefined options and how the Learner selects their intended answer(s). It supports both single-correct-answer (radio buttons) and multiple-correct-answer (checkboxes) formats.
 
+![Multiple Choice Question Screen](../../Images/Module_2/UC6.png)
+
+*Figure 6.1: Multiple Choice question (single-answer, radio button format) showing four answer options with a "Check Answer" action.*
+
 ---
 
 ## 2. Flow of Events

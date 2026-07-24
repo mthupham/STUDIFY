@@ -44,6 +44,10 @@
 ### 1.1 Brief Description
 This use case describes the specific interaction when a Learner encounters a Fill in the Blank question during a quiz. As a specialization (generalization relationship) of UC5: Take Quiz, it details how the system presents a sentence or paragraph containing missing words (blanks) and how the Learner utilizes text input fields to provide the missing information. 
 
+![Fill in the Blank Question Screen](../../Images/Module_2/UC7.png)
+
+*Figure 7.1: Fill in the Blank question showing a sentence with an embedded text input field for the missing verb form.*
+
 ---
 
 ## 2. Flow of Events

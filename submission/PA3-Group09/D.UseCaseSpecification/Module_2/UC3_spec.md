@@ -44,6 +44,10 @@
 
 This use case allows the Learner to study the content of a specific lesson that was selected from the lesson list of a level. The lesson study screen combines two main components: condensed theory content and a quiz to test comprehension. This use case is included by the **View Lesson Details by Level** use case, and it in turn includes two use cases: **Study Theory** (condensed content) and **Take Quiz**.
 
+![Study Lesson Screen](../../Images/Module_2/UC3.png)
+
+*Figure 3.1: Lesson study screen ("Mastering the Present Perfect") showing the Theory → Quiz → Result step indicator, condensed theory content, and an embedded concept-check question.*
+
 ---
 
 ## 2. Flow of Events
