@@ -1,5 +1,5 @@
-# STUDIFY
-## Use-Case Specification: Create Flashcard
+﻿# STUDIFY
+## Use-Case Specification: Add Tags
 
 **Version:** 1.0
 
@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| `23/07/2026` | `1.0` | Initial version of Create Flashcard Use-Case Specification | `Group 09` |
+| `23/07/2026` | `1.0` | Initial version of Add Tags Use-Case Specification | `Group 09` |
 
 ---
 
@@ -20,10 +20,10 @@
 2. [Flow of Events](#2-flow-of-events)
    1. [Basic Flow](#21-basic-flow)
    2. [Alternative Flows](#22-alternative-flows)
-      1. [User Chooses Manual Entry](#221-user-chooses-manual-entry)
-      2. [User Chooses to Create from Highlighted Text](#222-user-chooses-to-create-from-highlighted-text)
-      3. [Missing Required Fields](#223-missing-required-fields)
-      4. [User Cancels Flashcard Creation](#224-user-cancels-flashcard-creation)
+      1. [Tag Already Assigned to Flashcard](#221-tag-already-assigned-to-flashcard)
+      2. [Creating a New Tag](#222-creating-a-new-tag)
+      3. [User Removes a Tag](#223-user-removes-a-tag)
+      4. [Tag Name Exceeds Maximum Length](#224-tag-name-exceeds-maximum-length)
 3. [Special Requirements](#3-special-requirements)
 4. [Preconditions](#4-preconditions)
 5. [Postconditions](#5-postconditions)
@@ -35,7 +35,7 @@
 
 ### 1.1 Brief Description
 
-This use case describes the general process by which a User creates a new flashcard within the STUDIFY application. It serves as the core (base) use case for flashcard creation, encompassing the two primary creation methods: **manual entry** (UC1 – Enter Flashcard Manually) and **creation from highlighted text** (UC2 – Create Flashcard from Highlighted Text). Regardless of method, every flashcard consists of a **Term** (front side) and an **Explanation** (back side), and may optionally be assigned **Tags** (UC3 – Add Tags). The Create Flashcard use case includes UC8 (Write Explanation) as a mandatory step.
+This use case describes the process by which a User adds one or more tags to a flashcard. Tags are short, descriptive labels (e.g., "grammar", "IELTS", "verbs", "lesson-3") that allow the User to categorize and organize flashcards for easier retrieval and filtering. This use case is triggered during flashcard creation (UC2 – Enter Flashcard Manually, UC3 – Create Flashcard from Highlighted Text, UC1 – Create Flashcard) or when editing an existing flashcard. It extends those use cases.
 
 ---
 
@@ -43,73 +43,71 @@ This use case describes the general process by which a User creates a new flashc
 
 ### 2.1 Basic Flow
 
-This use case starts when the User selects the option to create a new flashcard from any accessible entry point in the application (e.g., the "+" button in the flashcard collection, the toolbar shortcut, or the contextual popup on highlighted text).
+This use case starts when the User interacts with the tag input component on the flashcard creation or editing interface.
 
-1. The system identifies that the User wishes to create a new flashcard.
+1. The system displays the tag input component on the flashcard form. The component shows a text input field and, if the User has previously created tags, a list of suggested existing tags.
 
-2. The system presents the User with the flashcard creation interface. The interface includes:
-   - A **Term** field (required) – the front face of the flashcard.
-   - An **Explanation** field (required) – the back face of the flashcard.
-   - A **Tags** input component (optional) – for organizing the flashcard.
+2. The User clicks on the tag input field and begins typing a tag name.
 
-3. The User provides the **Term** for the flashcard (via manual input or auto-population from highlighted text).
+3. The system performs a real-time search against the User's existing tag library and displays a dropdown list of matching tags as suggestions.
 
-4. The User provides the **Explanation** for the flashcard (refer to UC8 – Write Explanation). This is a mandatory included use case.
+4. The User selects a tag from the suggestion dropdown list.
 
-5. Optionally, the User adds one or more tags to the flashcard (refer to UC3 – Add Tags). This is an extending use case triggered at the User's discretion.
+5. The system attaches the selected tag to the current flashcard and displays it as a tag chip/badge within the tag input area.
 
-6. The User clicks the **Save** button to confirm creation.
+6. The User may repeat Steps 2–5 to add additional tags.
 
-7. The system validates that both the **Term** and **Explanation** fields are non-empty.
+7. When the User is satisfied with the assigned tags, they proceed with saving the flashcard (via the parent use case – UC1 Create Flashcard).
 
-8. The system creates and persists the new flashcard record in the database, associated with the authenticated User's account.
+8. The system saves the flashcard along with all associated tags.
 
-9. The system associates any provided tags with the new flashcard.
-
-10. The system displays a success notification (e.g., "Flashcard created successfully!").
-
-11. The use case ends successfully. The new flashcard is immediately available in the User's flashcard collection.
+9. The use case ends successfully.
 
 ---
 
 ### 2.2 Alternative Flows
 
-#### 2.2.1 User Chooses Manual Entry
+#### 2.2.1 Tag Already Assigned to Flashcard
 
-This alternative flow describes how the User creates a flashcard by manually typing both the Term and Explanation. This delegates to the full specification in UC1 (Enter Flashcard Manually).
+This alternative flow occurs when the User attempts to add a tag that is already assigned to the current flashcard.
 
-1. The User selects the **"Add Manually"** creation mode from the flashcard creation interface.
-2. The system presents the empty term and explanation fields.
-3. The User manually types the term and explanation.
-4. The flow resumes at Step 5 of the Basic Flow.
+1. The User types a tag name or selects from the dropdown.
+2. The system detects that the selected tag is already associated with the current flashcard.
+3. The system does not add a duplicate tag and displays a subtle notification (e.g., "This tag is already added").
+4. The tag input field is cleared and ready for a new entry.
+5. The flow returns to Step 2 of the Basic Flow.
 
-#### 2.2.2 User Chooses to Create from Highlighted Text
+#### 2.2.2 Creating a New Tag
 
-This alternative flow describes how the User creates a flashcard by highlighting text in the application. This delegates to the full specification in UC2 (Create Flashcard from Highlighted Text).
+This alternative flow occurs when the User types a tag name that does not exist in their tag library.
 
-1. The User selects text within the application and chooses the **"Create Flashcard"** contextual option.
-2. The system opens the flashcard creation panel with the **Term** field pre-populated with the selected text.
-3. The User reviews the pre-populated term and fills in the Explanation.
-4. The flow resumes at Step 5 of the Basic Flow.
+1. The User types a tag name in the tag input field.
+2. The system performs a search and finds no matching existing tags.
+3. The system displays an option in the dropdown such as: **'Create new tag: "[typed name]"'**.
+4. The User selects this option.
+5. The system creates a new tag with the typed name, adds it to the User's personal tag library, and immediately attaches it to the current flashcard.
+6. The new tag appears as a tag chip/badge on the flashcard form.
+7. The flow returns to Step 6 of the Basic Flow.
 
-#### 2.2.3 Missing Required Fields
+#### 2.2.3 User Removes a Tag
 
-This alternative flow occurs when the User attempts to save the flashcard without completing one or both required fields.
+This alternative flow occurs when the User wants to remove a tag that has already been added to the current flashcard form.
 
-1. The User clicks **Save** with the Term or Explanation field (or both) empty.
-2. The system highlights the empty field(s) in red and displays inline error messages.
-3. The form remains open with previously entered data preserved.
-4. The flow returns to Step 3 or Step 4 of the Basic Flow.
+1. The User clicks the **"×"** (remove) button on a tag chip/badge displayed in the tag input area.
+2. The system removes the tag from the current flashcard's tag list.
+3. The tag chip/badge disappears from the tag input area.
+4. The tag is NOT deleted from the User's global tag library; it is only disassociated from this flashcard.
+5. The flow returns to Step 6 of the Basic Flow (if the User continues editing tags).
 
-#### 2.2.4 User Cancels Flashcard Creation
+#### 2.2.4 Tag Name Exceeds Maximum Length
 
-This alternative flow occurs when the User decides not to proceed with creating the flashcard.
+This alternative flow occurs when the User types a tag name that is too long.
 
-1. The User clicks the **Cancel** button or closes the creation panel at any point before saving.
-2. The system prompts: "Are you sure you want to discard this flashcard?"
-3. If confirmed, the system discards all entered data and closes the creation interface.
-4. If not confirmed, the system returns the User to the creation form with data preserved.
-5. The use case ends without creating a flashcard.
+1. The User types a tag name that exceeds the maximum allowed character limit (e.g., 50 characters).
+2. The system prevents further input beyond the character limit.
+3. The system displays an inline warning: "Tag name must not exceed 50 characters."
+4. The User shortens the tag name.
+5. The flow returns to Step 3 of the Basic Flow.
 
 ---
 
@@ -117,24 +115,23 @@ This alternative flow occurs when the User decides not to proceed with creating 
 
 ### 3.1 Usability Requirements
 
-- The flashcard creation interface must be accessible from multiple entry points in the application (e.g., the navigation bar, the flashcard collection page, and contextual menus within content pages).
-- The creation form must be clean, uncluttered, and focused on the three primary elements: Term, Explanation, and Tags.
-- A character count indicator should be displayed for both the Term and Explanation fields.
+- The tag input component must support a typeahead/autocomplete mechanism that filters existing tags in real time as the User types.
+- Tags must be displayed as visually distinct chips/badges within the input area, with a clear remove button on each chip.
+- The tag input must accept tag creation on pressing the **Enter** key or **comma** key in addition to clicking the dropdown option.
 
 ### 3.2 Performance Requirements
 
-- The flashcard creation interface must render within 500 milliseconds.
-- Flashcard save operations must complete and confirm within 1 second under normal network conditions.
+- Tag suggestions must appear within 200 milliseconds of the User beginning to type.
+- Tag assignment and removal actions must be reflected in the UI instantly (optimistic update).
 
-### 3.3 Data Integrity Requirements
+### 3.3 Data Consistency Requirements
 
-- Saved flashcards must be immediately consistent across all views (e.g., the collection page, study session, and search results).
-- The system must ensure no data loss occurs if a network interruption happens during save. The system should queue and retry the save operation.
+- Tag names must be case-insensitive for duplicate detection (e.g., "Grammar" and "grammar" are treated as the same tag).
+- Tags are personal to each User; one User's tags are not shared with or visible to other Users.
 
-### 3.4 Accessibility Requirements
+### 3.4 Scalability Requirements
 
-- All form fields must be properly labeled for screen reader compatibility.
-- Keyboard navigation must be fully supported throughout the creation form.
+- The system must support Users with large tag libraries (e.g., 500+ tags) without degrading the autocomplete performance.
 
 ---
 
@@ -144,47 +141,68 @@ This alternative flow occurs when the User decides not to proceed with creating 
 
 - The User must be authenticated (logged in) to the STUDIFY system.
 
-### 4.2 Flashcard Module Availability
+### 4.2 Flashcard Form is Active
 
-- The flashcard creation module must be operational and accessible to the User.
+- The User must be on the flashcard creation or editing interface where the tag input component is displayed.
+
+### 4.3 Parent Use Case is Active
+
+- This use case is only reachable from within the context of a parent use case: UC2 (Enter Flashcard Manually), UC3 (Create Flashcard from Highlighted Text), or UC1 (Create Flashcard).
 
 ---
 
 ## 5. Postconditions
 
-### 5.1 Successful Flashcard Creation
+### 5.1 Tags Successfully Assigned
 
 After the use case is completed successfully:
 
-- A new flashcard record is created and durably stored in the system.
-- The flashcard is associated with the authenticated User's account.
-- The flashcard's Term and Explanation are stored as provided by the User.
-- Any assigned tags are associated with the flashcard and reflected in the User's tag library.
-- The flashcard is immediately visible and available in the User's collection, study sessions, and search results.
+- The selected tag(s) are associated with the flashcard.
+- Any newly created tags are added to the User's personal tag library.
+- The tag associations are persisted when the parent flashcard is saved.
 
-### 5.2 Cancelled Creation
+### 5.2 No Tags Added
 
-If the User cancels:
+If the User skips the tag input:
 
-- No new flashcard is created.
-- The User's flashcard collection and tag library remain unchanged.
+- The flashcard is saved with no tags assigned.
+- The User's existing tag library remains unchanged.
+
+### 5.3 Tag Removed
+
+If the User removes a previously added tag:
+
+- The tag is no longer associated with the current flashcard.
+- The tag continues to exist in the User's personal tag library for future use.
 
 ---
 
 ## 6. Extension Points
 
-### 6.1 Add Tags
+### 6.1 Filter Flashcards by Tag
 
-This use case is extended by UC3 (Add Tags) when, during Step 5 of the Basic Flow, the User chooses to assign tags to the flashcard being created.
+Tags created and assigned in this use case are subsequently used in UC6 (Filter Flashcards by Tag), where the User can filter their flashcard collection by one or more tags.
 
-### 6.2 Write Explanation
+---
 
-This use case includes UC8 (Write Explanation) as a mandatory step (Step 4 of the Basic Flow). The User must provide an explanation for the flashcard term before saving.
+## 7. UI Prototype
 
-### 6.3 Enter Flashcard Manually
+### 7.1 Basic Flow — Tag Input Component (Empty, Ready for Input)
+*Shows the tag input field in its empty initial state with placeholder text.*
+![Add Tags - Empty Input](../../images/module_4/UC5_tag_input_empty.png)
 
-UC1 (Enter Flashcard Manually) is a specialization of this use case, triggered when the User chooses to type the Term directly.
+### 7.2 Basic Flow — Autocomplete Dropdown (Existing Tags Suggested)
+*Shows the dropdown listing matching existing tags as the User types.*
+![Add Tags - Autocomplete Dropdown](../../images/module_4/UC5_autocomplete.png)
 
-### 6.4 Create Flashcard from Highlighted Text
+### 7.3 Basic Flow — Tags Assigned (Displayed as Chips/Badges)
+*Shows multiple tags added and rendered as chips with × remove buttons.*
+![Add Tags - Tags Applied](../../images/module_4/UC5_tags_applied.png)
 
-UC2 (Create Flashcard from Highlighted Text) is a specialization of this use case, triggered when the User highlights text in the application to auto-populate the Term field.
+### 7.4 Alternative Flow 2.2.1 — Duplicate Tag Notification
+*Shows the subtle inline message when the User tries to add an already-assigned tag.*
+![Add Tags - Duplicate Tag](../../images/module_4/UC5_duplicate_tag.png)
+
+### 7.5 Alternative Flow 2.2.4 — Tag Name Too Long Warning
+*Shows the inline warning when the typed tag name exceeds the 50-character limit.*
+![Add Tags - Tag Too Long](../../images/module_4/UC5_tag_too_long.png)
