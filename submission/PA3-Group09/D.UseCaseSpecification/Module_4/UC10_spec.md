@@ -1,5 +1,5 @@
-# STUDIFY
-## Use-Case Specification: Mark Study Status
+﻿# STUDIFY
+## Use-Case Specification: Use Pomodoro Timer
 
 **Version:** 1.0
 
@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| `23/07/2026` | `1.0` | Initial version of Mark Study Status Use-Case Specification | `Group 09` |
+| `23/07/2026` | `1.0` | Initial version of Use Pomodoro Timer Use-Case Specification | `Group 09` |
 
 ---
 
@@ -20,10 +20,10 @@
 2. [Flow of Events](#2-flow-of-events)
    1. [Basic Flow](#21-basic-flow)
    2. [Alternative Flows](#22-alternative-flows)
-      1. [User Marks "Don't Know"](#221-user-marks-dont-know)
-      2. [User Marks "Review Later"](#222-user-marks-review-later)
-      3. [User Uses Keyboard Shortcut to Mark Status](#223-user-uses-keyboard-shortcut-to-mark-status)
-      4. [User Changes a Previously Marked Status](#224-user-changes-a-previously-marked-status)
+      1. [User Pauses the Timer](#221-user-pauses-the-timer)
+      2. [User Resets the Timer](#222-user-resets-the-timer)
+      3. [User Customizes Timer Settings](#223-user-customizes-timer-settings)
+      4. [User Skips a Break](#224-user-skips-a-break)
 3. [Special Requirements](#3-special-requirements)
 4. [Preconditions](#4-preconditions)
 5. [Postconditions](#5-postconditions)
@@ -35,7 +35,7 @@
 
 ### 1.1 Brief Description
 
-This use case describes the process by which a User self-assesses and records their knowledge of a flashcard after reviewing it during a study session. After flipping a card to view its explanation (UC9 – Flip Card to View Explanation), the User rates how well they knew the answer by selecting a **study status** (e.g., "Know", "Don't Know", "Review Later"). The system records this rating and uses it to update the flashcard's study progress, which may inform a spaced repetition algorithm to schedule future reviews. This use case is included by UC6 (Study Flashcards).
+This use case describes the process by which a User activates and interacts with the Pomodoro Timer, a productivity tool integrated into the STUDIFY application. The Pomodoro Technique divides study time into focused work intervals (typically 25 minutes) called "Pomodoros," separated by short breaks (typically 5 minutes). After a set number of Pomodoros, the User takes a longer break (typically 15–30 minutes). The timer helps the User maintain focus during flashcard creation and study sessions, and is available independently as a standalone utility.
 
 ---
 
@@ -43,78 +43,90 @@ This use case describes the process by which a User self-assesses and records th
 
 ### 2.1 Basic Flow
 
-This use case starts immediately after the User has flipped a flashcard to view its Explanation during a study session (upon completion of UC9 – Flip Card to View Explanation).
+This use case starts when the User navigates to or opens the Pomodoro Timer widget/panel within the STUDIFY application.
 
-1. The system displays the **Mark Study Status** controls below or alongside the flipped flashcard. The controls consist of three buttons:
-   - ✅ **"Know"** (green): The User knew the answer confidently.
-   - ❌ **"Don't Know"** (red): The User did not know the answer.
-   - 🔁 **"Review Later"** (yellow/amber): The User partially knew the answer or wants to review again soon.
+1. The system displays the Pomodoro Timer interface, showing:
+   - The current phase label (e.g., **"Focus"** or **"Short Break"** or **"Long Break"**).
+   - A countdown display initialized to the configured duration (default: 25:00 for Focus).
+   - A **Start** button.
+   - A settings/configuration icon.
+   - A Pomodoro counter (e.g., "Pomodoro 1 / 4").
 
-2. The User selects **"Know"** to indicate they knew the term and its explanation confidently.
+2. The User clicks the **Start** button.
 
-3. The system records the **"Know"** status for this flashcard in the current study session.
+3. The system starts the countdown timer, decrementing one second at a time, and the Start button changes to a **Pause** button.
 
-4. The system updates the flashcard's study metadata:
-   - Increments the "correct" count for this card.
-   - Schedules the next review date according to the spaced repetition algorithm (the next review is set further in the future for well-known cards).
-   - Marks the card as "mastered" if it has been marked "Know" a sufficient number of consecutive times (configurable threshold).
+4. The system continues counting down while the User studies (e.g., reviews flashcards, creates cards).
 
-5. The system advances to the next flashcard in the study session deck (returning control to UC6 – Study Flashcards, Step 8).
+5. When the Focus countdown reaches 00:00:
+   - The system plays an audio alert and/or displays a visual notification: "Focus session complete! Time for a break."
+   - The system increments the Pomodoro counter (e.g., "Pomodoro 1 completed").
+   - The system automatically transitions to the **Short Break** phase and initializes the countdown to the configured break duration (default: 5:00).
 
-6. The use case ends for the current card.
+6. The system starts the Short Break countdown automatically (or waits for the User to click Start, depending on settings).
+
+7. When the Short Break countdown reaches 00:00:
+   - The system plays an audio alert: "Break over! Ready to focus again?"
+   - The system transitions back to the **Focus** phase.
+
+8. The User repeats Steps 2–7 for the configured number of Pomodoros (default: 4).
+
+9. After the 4th Pomodoro, the system transitions to a **Long Break** phase (default: 15:00) instead of a Short Break.
+
+10. After the Long Break ends, the system resets the Pomodoro counter to 1 and returns to the Focus phase, ready for a new cycle.
+
+11. The use case ends when the User stops or closes the timer.
 
 ---
 
 ### 2.2 Alternative Flows
 
-#### 2.2.1 User Marks "Don't Know"
+#### 2.2.1 User Pauses the Timer
 
-This alternative flow describes the behavior when the User did not know the flashcard's term or explanation.
+This alternative flow occurs when the User needs to temporarily suspend the countdown.
 
-1. After viewing the Explanation (Step 1 of the Basic Flow), the User clicks the ❌ **"Don't Know"** button.
-2. The system records the **"Don't Know"** status for this flashcard.
-3. The system updates the flashcard's study metadata:
-   - Increments the "incorrect" count for this card.
-   - Resets or shortens the spaced repetition interval, scheduling the card for an earlier re-review (e.g., within the same session or the next day).
-   - Adds this card to the "Difficult" or "Re-review" pile of the current session.
-4. The system may re-insert this card into the session queue (e.g., it will appear again near the end of the current session).
-5. The system advances to the next new card in the deck.
-6. The flow returns to Step 5 of the Basic Flow (advance to next card).
+1. While the timer is running, the User clicks the **Pause** button.
+2. The system halts the countdown and preserves the remaining time.
+3. The Pause button changes to a **Resume** button.
+4. When the User clicks **Resume**, the system restarts the countdown from the preserved time.
+5. The flow resumes at Step 4 of the Basic Flow.
 
-#### 2.2.2 User Marks "Review Later"
+#### 2.2.2 User Resets the Timer
 
-This alternative flow describes the behavior when the User partially knew the answer or wants a second look.
+This alternative flow occurs when the User wants to restart the current phase from the beginning.
 
-1. After viewing the Explanation (Step 1 of the Basic Flow), the User clicks the 🔁 **"Review Later"** button.
-2. The system records the **"Review Later"** status for this flashcard.
-3. The system updates the flashcard's study metadata:
-   - Does not increment the correct count.
-   - Schedules the card for an intermediate re-review date (shorter interval than "Know" but longer than "Don't Know").
-   - Adds the card to a secondary review queue within the same session (it will reappear once near the end).
-4. The system advances to the next card in the primary deck.
-5. The flow returns to Step 5 of the Basic Flow (advance to next card).
+1. While the timer is running or paused, the User clicks the **Reset** button.
+2. The system displays a confirmation: "Reset the current timer? Your current Pomodoro progress will not be counted."
+3. If confirmed, the system resets the countdown to the full duration of the current phase (e.g., back to 25:00 for Focus) and stops the timer.
+4. If not confirmed, the system returns to the timer's current state.
+5. The flow returns to Step 2 of the Basic Flow (waiting for User to click Start).
 
-#### 2.2.3 User Uses Keyboard Shortcut to Mark Status
+#### 2.2.3 User Customizes Timer Settings
 
-This alternative flow describes keyboard-based status marking for accessibility and efficient study.
+This alternative flow occurs when the User wants to change the default Pomodoro durations.
 
-1. After the card has been flipped (UC9 completed), the User presses one of the designated keyboard shortcuts:
-   - **Key "1"** or **Arrow Right** → Marks **"Know"**.
-   - **Key "2"** or **Arrow Down** → Marks **"Review Later"**.
-   - **Key "3"** or **Arrow Left** → Marks **"Don't Know"**.
-2. The system recognizes the keypress and processes it as the equivalent button click.
-3. The system records the status and the flow continues as per the corresponding Basic or Alternative flow above.
+1. The User clicks the **Settings** icon on the Pomodoro Timer interface.
+2. The system displays a settings panel with configurable fields:
+   - **Focus Duration** (default: 25 minutes; range: 5–60 minutes).
+   - **Short Break Duration** (default: 5 minutes; range: 1–15 minutes).
+   - **Long Break Duration** (default: 15 minutes; range: 10–60 minutes).
+   - **Pomodoros before Long Break** (default: 4; range: 2–8).
+   - **Auto-start breaks** toggle (on/off).
+   - **Notification sound** toggle (on/off).
+3. The User modifies the desired settings and clicks **Save**.
+4. The system saves the settings and applies them from the next timer cycle.
+5. The system closes the settings panel and returns to the timer interface.
+6. If the timer is currently running, the new settings take effect at the start of the next phase.
+7. The flow resumes at the current step of the Basic Flow.
 
-#### 2.2.4 User Changes a Previously Marked Status
+#### 2.2.4 User Skips a Break
 
-This alternative flow occurs within a session when the User wants to change the status they marked for the most recently reviewed card.
+This alternative flow occurs when the User wants to skip a scheduled break and return to focusing immediately.
 
-1. After marking a status and being shown the next card, the User clicks an **"Undo"** button (if provided) within a 3-second grace period.
-2. The system cancels the advancement and returns the User to the previously marked card.
-3. The system un-records the previously selected status.
-4. The system re-displays the Mark Study Status controls for the returned card.
-5. The User selects a new status.
-6. The flow resumes at Step 3 of the Basic Flow (or corresponding alternative flow) with the new status.
+1. During a Short Break or Long Break phase, the User clicks the **"Skip Break"** button.
+2. The system immediately ends the break countdown.
+3. The system transitions to the next **Focus** phase and initializes the countdown.
+4. The flow resumes at Step 3 of the Basic Flow.
 
 ---
 
@@ -122,68 +134,95 @@ This alternative flow occurs within a session when the User wants to change the 
 
 ### 3.1 Usability Requirements
 
-- The three status buttons must be large, clearly labeled, and color-coded to minimize the cognitive load during a study session.
-- The buttons must only appear after the card has been flipped (i.e., after UC9 is triggered), to prevent premature marking without reviewing the explanation.
-- The current card's marked status must be visually reflected immediately upon selection (e.g., a brief highlight/animation on the chosen button).
+- The Pomodoro Timer must be accessible as a floating widget or side panel so it does not obstruct the main study content.
+- The current phase (Focus, Short Break, Long Break) must be clearly communicated through distinct color schemes (e.g., red for Focus, green for Break).
+- The countdown must be clearly legible at a glance (large, high-contrast font).
+- The timer must be usable across the application without requiring the User to navigate away from their current task.
 
 ### 3.2 Performance Requirements
 
-- The status must be recorded and the next card must be loaded within 300 milliseconds of the User pressing a status button.
-- Study status updates must be saved to the backend asynchronously (non-blocking) to maintain a smooth session experience.
+- The timer countdown must be accurate to within ±1 second over a 25-minute session.
+- The timer must continue functioning if the User switches between tabs or minimizes the browser window (using Web Workers or equivalent background execution).
 
-### 3.3 Spaced Repetition Algorithm Requirements
+### 3.3 Notification Requirements
 
-- The system must implement a spaced repetition scheduling algorithm (e.g., SM-2 or a simplified variant) based on the User's marked status history.
-- The next review date for each card must be calculated and stored after each status marking.
-- Cards marked "Don't Know" must be prioritized in future sessions.
+- The system must support browser-level push notifications for timer completions, so the User is alerted even if the STUDIFY tab is not in focus.
+- Audio alerts must be accompanied by a visual notification for users with hearing impairments.
+- All notification sounds must be opt-in (disabled by default with the option to enable).
 
-### 3.4 Data Persistence Requirements
+### 3.4 Persistence Requirements
 
-- All study status records must be durable: once a status is recorded and the User advances, the data must not be lost even in the event of a network interruption (use local storage as a fallback).
+- The User's timer settings (Focus duration, break durations, preferences) must be persisted across sessions.
+- If the User closes the browser while a timer is running, the system should resume from the correct phase upon return, if technically feasible.
 
 ---
 
 ## 4. Preconditions
 
-### 4.1 Active Study Session
-
-- The User must be in an active flashcard study session (UC6 – Study Flashcards).
-
-### 4.2 Card Has Been Flipped
-
-- The flashcard must have been flipped (UC9 – Flip Card to View Explanation must have been completed) before the Mark Study Status controls are made available. The controls must not be accessible before the card is flipped.
-
-### 4.3 User Authentication
+### 4.1 User Authentication
 
 - The User must be authenticated (logged in) to the STUDIFY system.
+
+### 4.2 Pomodoro Module Availability
+
+- The Pomodoro Timer feature must be enabled and accessible in the User's current application context.
 
 ---
 
 ## 5. Postconditions
 
-### 5.1 Status Recorded
+### 5.1 Completed Pomodoro Cycle
 
-After the use case is completed successfully:
+After a full Pomodoro cycle is completed:
 
-- The selected study status ("Know", "Don't Know", or "Review Later") is recorded for the current flashcard within the current study session.
-- The flashcard's overall study metadata (correct count, incorrect count, review interval, next review date) is updated accordingly.
-- The session progresses to the next flashcard.
+- The User's Pomodoro session count for the day is incremented and recorded (for study statistics/gamification purposes).
+- The system logs the total focus time accumulated during the session.
 
-### 5.2 Session Summary Impact
+### 5.2 Timer Stopped Mid-Session
 
-At the end of the study session:
+If the User stops the timer before completing a full Pomodoro:
 
-- The system's session summary (displayed after the last card in UC6) reflects the breakdown of cards by marked status (e.g., 15 "Know", 3 "Don't Know", 2 "Review Later").
+- The incomplete Pomodoro is not counted.
+- Any accumulated focus time during the current (incomplete) Pomodoro may still be logged as partial study time.
 
-### 5.3 Long-term Study Progress
+### 5.3 Settings Updated
 
-After persistent saving:
+If the User modified timer settings during the session:
 
-- The User's study progress for each flashcard is updated in the system, influencing the spaced repetition schedule for that card.
-- Cards consistently marked "Know" multiple times may be labeled as **"Mastered"** and deprioritized in future sessions.
+- The new settings are saved and will be applied to all future Pomodoro sessions.
 
 ---
 
 ## 6. Extension Points
 
-This use case has no extension points of its own. It is a mandatory component included by UC6 (Study Flashcards), and is triggered after UC9 (Flip Card to View Explanation) completes for each card during a study session.
+### 6.1 Browser Notification
+
+The browser notification system is triggered at the end of each phase (Focus or Break) when the countdown reaches zero, alerting the User even when they are not actively looking at the STUDIFY application.
+
+---
+
+## 7. UI Prototype
+
+### 7.1 Basic Flow — Timer in Focus Phase (Running)
+*Shows the Pomodoro widget in Focus phase with countdown running, Pause button, and red color scheme.*
+![Pomodoro - Focus Running](../../images/module_4/UC10_focus_running.png)
+
+### 7.2 Basic Flow — Timer in Short Break Phase
+*Shows the timer transitioned to Short Break phase with green color scheme.*
+![Pomodoro - Short Break](../../images/module_4/UC10_short_break.png)
+
+### 7.3 Basic Flow — Timer in Long Break Phase
+*Shows the Long Break phase after completing the configured number of Pomodoros.*
+![Pomodoro - Long Break](../../images/module_4/UC10_long_break.png)
+
+### 7.4 Alternative Flow 2.2.1 — Timer Paused (Resume Button Shown)
+*Shows the timer frozen mid-countdown with the Resume button replacing Pause.*
+![Pomodoro - Paused](../../images/module_4/UC10_paused.png)
+
+### 7.5 Alternative Flow 2.2.2 — Reset Confirmation Dialog
+*Shows the confirmation modal asking the User to confirm resetting the current Pomodoro.*
+![Pomodoro - Reset Dialog](../../images/module_4/UC10_reset_dialog.png)
+
+### 7.6 Alternative Flow 2.2.3 — Settings Panel Open
+*Shows the settings panel with Focus/Break duration fields and toggle options.*
+![Pomodoro - Settings Panel](../../images/module_4/UC10_settings_panel.png)
