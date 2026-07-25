@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft of use-case specification UC4 – Study Theory | `<name>` |
+| 23/Jul/26 | 1.0 | Initial draft of use-case specification UC4 – Study Theory |`Lê Kim Hằng` |
 
 ---
 
@@ -66,6 +66,8 @@ This use case begins immediately after the system displays the lesson study scre
 
 #### 2.2.1 Empty Theory Content
 
+![alt text](../../Images/Module_2/UC4_empty_theory_content.png)
+
 *Trigger condition: The selected lesson has no theory content configured (data not yet entered).*
 
 1. At step 1 of the Basic Flow, the system detects that no theory content exists for the lesson.
@@ -74,6 +76,8 @@ This use case begins immediately after the system displays the lesson study scre
 4. The use case ends.
 
 #### 2.2.2 Load Failure / Network Error
+
+![alt text](../../Images/Module_2/UC1_connection_lost.png)
 
 *Trigger condition: An error occurs while retrieving theory content from the server (network error, server 500 error, timeout).*
 
@@ -84,6 +88,8 @@ This use case begins immediately after the system displays the lesson study scre
 5. If the Learner takes no action, the use case ends.
 
 #### 2.2.3 Learner Revisits Theory Content
+
+![alt text](../../Images/Module_2/UC4_revisit_lessson.png)
 
 *Trigger condition: The Learner has already completed the quiz for this lesson previously and re-opens the lesson to review the theory content again.*
 

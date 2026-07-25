@@ -9,9 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC8 | System Analyst |
-| 23/Jul/26 | 1.1 | Updated to handle Level Assessment results and Level Advancement rules (F2.2) | System Analyst |
-
+| 23/Jul/26 | 1.1 | Updated to handle Level Assessment results and Level Advancement rules (F2.2) | `Lê Kim Hằng` |
 ---
 
 ### Table of Contents
@@ -70,6 +68,10 @@ If the submission originates from UC12 (Level Assessment Test) and the score is 
 3. The flow proceeds to step 4 of the Basic Flow.
 
 #### 2.2.2 Level Assessment Failed (< 90%)
+
+![alt text](../../Images/Module_2/UC8_assessment_failed.png)
+
+
 If the submission originates from UC12 and the score is below 90%:
 1. The system displays a message: "Score below 90%. Level advancement requires 90%+ on this test or 100% roadmap completion."
 2. The system offers options to "Retake Assessment" or "Review Missing Lessons".

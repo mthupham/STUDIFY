@@ -9,8 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC12 (F2.2 Level Test requirement) | System Analyst |
-
+| 23/Jul/26 | 1.0 | Initial draft for UC12 (F2.2 Level Test requirement) | `Lê Kim Hằng` |
 ---
 
 ### Table of Contents
@@ -61,6 +60,9 @@ This use case enables a Learner to take a comprehensive assessment test for a sp
 ### 2.2 Alternative Flows
 
 #### 2.2.1 Test Timer Expiration
+
+![alt text](../../Images/Module_2/UC12_timer_expiration.png)
+
 If the allocated time for the assessment expires before the Learner clicks "Submit Assessment":
 1. The system automatically locks the test interface.
 2. The system force-submits all currently answered questions.

@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC7: Fill in the Blank | System Analyst |
+| 23/Jul/26 | 1.0 | Initial draft for UC7: Fill in the Blank | `Lê Kim Hằng` |
 
 ---
 

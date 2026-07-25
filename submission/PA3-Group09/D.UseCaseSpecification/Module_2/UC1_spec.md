@@ -66,6 +66,8 @@ This use case begins when the Learner navigates to the **Roadmap** screen from t
 
 #### 2.2.1 Empty Roadmap
 
+![alt text](../../Images/Module_2/UC1_empty_roadmap.png)
+
 *Trigger condition: The system has no level/roadmap data configured yet (e.g., newly deployed system, data not yet populated).*
 
 1. At step 3 of the Basic Flow, the system detects that no levels exist in the database.
@@ -73,6 +75,8 @@ This use case begins when the Learner navigates to the **Roadmap** screen from t
 3. The use case ends.
 
 #### 2.2.2 Load Failure / Network Error
+
+![alt text](../../Images/Module_2/UC1_connection_lost.png)
 
 *Trigger condition: An error occurs while querying roadmap data from the server (network error, server 500 error, timeout).*
 
