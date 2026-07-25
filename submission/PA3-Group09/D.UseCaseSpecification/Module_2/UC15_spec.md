@@ -9,9 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC15 (F2.5 Calculation Logic) | System Analyst |
-
----
+| 23/Jul/26 | 1.0 | Initial draft for UC15 (F2.5 Calculation Logic) | `Lê Kim Hằng` |
 
 ### Table of Contents
 
@@ -63,6 +61,9 @@ This is an internal system use case invoked by UC14 (View Daily Study Widget). I
 ### 2.2 Alternative Flows
 
 #### 2.2.1 All Level Tasks Completed
+
+![alt text](../../Images/Module_2/UC15_all_level_tasks_completed.png)
+
 If the system detects that all lessons in the active level roadmap are already completed:
 1. The system sets the daily task payload to recommend taking **UC12: Take Level Assessment Test** or advancing to the next level on UC1.
 2. The system returns this recommendation payload to UC14.

@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC9: Track Learning Progress | System Analyst |
+| 23/Jul/26 | 1.0 | Initial draft for UC9: Track Learning Progress | `Lê Kim Hằng` |
 
 ---
 
@@ -61,6 +61,10 @@ This use case allows the Learner to monitor their overall educational journey wi
 ### 2.2 Alternative Flows
 
 #### 2.2.1 New Learner (No Data)
+
+![alt text](../../Images/Module_2/UC9_new_learner.png)
+
+
 If the system detects that the Learner has not yet started any lessons or completed any quizzes:
 1. Instead of displaying empty charts or "0%" metrics, the system displays a welcoming "Get Started" state.
 2. The system prompts the Learner with a call-to-action button to navigate to the Learning Roadmap (UC1) to begin their first lesson.
