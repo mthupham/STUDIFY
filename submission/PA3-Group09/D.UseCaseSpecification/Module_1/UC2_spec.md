@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft | Khanh Linh |
+| 23/Jul/26 | 1.0 | Initial version of UC2 | Khanh Linh |
 
 ---
 
@@ -63,7 +63,7 @@ At step 4 of the Basic Flow, if the submitted Email/Username or Password does no
 2. The system does not disclose whether the email/username exists or the password is wrong, for security reasons.
 3. The Registered User may retry entering their credentials, or select "Forgot Password" to initiate password recovery.
 4. If retrying, the flow resumes at step 3 of the Basic Flow.
-
+![Giao diện UC2](../../Images/Module_1/UC2b.png)
 #### 2.2.2 Remember Login Selected
 
 At step 5 of the Basic Flow, if the "Remember Login" checkbox was selected:
@@ -71,7 +71,7 @@ At step 5 of the Basic Flow, if the "Remember Login" checkbox was selected:
 1. The system generates a long-lived authentication token and stores it securely on the Registered User's device (e.g., as an HTTP-only cookie).
 2. On subsequent visits, the system automatically authenticates the Registered User using this token, without requiring the login form to be re-submitted, until the token expires or is revoked.
 3. The flow resumes at step 6 of the Basic Flow.
-
+![Giao diện UC2](../../Images/Module_1/UC2c.png)
 ---
 
 ## 3. Special Requirements

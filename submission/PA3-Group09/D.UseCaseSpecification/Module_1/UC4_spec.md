@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft | Khanh Linh |
+| 23/Jul/26 | 1.0 | Initial version of UC4 | Khanh Linh |
 
 ---
 
@@ -64,7 +64,7 @@ At step 4 of the Basic Flow, if the new username submitted by the Registered Use
 2. The system keeps the form populated with the Registered User's attempted input so they do not need to re-enter it.
 3. The Registered User modifies the username and resubmits.
 4. The flow resumes at step 4 of the Basic Flow.
-
+![Giao diện UC4](../../Images/Module_1/UC4b.png)
 #### 2.2.2 Invalid Input Format
 
 At step 4 of the Basic Flow, if the new username does not meet formatting requirements (e.g., contains invalid characters, is too short, or too long):
@@ -72,7 +72,7 @@ At step 4 of the Basic Flow, if the new username does not meet formatting requir
 1. The system displays a validation error message specifying the formatting rule that was violated.
 2. The Registered User corrects the input and resubmits.
 3. The flow resumes at step 4 of the Basic Flow.
-
+![Giao diện UC4](../../Images/Module_1/UC4c.png)
 #### 2.2.3 User Cancels Update
 
 At step 3 of the Basic Flow, if the Registered User selects "Cancel" instead of "Save Changes":
@@ -80,7 +80,7 @@ At step 3 of the Basic Flow, if the Registered User selects "Cancel" instead of 
 1. The system discards any unsaved changes made in the form.
 2. The system returns the Registered User to the previous view (e.g., dashboard) without modifying their stored information.
 3. The use case ends without any changes being made.
-
+![Giao diện UC4](../../Images/Module_1/UC4d.png)
 ---
 
 ## 3. Special Requirements

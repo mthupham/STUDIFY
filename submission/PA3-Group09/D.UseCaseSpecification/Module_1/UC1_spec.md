@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft | Khanh Linh |
+| 23/Jul/26 | 1.0 | Initial version of UC1 | Khanh Linh |
 
 ---
 
@@ -64,7 +64,7 @@ At step 4 of the Basic Flow, if the system determines that the submitted email o
 2. The system keeps the previously entered form values (except password) so the Guest does not have to re-enter everything.
 3. The Guest updates the conflicting field and resubmits.
 4. The flow resumes at step 4 of the Basic Flow.
-
+![Giao diện UC1](../../Images/Module_1/UC1b.png)
 #### 2.2.2 Invalid Input Format
 
 At step 4 of the Basic Flow, if the email format is invalid, or the password does not meet the minimum security requirements:
@@ -72,7 +72,7 @@ At step 4 of the Basic Flow, if the email format is invalid, or the password doe
 1. The system displays a validation error message specific to the field(s) that failed (e.g., "Password must be at least 8 characters").
 2. The Guest corrects the invalid field(s) and resubmits.
 3. The flow resumes at step 4 of the Basic Flow.
-
+![Giao diện UC1](../../Images/Module_1/UC1c.png)
 ---
 
 ## 3. Special Requirements
