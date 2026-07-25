@@ -22,6 +22,7 @@ interface AuthState {
   loginAction: (credentials: { email: string; password: string }) => Promise<boolean>;
   setAuthSession: (user: User, token: string) => void;
   logoutAction: () => void;
+  markOnboardingCompleted: () => void; 
 }
 
 const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
@@ -33,7 +34,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   token: localStorage.getItem('accessToken') || null,
   isLoading: false,
   error: null,
-  
+
   loginAction: async (credentials) => {
     set({ isLoading: true, error: null });
     try {
@@ -66,5 +67,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user: null, token: null });
   },
 
-  
+  markOnboardingCompleted: () => {
+    set((state) => {
+      if (!state.user) return state;
+      const updatedUser = { ...state.user, hasCompletedOnboarding: true };
+      localStorage.setItem('authUser', JSON.stringify(updatedUser));
+      return { user: updatedUser };
+    });
+  },
 }));

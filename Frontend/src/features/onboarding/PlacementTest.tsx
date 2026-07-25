@@ -83,6 +83,7 @@ export default function PlacementTest({ onComplete, selectedPace }: PlacementTes
         { answers },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      useAuthStore.getState().markOnboardingCompleted();
       if (onComplete) {
         onComplete(data);
       }

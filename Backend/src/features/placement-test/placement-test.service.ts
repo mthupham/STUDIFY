@@ -61,7 +61,7 @@ export class PlacementTestService implements OnModuleInit {
   /**
    * API CHẤM ĐIỂM & SMART ONBOARDING (Bản tối ưu Full UI kết quả, nhận xét và giải thích câu hỏi)
    */
-  submitTest(dto: SubmitTestDto, userId: number) {
+  async submitTest(dto: SubmitTestDto, userId: number) {
     if (!this.placementTestData) {
       throw new BadRequestException('Hệ thống chưa nạp được dữ liệu đề thi.');
     }
@@ -121,6 +121,7 @@ export class PlacementTestService implements OnModuleInit {
     }
 
     this.userLevelStorage.set(String(userId), assignedLevel);
+    await this.userService.markOnboardingComplete(userId);
 
     // BỔ SUNG: Tính toán tỷ lệ phần trăm và đưa ra lời phê động y chang trong hình thiết kế
     const percentage = parseFloat(((totalCorrect / questions.length) * 100).toFixed(2));
