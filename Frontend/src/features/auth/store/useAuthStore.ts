@@ -6,6 +6,7 @@ interface User {
   name: string;
   email: string;
   role?: string;
+  hasCompletedOnboarding?: boolean;
 }
 
 interface AuthResponse {
@@ -64,4 +65,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem('authUser');
     set({ user: null, token: null });
   },
+
+  
 }));

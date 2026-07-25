@@ -1,27 +1,33 @@
-import { Body, Controller, Post, Get, Query, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Post, Get, Query, UseGuards, Req } from '@nestjs/common';
 import { PlacementTestService } from './placement-test.service';
 import { SubmitTestDto } from './submit-test.dto';
+import { JwtGuard } from '../../modules/auth/guards/jwt.guard';
 
 @Controller('placement-test')
 export class PlacementTestController {
   constructor(private readonly placementTestService: PlacementTestService) {}
 
-  @Post('submit') // POST: /placement-test/submit
-  submit(@Body() dto: SubmitTestDto) {
-    return this.placementTestService.submitTest(dto);
+  @Get('questions')
+  getQuestions() {
+    return this.placementTestService.getQuestions();
   }
 
-  @Get('my-roadmap') // GET: /placement-test/my-roadmap?userId=xxx
-  getMyRoadmap(@Query('userId') userId: string) {
-    if (!userId) {
-      throw new BadRequestException('Vui lòng cung cấp tham số userId để lấy lộ trình học.');
-    }
-    return this.placementTestService.getMyRoadmap(userId);
+  @UseGuards(JwtGuard)
+  @Post('submit')
+  submit(@Body() dto: SubmitTestDto, @Req() req) {
+    return this.placementTestService.submitTest(dto, req.user.id);
   }
-  @Get('lesson-detail') // Đường dẫn đầy đủ: GET /placement-test/lesson-detail?lessonId=...
+
+  @UseGuards(JwtGuard)
+  @Get('my-roadmap')
+  getMyRoadmap(@Req() req) {
+    return this.placementTestService.getMyRoadmap(req.user.id);
+  }
+
+  @Get('lesson-detail')
   getLessonDetail(
     @Query('lessonId') lessonId: string,
-    @Query('type') type: string, // 'VOCABULARY' hoặc 'GRAMMAR'
+    @Query('type') type: string,
   ) {
     return this.placementTestService.getLessonDetail(lessonId, type);
   }

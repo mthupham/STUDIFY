@@ -2,9 +2,11 @@ import { Injectable, OnModuleInit, NotFoundException, BadRequestException } from
 import { SubmitTestDto } from './submit-test.dto';
 import * as path from 'path';
 import * as fs from 'fs';
+import { UserService } from '@/modules/user/user.service';
 
 @Injectable()
 export class PlacementTestService implements OnModuleInit {
+  constructor(private readonly userService: UserService) {} 
   private placementTestData: any = null;
   private lessonData: any[] = [];
   
@@ -30,14 +32,36 @@ export class PlacementTestService implements OnModuleInit {
         console.log(`[STUDIFY] Đã nạp dữ liệu lộ trình thành công: ${this.lessonData.length} levels`);
       }
     } catch (error) {
-      console.error('[STUDIFY ERROR] Không thể đọc các file dữ liệu JSON:', error.message);
+      console.error('[STUDIFY ERROR] Không thể đọc các file dữ liệu JSON:', (error as Error).message);
     }
   }
+
+
+  getQuestions() {
+  if (!this.placementTestData) {
+    throw new BadRequestException('Chưa nạp được dữ liệu đề thi.');
+  }
+  
+  // Trả câu hỏi nhưng KHÔNG có correct_answer để tránh lộ đáp án
+  const questions = this.placementTestData.questions.map((q: any) => ({
+    questionNumber: q.question_number,
+    level: q.level,
+    question: q.question,
+    options: q.options,
+  }));
+
+  return {
+    status: 'success',
+    testTitle: this.placementTestData.test_title,
+    totalQuestions: questions.length,
+    questions,
+  };
+}
 
   /**
    * API CHẤM ĐIỂM & SMART ONBOARDING (Bản tối ưu Full UI kết quả, nhận xét và giải thích câu hỏi)
    */
-  submitTest(dto: SubmitTestDto) {
+  submitTest(dto: SubmitTestDto, userId: number) {
     if (!this.placementTestData) {
       throw new BadRequestException('Hệ thống chưa nạp được dữ liệu đề thi.');
     }
@@ -96,7 +120,7 @@ export class PlacementTestService implements OnModuleInit {
       }
     }
 
-    this.userLevelStorage.set(dto.userId, assignedLevel);
+    this.userLevelStorage.set(String(userId), assignedLevel);
 
     // BỔ SUNG: Tính toán tỷ lệ phần trăm và đưa ra lời phê động y chang trong hình thiết kế
     const percentage = parseFloat(((totalCorrect / questions.length) * 100).toFixed(2));
@@ -115,12 +139,12 @@ export class PlacementTestService implements OnModuleInit {
     }
 
     return {
-      status: 'success',
-      meta: {
-        userId: dto.userId,
-        totalQuestions: questions.length,
-        totalCorrect: totalCorrect,
-        percentage: percentage,
+    status: 'success',
+    meta: {
+      userId: userId,
+      totalQuestions: questions.length,
+      totalCorrect: totalCorrect,
+      percentage: percentage,
       },
       // Trường dữ liệu phục vụ riêng cho phần text tiêu đề to sặc sỡ trên UI
       feedback: {
@@ -137,9 +161,8 @@ export class PlacementTestService implements OnModuleInit {
   /**
    * API LẤY LỘ TRÌNH CHI TIẾT (Đóng gói cấu trúc Chương/Bài học lồng nhau khớp 100% UI Sơ đồ)
    */
-  getMyRoadmap(userId: string) {
-    // 1. Lấy level hiện tại của user (mặc định là A1)
-    const userLevel = this.userLevelStorage.get(userId) || 'A1';
+  getMyRoadmap(userId: number) {
+    const userLevel = this.userLevelStorage.get(String(userId)) || 'A1';
 
     // 2. Tìm dữ liệu level trong file lesson.json
     const levelGroupData = this.lessonData.find((g) => g.level.toUpperCase() === userLevel.toUpperCase());

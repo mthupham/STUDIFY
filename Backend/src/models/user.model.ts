@@ -32,6 +32,21 @@ export class User extends Model<User> {
     @Column({ allowNull: true, type: DataType.STRING })
     declare provider: string;
 
+    @Column({
+        allowNull: true,
+        type: DataType.INTEGER,
+        field: 'weekly_study_hours',
+    })
+    declare weeklyStudyHours: number;
+
+    @Column({
+        allowNull: false,
+        defaultValue: false,
+        type: DataType.BOOLEAN,
+        field: 'has_completed_onboarding',
+    })
+    declare hasCompletedOnboarding: boolean;
+
     @Column({ allowNull: true, type: DataType.STRING, field: 'reset_otp' })
     declare resetOtp: string;
 
