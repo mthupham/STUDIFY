@@ -37,7 +37,7 @@
 ### 1.1 Brief Description
 
 This use case guides a newly registered user through an onboarding questionnaire immediately after account creation, gathering information about their available study time and current English proficiency level. It is always executed (included) as part of UC1 — Register New Account. This use case always includes UC10 — Answer Study Time Availability and UC11 — Indicate Current English Level, may optionally extend into UC12 — Take Placement Test depending on the user's response, and always includes UC13 — Auto-generate CEFR Roadmap once the necessary information is gathered.
-
+![Giao diện UC8](../../Images/Module_1/UC8.png)
 ---
 
 ## 2. Flow of Events

@@ -36,7 +36,7 @@
 ### 1.1 Brief Description
 
 This use case allows a Guest (a user who does not yet have an account) to create a new account in the Studify system by providing an email address, a password, and a username. This is the entry point for all users who wish to access Studify's personalized learning features, and it directly leads into the Onboarding Survey use case (UC9) once registration succeeds.
-
+![Giao diện UC1](../../Images/Module_1/UC1.png)
 ---
 
 ## 2. Flow of Events

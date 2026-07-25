@@ -36,7 +36,7 @@
 ### 1.1 Brief Description
 
 This use case allows a Registered User to authenticate into the Studify system using their email/username and password, granting access to personalized features such as the self-study dashboard, flashcards, virtual study rooms, and the AI speaking assistant. This use case includes UC8 — Validate Login Credentials, and may optionally extend into UC6 — Remember Login if the user chooses to stay signed in.
-
+![Giao diện UC2](../../Images/Module_1/UC2.png)
 ---
 
 ## 2. Flow of Events

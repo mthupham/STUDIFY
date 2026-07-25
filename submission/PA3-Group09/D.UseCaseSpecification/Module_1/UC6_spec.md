@@ -27,7 +27,7 @@
 - [4. Preconditions](#4-preconditions)
 - [5. Postconditions](#5-postconditions)
 - [6. Extension Points](#6-extension-points)
-
+![Giao diện UC6](../../Images/Module_1/UC6.png)
 ---
 
 ## 1. Use-Case Name
