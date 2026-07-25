@@ -1,5 +1,5 @@
-# STUDIFY
-## Use-Case Specification: Filter Flashcards by Tag
+﻿# STUDIFY
+## Use-Case Specification: Write Explanation
 
 **Version:** 1.0
 
@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| `23/07/2026` | `1.0` | Initial version of Filter Flashcards by Tag Use-Case Specification | `Group 09` |
+| `23/07/2026` | `1.0` | Initial version of Write Explanation Use-Case Specification | `Group 09` |
 
 ---
 
@@ -20,9 +20,9 @@
 2. [Flow of Events](#2-flow-of-events)
    1. [Basic Flow](#21-basic-flow)
    2. [Alternative Flows](#22-alternative-flows)
-      1. [No Flashcards Match the Selected Tag(s)](#221-no-flashcards-match-the-selected-tags)
-      2. [User Clears All Filters](#222-user-clears-all-filters)
-      3. [User Applies Multiple Tags](#223-user-applies-multiple-tags)
+      1. [User Leaves Explanation Empty](#221-user-leaves-explanation-empty)
+      2. [User Formats the Explanation with Rich Text](#222-user-formats-the-explanation-with-rich-text)
+      3. [User Exceeds Maximum Character Limit](#223-user-exceeds-maximum-character-limit)
 3. [Special Requirements](#3-special-requirements)
 4. [Preconditions](#4-preconditions)
 5. [Postconditions](#5-postconditions)
@@ -34,7 +34,7 @@
 
 ### 1.1 Brief Description
 
-This use case describes the process by which a User filters their personal flashcard collection by selecting one or more tags. When a tag filter is applied, the system narrows the displayed flashcard list to show only flashcards that are associated with the selected tag(s). This allows the User to study or review a targeted subset of their cards, such as all cards tagged "IELTS Vocabulary" or "lesson-5". This use case extends UC6 (Study Flashcards).
+This use case describes the process by which a User writes the explanation (back side content) for a flashcard. The explanation is the information that will be revealed when the User flips a card during a study session (UC8 – Flip Card to View Explanation). It is a mandatory step included in the flashcard creation process (UC1 – Create Flashcard) and its specializations (UC2 – Enter Flashcard Manually, UC3 – Create Flashcard from Highlighted Text). The explanation may consist of a definition, translation, sample sentence, grammatical note, or any other descriptive content the User finds helpful for learning the associated term.
 
 ---
 
@@ -42,62 +42,64 @@ This use case describes the process by which a User filters their personal flash
 
 ### 2.1 Basic Flow
 
-This use case starts when the User accesses the flashcard collection interface or the study session setup screen and activates the tag filter feature.
+This use case starts when the User focuses on or is directed to the **Explanation** field within the flashcard creation or editing interface.
 
-1. The system displays the flashcard collection or study session interface, including a **Tag Filter** component (e.g., a multi-select dropdown, sidebar tag list, or filter bar).
+1. The system displays the flashcard form with the **Explanation** text area clearly labeled (e.g., "Explanation / Back of Card").
 
-2. The system populates the Tag Filter component with all tags that exist in the User's personal tag library, ordered alphabetically.
+2. The User clicks on or tabs to the **Explanation** text area.
 
-3. The User clicks on the Tag Filter component to expand it and view the available tags.
+3. The system activates the text area, showing a cursor and a placeholder prompt such as: "Enter a definition, translation, example sentence, or note…"
 
-4. The User selects one tag from the list.
+4. The User types the explanation content for the flashcard term. This may include:
+   - A dictionary definition.
+   - A translation into the User's native language.
+   - One or more example sentences using the term.
+   - Grammatical notes (e.g., part of speech, irregular forms).
+   - Mnemonics or personal notes to aid memorization.
 
-5. The system immediately filters the displayed flashcard list, showing only flashcards that have the selected tag associated with them.
+5. As the User types, the system displays a live character count indicator (e.g., "142 / 1000 characters").
 
-6. The system displays a visual indicator of the active filter (e.g., a highlighted tag chip in the filter bar with the tag name).
+6. The User reviews and finalizes the explanation text.
 
-7. The system displays the count of matching flashcards (e.g., "Showing 12 of 45 flashcards").
-
-8. The User reviews the filtered flashcard list.
-
-9. The use case ends successfully. The filtered view remains active until the User clears the filter or navigates away.
+7. The use case ends. The written explanation is retained in the form and will be saved when the parent use case (UC1 – Create Flashcard) completes its save step.
 
 ---
 
 ### 2.2 Alternative Flows
 
-#### 2.2.1 No Flashcards Match the Selected Tag(s)
+#### 2.2.1 User Leaves Explanation Empty
 
-This alternative flow occurs when the applied tag filter returns no results.
+This alternative flow occurs when the User tries to save the flashcard without providing an explanation.
 
-1. The User selects a tag from the filter.
-2. The system applies the filter and finds no flashcards associated with the selected tag.
-3. The system displays an empty state message, such as: "No flashcards found for the selected tag(s). Try selecting a different tag or create new flashcards."
-4. The Tag Filter component remains visible, allowing the User to change their selection.
-5. The flow returns to Step 4 of the Basic Flow.
+1. The User leaves the **Explanation** field blank and clicks **Save** (via the parent use case).
+2. The parent use case (UC1) performs validation and detects the empty Explanation field.
+3. The system highlights the Explanation field with a red border and displays an inline error message: "Explanation is required."
+4. The form remains open with all other entered data preserved.
+5. The flow returns to Step 2 of the Basic Flow, prompting the User to fill in the Explanation.
 
-#### 2.2.2 User Clears All Filters
+#### 2.2.2 User Formats the Explanation with Rich Text
 
-This alternative flow occurs when the User wants to remove all active tag filters and return to the full flashcard list.
+This alternative flow occurs when the User wishes to apply basic text formatting to the explanation content.
 
-1. At any point while a tag filter is active, the User clicks the **"Clear Filters"** button or deselects all active tags.
-2. The system removes all active tag filters.
-3. The system displays the complete, unfiltered flashcard list.
-4. The visual indicators of active filters are removed from the UI.
-5. The use case ends, returning the User to the default unfiltered view.
+1. The User selects text they have already typed in the Explanation field.
+2. The system displays a minimal formatting toolbar or supports markdown-style shortcuts, offering options such as:
+   - **Bold** (Ctrl+B or `**text**`)
+   - *Italic* (Ctrl+I or `*text*`)
+   - Underline (Ctrl+U)
+   - Bullet list
+3. The User applies the desired formatting.
+4. The system renders the formatted text in a preview area or applies the formatting directly within the text area (WYSIWYG mode).
+5. The flow resumes at Step 5 of the Basic Flow.
 
-#### 2.2.3 User Applies Multiple Tags
+#### 2.2.3 User Exceeds Maximum Character Limit
 
-This alternative flow occurs when the User selects more than one tag to filter by.
+This alternative flow occurs when the User's explanation content exceeds the allowed maximum length.
 
-1. After selecting an initial tag (Step 4 of the Basic Flow), the User clicks on additional tags in the Tag Filter component.
-2. The system applies all selected tags simultaneously using a logical **AND** or **OR** operator, as configured:
-   - **Default behavior (AND):** Only flashcards that contain ALL of the selected tags are displayed.
-   - **Alternative behavior (OR):** Flashcards that contain ANY of the selected tags are displayed. The User may toggle between AND/OR filter logic via a control in the filter panel.
-3. The system updates the flashcard list to reflect the combined filter.
-4. The system updates the active filter indicator to show all selected tag chips.
-5. The system updates the displayed count accordingly.
-6. The flow resumes at Step 8 of the Basic Flow.
+1. The User types content that causes the character count to reach the maximum limit (e.g., 1000 characters).
+2. The system prevents further text input beyond the limit.
+3. The character count indicator changes to a warning style (e.g., turns red): "1000 / 1000 characters – maximum reached."
+4. The User must shorten the explanation to proceed.
+5. The flow resumes at Step 5 of the Basic Flow once the character count is below the limit.
 
 ---
 
@@ -105,59 +107,78 @@ This alternative flow occurs when the User selects more than one tag to filter b
 
 ### 3.1 Usability Requirements
 
-- The Tag Filter component must be persistently visible and accessible without requiring the User to navigate away from the current page.
-- Active filter tags must be clearly indicated with a distinct visual style (e.g., highlighted/filled chip) compared to inactive tags.
-- The filter must update the flashcard list in real time without requiring a page reload.
+- The **Explanation** text area must be large enough to display several lines of text without requiring constant scrolling, and must be resizable or auto-expanding.
+- The placeholder text must clearly guide the User on the types of content acceptable in the explanation field.
+- The live character count must be clearly visible and update in real time as the User types.
 
-### 3.2 Performance Requirements
+### 3.2 Content Flexibility Requirements
 
-- Tag filter results must be rendered within 500 milliseconds of the User selecting a tag, even for large flashcard collections.
-- The tag list in the filter component must load within 300 milliseconds.
+- The Explanation field must accept a wide variety of content types including plain text, translations, definitions, example sentences, grammatical annotations, and phonetic transcriptions.
+- The field must preserve line breaks and support multi-paragraph input.
+- The field must support Unicode characters, including characters from non-Latin scripts (e.g., Vietnamese diacritics, Kanji, Cyrillic).
 
-### 3.3 Persistence Requirements
+### 3.3 Accessibility Requirements
 
-- The active tag filter state must persist during the current session. If the User navigates to another section and returns to the flashcard list, the active filter should be restored.
-- Tag filters are not persisted across sessions (a fresh login resets filters to unfiltered).
+- The Explanation text area must be keyboard-navigable and properly labeled for screen readers.
+- Error messages related to the Explanation field must be programmatically associated with the field for accessibility tools.
 
 ---
 
 ## 4. Preconditions
 
-### 4.1 User Authentication
+### 4.1 Flashcard Creation Form is Active
 
-- The User must be authenticated (logged in) to the STUDIFY system.
+- The flashcard creation or editing interface must be open and the Explanation field must be rendered.
 
-### 4.2 Flashcard Collection is Non-Empty
+### 4.2 Parent Use Case is Active
 
-- The User must have at least one flashcard in their personal collection to access the flashcard interface.
+- This use case is only reachable from within the context of a parent use case: UC1 (Create Flashcard), UC2 (Enter Flashcard Manually), or UC3 (Create Flashcard from Highlighted Text).
 
-### 4.3 Tags Exist in the User's Tag Library
+### 4.3 Term Field is Provided
 
-- The User must have at least one tag previously created and assigned to flashcards (via UC3 – Add Tags) for the filter component to display available tags.
+- While not a hard prerequisite for writing the explanation, the User is expected to have already provided or reviewed the **Term** field before focusing on the Explanation. The system should not block the User from writing the explanation first.
 
 ---
 
 ## 5. Postconditions
 
-### 5.1 Filter Applied
+### 5.1 Explanation Written
 
 After the use case is completed successfully:
 
-- The flashcard list is filtered to display only flashcards that match the selected tag(s).
-- The active tag filter is visually indicated in the UI.
-- The User can interact with (study, edit, delete) any flashcard visible in the filtered list.
+- The explanation text is stored in the **Explanation** field of the flashcard form.
+- The content will be persisted to the database when the parent use case (UC1 – Create Flashcard) completes the save operation.
 
-### 5.2 Filter Cleared
+### 5.2 Explanation Displayed During Study
 
-If the User clears the filter:
-
-- The complete, unfiltered flashcard list is restored.
-- All tag filter indicators are removed from the UI.
+Once saved, the explanation will be displayed on the back side of the flashcard during study sessions (UC8 – Flip Card to View Explanation), providing the User with the learning content associated with the term.
 
 ---
 
 ## 6. Extension Points
 
-### 6.1 Study Flashcards
+This use case has no extension points. It is a component included by the parent flashcard creation use cases (UC1, UC2, UC3) and does not itself extend or include other use cases.
 
-This use case extends UC6 (Study Flashcards). The filtered set of flashcards produced by this use case can be used as the input deck for a study session, allowing the User to study only the cards matching their selected tag(s).
+---
+
+## 7. UI Prototype
+
+### 7.1 Basic Flow — Explanation Text Area (Empty, Placeholder Visible)
+*Shows the Explanation field before the User starts typing, with placeholder guidance text.*
+![Write Explanation - Empty State](../../images/module_4/UC4_empty_state.png)
+
+### 7.2 Basic Flow — Explanation Being Written (Live Character Count)
+*Shows text typed in the Explanation field with the live character count indicator.*
+![Write Explanation - Typing Active](../../images/module_4/UC4_typing_active.png)
+
+### 7.3 Alternative Flow 2.2.1 — Empty Explanation Error
+*Shows the red border and inline error when the field is submitted empty.*
+![Write Explanation - Empty Error](../../images/module_4/UC4_empty_error.png)
+
+### 7.4 Alternative Flow 2.2.2 — Rich Text Formatting Toolbar
+*Shows the mini formatting toolbar appearing when text is selected inside the field.*
+![Write Explanation - Formatting Toolbar](../../images/module_4/UC4_formatting_toolbar.png)
+
+### 7.5 Alternative Flow 2.2.3 — Character Limit Reached Warning
+*Shows the character count turning red when the maximum character limit is reached.*
+![Write Explanation - Char Limit](../../images/module_4/UC4_char_limit.png)
