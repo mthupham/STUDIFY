@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { ProgressModule } from './modules/progress/progress.module';
 import { sequelizeConfig } from './utils/sequelize.config';
+import { PlacementTestModule } from './features/placement-test/placement-test.module';
 
 @Module({
   controllers: [AppController],
@@ -31,6 +32,8 @@ import { sequelizeConfig } from './utils/sequelize.config';
         },
       }),
     }),
+
+    PlacementTestModule,
   ],
 })
 export class AppModule {}

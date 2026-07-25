@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export default function OnboardingFlow() {
-  const [view, setView] = useState('commitment');
-
+export default function OnboardingFlow({ initialStep, onNext }) {
   const paceOptions = [
     {
       title: '2 hours/week',
@@ -27,18 +25,18 @@ export default function OnboardingFlow() {
   ];
 
   return (
-    <div style={styles.page}> 
+    <div style={styles.page}>
       <div style={styles.panel}>
         <div style={styles.progressTrack}>
           <div
             style={{
               ...styles.progressFill,
-              width: view === 'commitment' ? '50%' : '100%'
+              width: initialStep === 'commitment' ? '50%' : '100%'
             }}
           />
         </div>
 
-        {view === 'commitment' && (
+        {initialStep === 'commitment' && (
           <div style={styles.stepContainer}>
             <div style={styles.header}>
               <h2 style={styles.title}>Set your pace</h2>
@@ -52,7 +50,7 @@ export default function OnboardingFlow() {
                 <button
                   key={option.title}
                   type="button"
-                  onClick={() => setView('proficiency')}
+                  onClick={() => onNext && onNext(option)}
                   style={styles.card}
                 >
                   <div style={{ ...styles.iconCircle, background: option.color }} />
@@ -66,7 +64,7 @@ export default function OnboardingFlow() {
           </div>
         )}
 
-        {view === 'proficiency' && (
+        {initialStep === 'proficiency' && (
           <div style={styles.stepContainer}>
             <div style={styles.header}>
               <h2 style={styles.title}>Do you know your current English level?</h2>
@@ -78,7 +76,7 @@ export default function OnboardingFlow() {
             <div style={styles.optionBox}>
               <button
                 type="button"
-                onClick={() => setView('quiz')}
+                onClick={() => onNext && onNext()}
                 style={{ ...styles.selectionButton, marginBottom: 16 }}
               >
                 <div>
@@ -91,7 +89,7 @@ export default function OnboardingFlow() {
 
               <button
                 type="button"
-                onClick={() => setView('quiz')}
+                onClick={() => onNext && onNext()}
                 style={styles.selectionButton}
               >
                 <div>
@@ -101,22 +99,6 @@ export default function OnboardingFlow() {
                   </div>
                 </div>
               </button>
-            </div>
-          </div>
-        )}
-
-        {view === 'quiz' && (
-          <div style={styles.stepContainer}>
-            <div style={styles.header}>
-              <h2 style={styles.title}>Get ready for your placement quiz</h2>
-              <p style={styles.subtitle}>
-                This step helps us personalize your study path based on your current English level.
-              </p>
-            </div>
-
-            <div style={styles.quizPlaceholder}>
-              <span style={styles.quizEmoji}>📝</span>
-              <div style={styles.quizText}>Your placement quiz starts here.</div>
             </div>
           </div>
         )}
@@ -140,7 +122,7 @@ const styles = {
     background: '#FFFFFF',
     borderRadius: 28,
     padding: '32px 36px',
-    boxShadow: '0 24px 60px rgba(15, 23, 42, 0.08)' 
+    boxShadow: '0 24px 60px rgba(15, 23, 42, 0.08)'
   },
   progressTrack: {
     height: 6,
@@ -241,24 +223,5 @@ const styles = {
     color: '#64748B',
     fontSize: 14,
     lineHeight: 1.75
-  },
-  quizPlaceholder: {
-    marginTop: 24,
-    padding: '36px',
-    borderRadius: 22,
-    background: '#EFF6FF',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 18,
-    justifyContent: 'center',
-    flexDirection: 'column'
-  },
-  quizEmoji: {
-    fontSize: 48
-  },
-  quizText: {
-    fontSize: 18,
-    fontWeight: 700,
-    color: '#0F172A'
   }
 };

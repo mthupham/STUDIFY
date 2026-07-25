@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/sequelize';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from '../../models/user.model';
 import * as bcrypt from 'bcryptjs';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -66,5 +66,20 @@ export class UserService {
       ...(dto.phone && { phone: dto.phone }),
     });
     return { message: 'Update successful', data: user };
+  }
+
+  async updateOnboarding(userId: number, weeklyStudyHours: number) {
+  const user = await this.userModel.findByPk(userId);
+  if (!user) throw new NotFoundException('User not found');
+
+  await user.update({ weeklyStudyHours });
+  return user;
+  }
+
+  async markOnboardingComplete(userId: number) {
+    await this.userModel.update(
+      { hasCompletedOnboarding: true },
+      { where: { id: userId } }
+    );
   }
 }

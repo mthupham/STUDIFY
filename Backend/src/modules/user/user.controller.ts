@@ -2,6 +2,7 @@ import { Body, Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/comm
 import { UserService } from './user.service';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
 
 
 @Controller('user')
@@ -19,4 +20,12 @@ export class UserController {
   updateProfile(@Req() req: any, @Body() dto: UpdateProfileDto) {
     return this.userService.updateProfile(req.user.id, dto);
   }
+
+  @UseGuards(JwtGuard)
+  @Patch('onboarding')
+  async updateOnboarding(@Req() req, @Body() dto: UpdateOnboardingDto) {
+    const user = await this.userService.updateOnboarding(req.user.id, dto.weeklyStudyHours);
+    return { message: 'Onboarding pace updated', data: user };
+  }
+
 }

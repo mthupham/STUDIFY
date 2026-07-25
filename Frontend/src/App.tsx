@@ -9,6 +9,19 @@ import RoadmapPage from "./features/learning/roadmap/RoadmapPage.jsx";
 import UserProfile from "./features/user-profile/profile.jsx";
 import LessonPage from "./features/learning/lesson/LessonPage.tsx";
 import PracticeQuestions from "./features/learning/lesson/PracticeQuestions";
+import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
+import { useAuthStore } from "./features/auth/store/useAuthStore";
+
+// Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
+function OnboardingGuard({ children }) {
+  const user = useAuthStore((state) => state.user);
+
+  if (user && !user.hasCompletedOnboarding) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  return children;
+}
 
 function App() {
   return (
@@ -20,20 +33,26 @@ function App() {
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
 
+        <Route path="/onboarding" element={<OnboardingApp />} />
+
         <Route
           path="/dashboard"
           element={
-            <MainLayout>
-              <DashboardPage />
-            </MainLayout>
+            <OnboardingGuard>
+              <MainLayout>
+                <DashboardPage />
+              </MainLayout>
+            </OnboardingGuard>
           }
         />
         <Route
           path="/roadmap"
           element={
-            <MainLayout>
-              <RoadmapPage />
-            </MainLayout>
+            <OnboardingGuard>
+              <MainLayout>
+                <RoadmapPage />
+              </MainLayout>
+            </OnboardingGuard>
           }
         />
         <Route
@@ -44,23 +63,28 @@ function App() {
             </MainLayout>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
         <Route
           path="/lessons"
           element={
-            <MainLayout>
-              <LessonPage />
-            </MainLayout>
+            <OnboardingGuard>
+              <MainLayout>
+                <LessonPage />
+              </MainLayout>
+            </OnboardingGuard>
           }
         />
         <Route
           path="/lessons/practice"
           element={
-            <MainLayout>
-              <PracticeQuestions />
-            </MainLayout>
+            <OnboardingGuard>
+              <MainLayout>
+                <PracticeQuestions />
+              </MainLayout>
+            </OnboardingGuard>
           }
         />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
