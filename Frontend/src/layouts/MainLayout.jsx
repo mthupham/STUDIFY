@@ -27,7 +27,7 @@ export default function MainLayout({ children }) {
     <div style={styles.shell}>
       <aside style={styles.sidebar}>
         <div style={styles.brandArea}>
-          <NavLink to="/" style={styles.brandLink}>
+          <NavLink to="/dashboard" style={styles.brandLink}>
             <span style={styles.brandText}>Studify</span>
           </NavLink>
         </div>

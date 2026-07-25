@@ -21,6 +21,21 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
+  // Loại bỏ các field nhạy cảm trước khi trả về client
+  private sanitizeUser(user: any) {
+    // Nếu là Sequelize instance thì convert sang plain object trước
+    const plainUser = typeof user.get === 'function' ? user.get({ plain: true }) : user;
+
+    const {
+      password,
+      resetOtp,
+      resetOtpExpires,
+      ...safeUser
+    } = plainUser;
+
+    return safeUser;
+  }
+
   async login(email: string, password: string) {
     const user = await this.userService.validateUser(email, password);
     const tokens = this.generateTokens({
@@ -28,7 +43,11 @@ export class AuthService {
       email: user.email,
       role: user.role,
     });
-    return { message: 'Login successfully!', data: user, ...tokens };
+    return {
+      message: 'Login successfully!',
+      data: this.sanitizeUser(user),
+      ...tokens,
+    };
   }
 
   async register(registerDto: RegisterDto) {
