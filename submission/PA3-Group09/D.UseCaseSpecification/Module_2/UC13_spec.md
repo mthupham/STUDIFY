@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC13 (F2.5 Commitment Settings) | `Lê Kim Hằng` |
+| 23/Jul/26 | 1.0 | Initial draft for UC13 (F2.5 Commitment Settings) | System Analyst |
 
 ---
 
@@ -62,9 +62,6 @@ This use case allows the Learner to input or modify their committed daily/weekly
 ### 2.2 Alternative Flows
 
 #### 2.2.1 Invalid Input Values
-
-![alt text](../../Images/Module_2/UC13_invalid_value.png)
-
 If the Learner inputs 0 or an unrealistically high number (e.g., > 16 hours/day):
 1. The system displays a validation warning: "Please enter a realistic study commitment between 15 minutes and 8 hours daily."
 2. The Learner updates the input value and retries saving.

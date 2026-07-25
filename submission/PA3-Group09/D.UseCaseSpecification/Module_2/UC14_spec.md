@@ -9,7 +9,8 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC14 (F2.5 Dashboard Widget) | `Lê Kim Hằng` |
+| 23/Jul/26 | 1.0 | Initial draft for UC14 (F2.5 Dashboard Widget) | System Analyst |
+
 ---
 
 ### Table of Contents
@@ -63,9 +64,6 @@ This use case presents a dedicated schedule widget on the main Self-Study Dashbo
 ### 2.2 Alternative Flows
 
 #### 2.2.1 No Commitment Set
-
-![alt text](../../Images/Module_2/UC14_no_commitment.png)
-
 If the Learner has not yet configured their commitment hours via UC13:
 1. The widget displays a default banner: "Set your daily study commitment to receive a personalized daily study plan!"
 2. Clicking the banner redirects the Learner to **UC13: Set Study Commitment Hours**.

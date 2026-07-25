@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft | Khanh Linh |
+| 23/Jul/26 | 1.0 | Initial version of UC5 | Khanh Linh |
 
 ---
 
@@ -26,7 +26,7 @@
 - [4. Preconditions](#4-preconditions)
 - [5. Postconditions](#5-postconditions)
 - [6. Extension Points](#6-extension-points)
-![Giao diện UC6](../../Images/Module_1/UC6.png)
+![Giao diện UC5](../../Images/Module_1/UC5.png)
 ---
 
 ## 1. Use-Case Name
@@ -61,7 +61,8 @@ At step 4 of the Basic Flow, if the "Remember Login" token found on the device h
 1. The system discards the expired token.
 2. The system redirects the user to the standard Login screen (UC2), requiring them to re-enter their credentials.
 3. The use case ends without automatic authentication.
-
+![Giao diện UC5](../../Images/Module_1/UC5b.png)
+---
 #### 2.2.2 Token Revoked or Invalidated
 
 At step 4 of the Basic Flow, if the token has been explicitly revoked (e.g., due to logout with revocation, as described in UC3 — Logout, or a security-related action such as a password change):
@@ -70,7 +71,8 @@ At step 4 of the Basic Flow, if the token has been explicitly revoked (e.g., due
 2. The system clears the invalid token from the device.
 3. The system redirects the user to the standard Login screen (UC2), requiring them to re-enter their credentials.
 4. The use case ends without automatic authentication.
-
+![Giao diện UC5](../../Images/Module_1/UC5c.png)
+---
 ---
 
 ## 3. Special Requirements

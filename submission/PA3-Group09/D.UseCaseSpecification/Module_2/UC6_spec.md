@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC6: Multiple Choice | System Analyst |`Lê Kim Hằng` |
+| 23/Jul/26 | 1.0 | Initial draft for UC6: Multiple Choice | System Analyst |
 
 ---
 

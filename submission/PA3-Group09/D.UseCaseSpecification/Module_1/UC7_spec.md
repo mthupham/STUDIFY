@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft | Khanh Linh |
+| 23/Jul/26 | 1.0 | Initial version of UC7| Khanh Linh |
 
 ---
 
@@ -63,7 +63,7 @@ At step 2 of the Basic Flow, if no account matches the submitted Email/Username:
 2. UC2 displays the corresponding generic error message to the Registered User (see UC2, Alternative Flow 2.2.1).
 3. The system logs the failed attempt for security monitoring purposes.
 4. The use case ends without granting access.
-
+![Giao diện UC7](../../Images/Module_1/UC7b.png)
 #### 2.2.2 Incorrect Password
 
 At step 4 of the Basic Flow, if the account exists and is active, but the submitted password does not match the stored hash:
@@ -72,7 +72,7 @@ At step 4 of the Basic Flow, if the account exists and is active, but the submit
 2. The system increments the account's consecutive failed-login counter.
 3. UC2 displays the corresponding generic error message to the Registered User (see UC2, Alternative Flow 2.2.1).
 4. The use case ends without granting access.
-
+![Giao diện UC7](../../Images/Module_1/UC7c.png)
 #### 2.2.3 Account Locked
 
 At step 3 of the Basic Flow, if the account is found to be locked or suspended (e.g., due to too many consecutive failed login attempts, per the Account Lockout Policy):
@@ -80,7 +80,7 @@ At step 3 of the Basic Flow, if the account is found to be locked or suspended (
 1. The system returns a "validation failed" result to UC2, indicating the account is temporarily locked.
 2. UC2 displays a message to the Registered User informing them of the lockout and, if applicable, how long until they may retry or how to unlock the account (e.g., via password reset).
 3. The use case ends without granting access.
-
+![Giao diện UC7](../../Images/Module_1/UC7d.png)
 ---
 
 ## 3. Special Requirements

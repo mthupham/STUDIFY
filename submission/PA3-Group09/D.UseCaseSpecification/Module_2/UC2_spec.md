@@ -67,8 +67,6 @@ This use case begins immediately after the Learner selects a specific level on t
 
 #### 2.2.1 Level Has No Lessons
 
-![alt text](../../Images/Module_2/UC2_empty_lesson.png)
-
 *Trigger condition: The selected level currently has no lessons configured in the system.*
 
 1. At step 3 of the Basic Flow, the system detects that the lesson list for the level is empty.
@@ -77,8 +75,6 @@ This use case begins immediately after the Learner selects a specific level on t
 4. The use case ends.
 
 #### 2.2.2 Load Failure / Network Error
-
-![alt text](../../Images/Module_2/UC2_connection_lost.png)
 
 *Trigger condition: An error occurs while querying lesson list data from the server (network error, server 500 error, timeout).*
 

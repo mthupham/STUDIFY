@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC10: View Roadmap Completion % |`Lê Kim Hằng` |
+| 23/Jul/26 | 1.0 | Initial draft for UC10: View Roadmap Completion % | System Analyst |
 
 ---
 
@@ -65,9 +65,6 @@ This use case defines the presentation of the Learner's progress across their cu
 ### 2.2 Alternative Flows
 
 #### 2.2.1 Roadmap Fully Completed (100%)
-
-![alt text](../../Images/Module_2/UC10_level_completed.png)
-
 If UC11 returns a value of 100%:
 1. The system renders the progress bar completely filled.
 2. The system applies a distinct visual styling (e.g., a gold color, a glowing effect, or a "completed" badge) to signify mastery of the level.
