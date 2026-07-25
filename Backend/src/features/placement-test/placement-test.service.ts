@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { PlacementTestQuestion } from './models/placement-test-question.model';
-import { PlacementTestResult } from './models/placement-test-result.model';
+import { PlacementTestQuestion } from '../../models/placement-test-question.model';
+import { PlacementTestResult } from '../../models/placement-test-result.model';
 import { SubmitPlacementTestDto } from './dto/submit-placement-test.dto';
 
 @Injectable()
