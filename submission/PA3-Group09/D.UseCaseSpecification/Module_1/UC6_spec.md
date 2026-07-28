@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft | Khanh Linh |
+| 23/Jul/26 | 1.0 | Initial version of UC6| Khanh Linh |
 
 ---
 
@@ -27,7 +27,7 @@
 - [4. Preconditions](#4-preconditions)
 - [5. Postconditions](#5-postconditions)
 - [6. Extension Points](#6-extension-points)
-
+![Giao diện UC6](../../Images/Module_1/UC6.png)
 ---
 
 ## 1. Use-Case Name
@@ -63,7 +63,7 @@ At step 2 of the Basic Flow, if the Email does not match a valid email format:
 1. The system returns a "validation failed" result to UC1, specifying that the email format is invalid.
 2. UC1 displays the corresponding error message to the Guest (see UC1, Alternative Flow 2.2.2).
 3. The use case ends without proceeding to account creation.
-
+![Giao diện UC6](../../Images/Module_1/UC6b.png)
 #### 2.2.2 Weak Password
 
 At step 3 of the Basic Flow, if the Password does not meet the minimum security policy:
@@ -71,7 +71,7 @@ At step 3 of the Basic Flow, if the Password does not meet the minimum security 
 1. The system returns a "validation failed" result to UC1, specifying which password rule was not met.
 2. UC1 displays the corresponding error message to the Guest (see UC1, Alternative Flow 2.2.2).
 3. The use case ends without proceeding to account creation.
-
+![Giao diện UC6](../../Images/Module_1/UC6c.png)
 #### 2.2.3 Duplicate Email or Username
 
 At step 5 of the Basic Flow, if either the Email or Username already exists in the database:
@@ -79,7 +79,7 @@ At step 5 of the Basic Flow, if either the Email or Username already exists in t
 1. The system returns a "validation failed" result to UC1, specifying which field (email and/or username) is already in use.
 2. UC1 displays the corresponding error message to the Guest (see UC1, Alternative Flow 2.2.1).
 3. The use case ends without proceeding to account creation.
-
+![Giao diện UC6](../../Images/Module_1/UC6d.png)
 ---
 
 ## 3. Special Requirements

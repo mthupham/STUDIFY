@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft for UC5: Take Quiz | `Lê Kim Hằng` |
+| 23/Jul/26 | 1.0 | Initial draft for UC5: Take Quiz | System Analyst |
 
 ---
 
@@ -148,8 +148,6 @@ This use case begins immediately after the Learner selects "Continue to Quiz" fr
 
 #### 2.2.3 Learner Leaves a Question Unanswered
 
-![alt text](../../Images/Module_2/UC5_unanswered_question.png)
-
 *Trigger condition: The Learner attempts to move to the next question or submit the quiz without answering the current question.*
 
 1. At step 4 of the Basic Flow, the Learner selects "Next" or "Submit" without providing an answer.
@@ -176,8 +174,6 @@ This use case begins immediately after the Learner selects "Continue to Quiz" fr
 5. If the Learner takes no action, the use case ends without the quiz result being recorded.
 
 #### 2.2.6 Learner Exits Quiz Early
-
-![alt text](../../Images/Module_2/UC5_exit_quiz.png)
 
 *Trigger condition: The Learner chooses to leave the quiz before answering all questions.*
 

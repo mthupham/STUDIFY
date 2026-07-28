@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft of use-case specification UC3 – Study Lesson |`Lê Kim Hằng` |
+| 23/Jul/26 | 1.0 | Initial draft of use-case specification UC3 – Study Lesson | `<name>` |
 
 ---
 
@@ -77,8 +77,6 @@ This use case begins immediately after the Learner selects a specific lesson fro
 
 #### 2.2.2 Load Failure / Network Error
 
-![alt text](../../Images/Module_2/UC1_connection_lost.png)
-
 *Trigger condition: An error occurs while loading lesson content (theory or quiz) from the server (network error, server 500 error, timeout).*
 
 1. At step 2 of the Basic Flow, the request to fetch lesson content fails.
@@ -88,8 +86,6 @@ This use case begins immediately after the Learner selects a specific lesson fro
 5. If the Learner takes no action, the use case ends.
 
 #### 2.2.3 Learner Exits Lesson Early
-
-![alt text](../../Images/Module_2/UC3_exit_early.png)
 
 *Trigger condition: The Learner chooses to leave the lesson screen before completing the theory or quiz section.*
 

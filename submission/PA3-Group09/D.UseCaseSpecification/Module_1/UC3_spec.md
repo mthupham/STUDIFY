@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft | Khanh Linh |
+| 23/Jul/26 | 1.0 | Initial version of UC3 | Khanh Linh |
 
 ---
 
@@ -26,7 +26,7 @@
 - [4. Preconditions](#4-preconditions)
 - [5. Postconditions](#5-postconditions)
 - [6. Extension Points](#6-extension-points)
-
+![Giao diện UC3](../../Images/Module_1/UC3.png)
 ---
 
 ## 1. Use-Case Name
@@ -61,7 +61,7 @@ At step 2 of the Basic Flow, if the system determines that the session token was
 1. The system proceeds directly to clearing any residual client-side data (step 3) without needing to invalidate a server-side session that no longer exists.
 2. The system redirects the user to the login screen, optionally with a notice that their session had already expired.
 3. The flow resumes at step 4 of the Basic Flow.
-
+![Giao diện UC3](../../Images/Module_1/UC3b.png)
 #### 2.2.2 Logout with Remember Login Active
 
 At step 2 of the Basic Flow, if a "Remember Login" token (see UC6) is also active on the device:
@@ -70,7 +70,7 @@ At step 2 of the Basic Flow, if a "Remember Login" token (see UC6) is also activ
 2. If the user chooses to revoke it, the system invalidates the persistent "Remember Login" token in addition to the current session.
 3. If the user chooses not to revoke it, the persistent token remains valid, and the user will be automatically logged back in on their next visit.
 4. The flow resumes at step 3 of the Basic Flow.
-
+![Giao diện UC3](../../Images/Module_1/UC3c.png)
 ---
 
 ## 3. Special Requirements

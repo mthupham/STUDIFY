@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial draft | Khanh Linh |
+| 23/Jul/26 | 1.0 | Initial version of UC8  | Khanh Linh |
 
 ---
 
@@ -37,7 +37,7 @@
 ### 1.1 Brief Description
 
 This use case guides a newly registered user through an onboarding questionnaire immediately after account creation, gathering information about their available study time and current English proficiency level. It is always executed (included) as part of UC1 — Register New Account. This use case always includes UC10 — Answer Study Time Availability and UC11 — Indicate Current English Level, may optionally extend into UC12 — Take Placement Test depending on the user's response, and always includes UC13 — Auto-generate CEFR Roadmap once the necessary information is gathered.
-
+![Giao diện UC8](../../Images/Module_1/UC8.png)
 ---
 
 ## 2. Flow of Events
@@ -66,7 +66,7 @@ At step 5 of the Basic Flow, if the Registered User indicates they already know 
 2. The Registered User selects their self-assessed level.
 3. The system records the selected level as the user's starting point.
 4. The flow resumes at step 7 of the Basic Flow.
-
+![Giao diện UC8](../../Images/Module_1/UC8b.png)
 #### 2.2.2 User Does Not Know Their English Level
 
 At step 6 of the Basic Flow, if the Registered User indicates they do not know their current English proficiency level:
@@ -76,7 +76,7 @@ At step 6 of the Basic Flow, if the Registered User indicates they do not know t
 3. The system evaluates the responses and determines an estimated CEFR level based on the results.
 4. The system records the determined level as the user's starting point.
 5. The flow resumes at step 7 of the Basic Flow.
-
+![Giao diện UC8](../../Images/Module_1/UC8c.png)
 #### 2.2.3 User Abandons Survey Midway
 
 At any step of the Basic Flow, if the Registered User closes the application or navigates away before completing the survey:
@@ -84,7 +84,7 @@ At any step of the Basic Flow, if the Registered User closes the application or 
 1. The system saves the Registered User's progress up to the last completed question.
 2. On the user's next visit, the system resumes the survey from the last incomplete question rather than restarting from the beginning.
 3. The flow resumes at the appropriate step of the Basic Flow based on saved progress.
-
+![Giao diện UC8](../../Images/Module_1/UC8d.png)
 ---
 
 ## 3. Special Requirements
