@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial RUP specification draft for UC5.1 | System Analyst |
+| 23/Jul/26 | 1.0 | Initial RUP specification draft for UC5.1 | Gia Phúc |
 
 ---
 

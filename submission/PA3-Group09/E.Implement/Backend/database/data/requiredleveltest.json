@@ -1,0 +1,618 @@
+[
+  {
+    "level": "A1",
+    "name": "BREAKTHROUGH",
+    "questions": [
+      {
+        "questionId": "A1_01",
+        "questionText": "Which physical component is used to type text and code into a computer?",
+        "options": ["Monitor", "Keyboard", "Mouse", "Printer"],
+        "correctAnswer": "Keyboard",
+        "topic": "Computer Hardware & Peripherals"
+      },
+      {
+        "questionId": "A1_02",
+        "questionText": "What does a 'Hard drive' primarily do?",
+        "options": [
+          "Displays images",
+          "Provides power",
+          "Stores data permanently",
+          "Connects to the internet"
+        ],
+        "correctAnswer": "Stores data permanently",
+        "topic": "Computer Hardware & Peripherals"
+      },
+      {
+        "questionId": "A1_03",
+        "questionText": "Which UI element allows you to select multiple options from a list?",
+        "options": ["Button", "Radio button", "Checkbox", "Tab"],
+        "correctAnswer": "Checkbox",
+        "topic": "UI/UX Elements Basics"
+      },
+      {
+        "questionId": "A1_04",
+        "questionText": "To move up and down on a long web page, you usually use a...",
+        "options": ["Scrollbar", "Menu", "Textbox", "Window"],
+        "correctAnswer": "Scrollbar",
+        "topic": "UI/UX Elements Basics"
+      },
+      {
+        "questionId": "A1_05",
+        "questionText": "How do you pronounce this coding symbol: '{}' ?",
+        "options": ["Parentheses", "Brackets", "Curly braces", "Semicolons"],
+        "correctAnswer": "Curly braces",
+        "topic": "Coding Characters & Symbols"
+      },
+      {
+        "questionId": "A1_06",
+        "questionText": "Which character is called an 'Asterisk'?",
+        "options": ["/", "\\", "#", "*"],
+        "correctAnswer": "*",
+        "topic": "Coding Characters & Symbols"
+      },
+      {
+        "questionId": "A1_07",
+        "questionText": "What do we call this symbol '/' in English?",
+        "options": ["Backslash", "Slash", "Hash", "Semicolon"],
+        "correctAnswer": "Slash",
+        "topic": "Coding Characters & Symbols"
+      },
+      {
+        "questionId": "A1_08",
+        "questionText": "If you want to move a file from one folder to another using a mouse, you usually ________ it.",
+        "options": [
+          "Click and open",
+          "Double-click",
+          "Right-click",
+          "Drag and drop"
+        ],
+        "correctAnswer": "Drag and drop",
+        "topic": "Basic Action Verbs in IT"
+      },
+      {
+        "questionId": "A1_09",
+        "questionText": "To add a new software application to your computer, you need to ________ it.",
+        "options": ["Delete", "Install", "Close", "Save"],
+        "correctAnswer": "Install",
+        "topic": "Basic Action Verbs in IT"
+      },
+      {
+        "questionId": "A1_10",
+        "questionText": "What action usually opens a context menu with more options?",
+        "options": ["Single-click", "Double-click", "Right-click", "Scroll"],
+        "correctAnswer": "Right-click",
+        "topic": "Basic Action Verbs in IT"
+      }
+    ]
+  },
+  {
+    "level": "A2",
+    "name": "WAYSTAGE",
+    "questions": [
+      {
+        "questionId": "A2_01",
+        "questionText": "Software whose source code is freely available for anyone to modify is called...",
+        "options": [
+          "Proprietary software",
+          "System software",
+          "Open-source software",
+          "Application software"
+        ],
+        "correctAnswer": "Open-source software",
+        "topic": "Software & Operating Systems"
+      },
+      {
+        "questionId": "A2_02",
+        "questionText": "Windows, macOS, and Linux are examples of...",
+        "options": [
+          "Web browsers",
+          "Operating Systems",
+          "Cloud storage",
+          "Hardware"
+        ],
+        "correctAnswer": "Operating Systems",
+        "topic": "Software & Operating Systems"
+      },
+      {
+        "questionId": "A2_03",
+        "questionText": "To make a file size smaller for easier sharing, you should ________ it.",
+        "options": ["Extract", "Compress", "Backup", "Execute"],
+        "correctAnswer": "Compress",
+        "topic": "File Management & Storage"
+      },
+      {
+        "questionId": "A2_04",
+        "questionText": "The part of a file name that indicates its format (e.g., '.txt', '.jpg') is called the...",
+        "options": ["Extension", "Directory", "Path", "Folder"],
+        "correctAnswer": "Extension",
+        "topic": "File Management & Storage"
+      },
+      {
+        "questionId": "A2_05",
+        "questionText": "In a Command Line Interface (CLI), what does 'Directory traversal' mean?",
+        "options": [
+          "Deleting files",
+          "Moving between different folders",
+          "Running an application",
+          "Changing permissions"
+        ],
+        "correctAnswer": "Moving between different folders",
+        "topic": "Basic Command Line Interface (CLI)"
+      },
+      {
+        "questionId": "A2_06",
+        "questionText": "An extra piece of information passed to a command in the terminal is called a(n)...",
+        "options": ["Path", "Directory", "Argument", "Execute"],
+        "correctAnswer": "Argument",
+        "topic": "Basic Command Line Interface (CLI)"
+      },
+      {
+        "questionId": "A2_07",
+        "questionText": "What does a '404 Not Found' error message typically mean?",
+        "options": [
+          "The server is offline",
+          "Your computer crashed",
+          "You do not have permission",
+          "The requested web page does not exist"
+        ],
+        "correctAnswer": "The requested web page does not exist",
+        "topic": "Common Error Messages"
+      },
+      {
+        "questionId": "A2_08",
+        "questionText": "If you see a 'Permission Denied' error, what is the most likely issue?",
+        "options": [
+          "Your hard drive is full",
+          "Your internet is disconnected",
+          "You don't have the required access rights",
+          "The file is corrupted"
+        ],
+        "correctAnswer": "You don't have the required access rights",
+        "topic": "Common Error Messages"
+      },
+      {
+        "questionId": "A2_09",
+        "questionText": "Which hardware device forwards data packets between computer networks?",
+        "options": ["Browser", "Router", "URL", "Monitor"],
+        "correctAnswer": "Router",
+        "topic": "Internet & Networking Basics"
+      },
+      {
+        "questionId": "A2_10",
+        "questionText": "The maximum rate of data transfer across a given path is known as...",
+        "options": ["Bandwidth", "IP Address", "Browser", "Wi-Fi"],
+        "correctAnswer": "Bandwidth",
+        "topic": "Internet & Networking Basics"
+      }
+    ]
+  },
+  {
+    "level": "B1",
+    "name": "THRESHOLD",
+    "questions": [
+      {
+        "questionId": "B1_01",
+        "questionText": "Which programming concept is used to store multiple values in a single variable?",
+        "options": ["Function", "Loop", "Array", "Conditional"],
+        "correctAnswer": "Array",
+        "topic": "Programming Core Concepts"
+      },
+      {
+        "questionId": "B1_02",
+        "questionText": "An 'If/Else' statement is an example of a...",
+        "options": ["String", "Data type", "Loop", "Conditional"],
+        "correctAnswer": "Conditional",
+        "topic": "Programming Core Concepts"
+      },
+      {
+        "questionId": "B1_03",
+        "questionText": "In HTML, additional information provided within a tag (like id or class) is called a(n)...",
+        "options": ["Attribute", "Selector", "Layout", "Grid"],
+        "correctAnswer": "Attribute",
+        "topic": "Web Development Foundations"
+      },
+      {
+        "questionId": "B1_04",
+        "questionText": "Designing a website so it looks good on all devices (desktops, tablets, and phones) is called...",
+        "options": [
+          "Flexbox",
+          "Responsive web design",
+          "Grid layout",
+          "Selector architecture"
+        ],
+        "correctAnswer": "Responsive web design",
+        "topic": "Web Development Foundations"
+      },
+      {
+        "questionId": "B1_05",
+        "questionText": "In a relational database, what is used to uniquely identify each record in a table?",
+        "options": ["Foreign Key", "Column", "Primary Key", "Query"],
+        "correctAnswer": "Primary Key",
+        "topic": "Relational Databases & Basic SQL"
+      },
+      {
+        "questionId": "B1_06",
+        "questionText": "Which SQL command is used to retrieve data from a database?",
+        "options": ["INSERT", "SELECT", "UPDATE", "DELETE"],
+        "correctAnswer": "SELECT",
+        "topic": "Relational Databases & Basic SQL"
+      },
+      {
+        "questionId": "B1_07",
+        "questionText": "In Git, what is the command to send your local committed changes to a remote repository?",
+        "options": ["Clone", "Pull", "Merge", "Push"],
+        "correctAnswer": "Push",
+        "topic": "Version Control with Git (Basics)"
+      },
+      {
+        "questionId": "B1_08",
+        "questionText": "A separate line of development in a Git repository is called a...",
+        "options": ["Commit", "Branch", "Repository", "Clone"],
+        "correctAnswer": "Branch",
+        "topic": "Version Control with Git (Basics)"
+      },
+      {
+        "questionId": "B1_09",
+        "questionText": "In a README file, the section that lists the software you must install before using the project is usually called...",
+        "options": ["Prerequisites", "Quick Start", "Configuration", "Summary"],
+        "correctAnswer": "Prerequisites",
+        "topic": "Technical Reading - Documentation"
+      },
+      {
+        "questionId": "B1_10",
+        "questionText": "When reading documentation, 'Configuration' typically refers to...",
+        "options": [
+          "How to download the code",
+          "Setting up system settings and variables",
+          "Writing custom CSS",
+          "Reporting bugs to the author"
+        ],
+        "correctAnswer": "Setting up system settings and variables",
+        "topic": "Technical Reading - Documentation"
+      }
+    ]
+  },
+  {
+    "level": "B2",
+    "name": "VANTAGE",
+    "questions": [
+      {
+        "questionId": "B2_01",
+        "questionText": "In OOP, hiding the internal state of an object and requiring all interaction to be performed through an object's methods is known as...",
+        "options": [
+          "Inheritance",
+          "Polymorphism",
+          "Encapsulation",
+          "Abstraction"
+        ],
+        "correctAnswer": "Encapsulation",
+        "topic": "Object-Oriented Programming (OOP)"
+      },
+      {
+        "questionId": "B2_02",
+        "questionText": "The ability of different classes to be treated as instances of the same class through a common interface is called...",
+        "options": [
+          "Inheritance",
+          "Encapsulation",
+          "Polymorphism",
+          "Abstraction"
+        ],
+        "correctAnswer": "Polymorphism",
+        "topic": "Object-Oriented Programming (OOP)"
+      },
+      {
+        "questionId": "B2_03",
+        "questionText": "Which HTTP method is conventionally used to submit data to be processed to a specified resource?",
+        "options": ["GET", "POST", "DELETE", "OPTIONS"],
+        "correctAnswer": "POST",
+        "topic": "Backend Development & RESTful APIs"
+      },
+      {
+        "questionId": "B2_04",
+        "questionText": "An HTTP status code of 500 indicates...",
+        "options": [
+          "Success",
+          "Not Found",
+          "Unauthorized",
+          "Internal Server Error"
+        ],
+        "correctAnswer": "Internal Server Error",
+        "topic": "Backend Development & RESTful APIs"
+      },
+      {
+        "questionId": "B2_05",
+        "questionText": "A test that randomly passes or fails without any changes to the code is known as a...",
+        "options": [
+          "Unit test",
+          "Integration test",
+          "Flaky test",
+          "Manual test"
+        ],
+        "correctAnswer": "Flaky test",
+        "topic": "Software Testing & QA/QC"
+      },
+      {
+        "questionId": "B2_06",
+        "questionText": "Testing individual components or functions of a software in isolation is called...",
+        "options": [
+          "Integration testing",
+          "Unit testing",
+          "Automation testing",
+          "Defect tracking"
+        ],
+        "correctAnswer": "Unit testing",
+        "topic": "Software Testing & QA/QC"
+      },
+      {
+        "questionId": "B2_07",
+        "questionText": "In Scrum, a short, time-boxed period when a scrum team works to complete a set amount of work is called a...",
+        "options": ["Backlog", "Daily Standup", "Sprint", "Retrospective"],
+        "correctAnswer": "Sprint",
+        "topic": "Agile/Scrum Framework"
+      },
+      {
+        "questionId": "B2_08",
+        "questionText": "A meeting held at the end of a sprint to discuss what went well and what could be improved is a...",
+        "options": ["User Story", "Daily Standup", "Retrospective", "Epic"],
+        "correctAnswer": "Retrospective",
+        "topic": "Agile/Scrum Framework"
+      },
+      {
+        "questionId": "B2_09",
+        "questionText": "In a bug report, the 'Expected behavior' section describes...",
+        "options": [
+          "What the software actually did when it crashed",
+          "What the software should have done if it worked correctly",
+          "The operating system used",
+          "How important the bug is"
+        ],
+        "correctAnswer": "What the software should have done if it worked correctly",
+        "topic": "Technical Writing - Bug Reports"
+      },
+      {
+        "questionId": "B2_10",
+        "questionText": "Which field in a bug report details the exact sequence of actions that caused the error?",
+        "options": [
+          "Steps to reproduce",
+          "Severity",
+          "Actual result",
+          "Environment"
+        ],
+        "correctAnswer": "Steps to reproduce",
+        "topic": "Technical Writing - Bug Reports"
+      }
+    ]
+  },
+  {
+    "level": "C1",
+    "name": "ADVANCED",
+    "questions": [
+      {
+        "questionId": "C1_01",
+        "questionText": "An architectural style that structures an application as a collection of loosely coupled, independently deployable services is...",
+        "options": ["Monolith", "Microservices", "Replication", "Caching"],
+        "correctAnswer": "Microservices",
+        "topic": "System Architecture & Scalability"
+      },
+      {
+        "questionId": "C1_02",
+        "questionText": "Distributing network or application traffic across a number of servers is known as...",
+        "options": [
+          "Caching",
+          "High Availability",
+          "Load Balancing",
+          "Scalability"
+        ],
+        "correctAnswer": "Load Balancing",
+        "topic": "System Architecture & Scalability"
+      },
+      {
+        "questionId": "C1_03",
+        "questionText": "AWS, Azure, and GCP are primary providers of...",
+        "options": [
+          "IaaS (Infrastructure as a Service)",
+          "SaaS (Software as a Service)",
+          "Local hardware servers",
+          "Monolithic applications"
+        ],
+        "correctAnswer": "IaaS (Infrastructure as a Service)",
+        "topic": "Cloud Computing & DevOps"
+      },
+      {
+        "questionId": "C1_04",
+        "questionText": "Docker and Kubernetes are technologies primarily associated with...",
+        "options": [
+          "Database management",
+          "Containerization and orchestration",
+          "Front-end styling",
+          "Graphic design"
+        ],
+        "correctAnswer": "Containerization and orchestration",
+        "topic": "Cloud Computing & DevOps"
+      },
+      {
+        "questionId": "C1_05",
+        "questionText": "A cyber attack that inserts malicious code into a database query is called...",
+        "options": [
+          "Cross-Site Scripting (XSS)",
+          "SQL Injection",
+          "DDoS",
+          "Hashing"
+        ],
+        "correctAnswer": "SQL Injection",
+        "topic": "Cyber Security & Cryptography"
+      },
+      {
+        "questionId": "C1_06",
+        "questionText": "An attack meant to shut down a machine or network by overwhelming it with traffic is known as...",
+        "options": [
+          "Penetration Testing",
+          "Encryption",
+          "DDoS",
+          "Firewall breach"
+        ],
+        "correctAnswer": "DDoS",
+        "topic": "Cyber Security & Cryptography"
+      },
+      {
+        "questionId": "C1_07",
+        "questionText": "In AI, LLM stands for...",
+        "options": [
+          "Large Logic Machine",
+          "Local Learning Module",
+          "Large Language Model",
+          "Linear Learning Mechanism"
+        ],
+        "correctAnswer": "Large Language Model",
+        "topic": "Data Science, AI & Machine Learning"
+      },
+      {
+        "questionId": "C1_08",
+        "questionText": "A subset of machine learning based on artificial neural networks with multiple layers is called...",
+        "options": [
+          "Generative AI",
+          "Deep Learning",
+          "Data Pipeline",
+          "Big Data"
+        ],
+        "correctAnswer": "Deep Learning",
+        "topic": "Data Science, AI & Machine Learning"
+      },
+      {
+        "questionId": "C1_09",
+        "questionText": "In technical sales, RFP stands for...",
+        "options": [
+          "Request for Proposal",
+          "Reason for Purchase",
+          "Return format Protocol",
+          "Requirement for Programming"
+        ],
+        "correctAnswer": "Request for Proposal",
+        "topic": "Tech Pitching & RFP"
+      },
+      {
+        "questionId": "C1_10",
+        "questionText": "When pitching a tech solution, explaining the 'Total Cost of Ownership' involves detailing...",
+        "options": [
+          "Only the initial software license cost",
+          "The developer's salary",
+          "Direct and indirect costs of the product over its lifecycle",
+          "The cloud server bandwidth speed"
+        ],
+        "correctAnswer": "Direct and indirect costs of the product over its lifecycle",
+        "topic": "Tech Pitching & RFP"
+      }
+    ]
+  },
+  {
+    "level": "C2",
+    "name": "MASTERY",
+    "questions": [
+      {
+        "questionId": "C2_01",
+        "questionText": "Which European regulation mandates strict rules for data protection and privacy?",
+        "options": ["HIPAA", "PCI-DSS", "GDPR", "ISO/IEC 27001"],
+        "correctAnswer": "GDPR",
+        "topic": "IT Governance & Compliance"
+      },
+      {
+        "questionId": "C2_02",
+        "questionText": "An international standard on how to manage information security is...",
+        "options": ["ITIL framework", "ISO/IEC 27001", "HIPAA", "W3C"],
+        "correctAnswer": "ISO/IEC 27001",
+        "topic": "IT Governance & Compliance"
+      },
+      {
+        "questionId": "C2_03",
+        "questionText": "Systematic and repeatable errors in a computer system that create unfair outcomes represent...",
+        "options": [
+          "Data privacy",
+          "Intellectual property",
+          "Algorithmic bias",
+          "AI safety regulations"
+        ],
+        "correctAnswer": "Algorithmic bias",
+        "topic": "Tech Ethics & AI Regulation"
+      },
+      {
+        "questionId": "C2_04",
+        "questionText": "A situation where a customer using a product or service cannot easily transition to a competitor's product is called...",
+        "options": [
+          "Legacy migration",
+          "Technical Debt",
+          "Vendor lock-in",
+          "Total Cost of Ownership"
+        ],
+        "correctAnswer": "Vendor lock-in",
+        "topic": "Enterprise Technical Strategy"
+      },
+      {
+        "questionId": "C2_05",
+        "questionText": "The implied cost of additional rework caused by choosing an easy solution now instead of a better approach that would take longer is known as...",
+        "options": [
+          "Vendor management",
+          "Technical Debt",
+          "TCO",
+          "Legacy migration"
+        ],
+        "correctAnswer": "Technical Debt",
+        "topic": "Enterprise Technical Strategy"
+      },
+      {
+        "questionId": "C2_06",
+        "questionText": "IEEE, ACM, and W3C are primarily known for...",
+        "options": [
+          "Selling cloud infrastructure",
+          "Publishing tech standards and academic research papers",
+          "Providing corporate IT training",
+          "Manufacturing server hardware"
+        ],
+        "correctAnswer": "Publishing tech standards and academic research papers",
+        "topic": "R&D & Academic Papers"
+      },
+      {
+        "questionId": "C2_07",
+        "questionText": "A document issued by an organization to promote or highlight the features of a solution, product, or service is often called a...",
+        "options": [
+          "Whitepaper",
+          "Bug report",
+          "Daily standup note",
+          "Post-mortem"
+        ],
+        "correctAnswer": "Whitepaper",
+        "topic": "R&D & Academic Papers"
+      },
+      {
+        "questionId": "C2_08",
+        "questionText": "A highly detailed report analyzing the causes of a critical system failure after the issue has been resolved is known as a...",
+        "options": ["Whitepaper", "Post-mortem report", "Bug report", "RFP"],
+        "correctAnswer": "Post-mortem report",
+        "topic": "Crisis Management"
+      },
+      {
+        "questionId": "C2_09",
+        "questionText": "When reporting a massive data breach to a government regulatory body, the communication must primarily be...",
+        "options": [
+          "Informal and relaxed",
+          "Delayed until the issue is fixed",
+          "Transparent, compliant, and legally accurate",
+          "Focused on blaming a specific engineer"
+        ],
+        "correctAnswer": "Transparent, compliant, and legally accurate",
+        "topic": "Crisis Management"
+      },
+      {
+        "questionId": "C2_10",
+        "questionText": "In high-stakes negotiation for an enterprise software contract, 'SLA' refers to...",
+        "options": [
+          "Software License Agreement",
+          "Service Level Agreement",
+          "System Logic Architecture",
+          "Server Load Application"
+        ],
+        "correctAnswer": "Service Level Agreement",
+        "topic": "High-Stakes Negotiation"
+      }
+    ]
+  }
+]

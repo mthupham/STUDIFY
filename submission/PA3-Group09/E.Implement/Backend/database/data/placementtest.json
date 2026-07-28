@@ -1,0 +1,125 @@
+{
+  "test_title": "English Placement Test",
+  "questions": [
+    {
+      "question_number": 1,
+      "level": "A1",
+      "question": "She ___ a teacher at the local school.",
+      "options": {
+        "A": "am",
+        "B": "is",
+        "C": "are",
+        "D": "be"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question_number": 2,
+      "level": "A1",
+      "question": "I usually ___ breakfast at 7:00 AM.",
+      "options": {
+        "A": "has",
+        "B": "eating",
+        "C": "eat",
+        "D": "eats"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "question_number": 3,
+      "level": "A2",
+      "question": "Yesterday, they ___ to the cinema to watch a new movie.",
+      "options": {
+        "A": "go",
+        "B": "going",
+        "C": "went",
+        "D": "gone"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "question_number": 4,
+      "level": "A2",
+      "question": "This book is ___ than the one I read last week.",
+      "options": {
+        "A": "more interesting",
+        "B": "most interesting",
+        "C": "interesting",
+        "D": "much interesting"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question_number": 5,
+      "level": "B1",
+      "question": "I ___ my keys. I can't find them anywhere.",
+      "options": {
+        "A": "have lost",
+        "B": "lost",
+        "C": "lose",
+        "D": "losing"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question_number": 6,
+      "level": "B1",
+      "question": "If it rains tomorrow, we ___ the picnic.",
+      "options": {
+        "A": "cancel",
+        "B": "will cancel",
+        "C": "cancelled",
+        "D": "would cancel"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question_number": 7,
+      "level": "B2",
+      "question": "By the time we arrived at the station, the train ___.",
+      "options": {
+        "A": "already left",
+        "B": "has already left",
+        "C": "had already left",
+        "D": "was already leaving"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "question_number": 8,
+      "level": "B2",
+      "question": "He looks exhausted. He ___ working all night.",
+      "options": {
+        "A": "must have been",
+        "B": "can't have been",
+        "C": "should have been",
+        "D": "might be"
+      },
+      "correct_answer": "A"
+    },
+    {
+      "question_number": 9,
+      "level": "C1",
+      "question": "Hardly ___ left the building when the fire alarm suddenly rang.",
+      "options": {
+        "A": "he had",
+        "B": "did he",
+        "C": "had he",
+        "D": "he did"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "question_number": 10,
+      "level": "C2",
+      "question": "But for his timely intervention, the entire project ___ completely.",
+      "options": {
+        "A": "will fail",
+        "B": "would fail",
+        "C": "had failed",
+        "D": "would have failed"
+      },
+      "correct_answer": "D"
+    }
+  ]
+}

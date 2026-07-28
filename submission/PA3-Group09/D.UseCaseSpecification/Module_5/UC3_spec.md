@@ -9,34 +9,39 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| 23/Jul/26 | 1.0 | Initial RUP specification draft for UC5.3 | System Analyst |
+| 23/Jul/26 | 1.0 | Initial RUP specification draft for UC5.3 | Gia Phúc |
 
 ---
 
 ### Table of Contents
 
-- [1. Use-Case Name](#1-use-case-name)
-  - [1.1 Brief Description](#11-brief-description)
-- [2. Flow of Events](#2-flow-of-events)
-  - [2.1 Basic Flow](#21-basic-flow)
-  - [2.2 Alternative Flows](#22-alternative-flows)
-    - [2.2.1 Brief Input Evaluation](#221-brief-input-evaluation)
-    - [2.2.2 Non-English Speech Input Detected](#222-non-english-speech-input-detected)
-    - [2.2.3 Rubric Configuration Missing](#223-rubric-configuration-missing)
-- [3. Special Requirements](#3-special-requirements)
-  - [3.1 Multi-Criteria Scoring Consistency](#31-multi-criteria-scoring-consistency)
-  - [3.2 Evaluation Latency](#32-evaluation-latency)
-  - [3.3 Deterministic Scoring Standards](#33-deterministic-scoring-standards)
-- [4. Preconditions](#4-preconditions)
-  - [4.1 Transcribed Input Available](#41-transcribed-input-available)
-  - [4.2 Evaluation Rubric Loaded](#42-evaluation-rubric-loaded)
-  - [4.3 Scenario Context Set](#43-scenario-context-set)
-- [5. Postconditions](#5-postconditions)
-  - [5.1 Metrics Logged](#51-metrics-logged)
-  - [5.2 UI Performance Panel Updated](#52-ui-performance-panel-updated)
-  - [5.3 Analytics Trend Updated](#53-analytics-trend-updated)
-- [6. Extension Points](#6-extension-points)
-  - [6.1 Performance Weakness Detected](#61-performance-weakness-detected)
+- [AI Speaking Assistant](#ai-speaking-assistant)
+  - [Use-Case Specification: UC5.3 Evaluate Performance on Specific Criteria](#use-case-specification-uc53-evaluate-performance-on-specific-criteria)
+    - [Revision History](#revision-history)
+    - [Table of Contents](#table-of-contents)
+  - [1. Use-Case Name](#1-use-case-name)
+    - [1.1 Brief Description](#11-brief-description)
+  - [2. Flow of Events](#2-flow-of-events)
+    - [2.1 Basic Flow](#21-basic-flow)
+    - [2.2 Alternative Flows](#22-alternative-flows)
+      - [2.2.1 Brief Input Evaluation](#221-brief-input-evaluation)
+      - [2.2.2 Non-English Speech Input Detected](#222-non-english-speech-input-detected)
+      - [2.2.3 Rubric Configuration Missing](#223-rubric-configuration-missing)
+  - [](#)
+  - [3. Special Requirements](#3-special-requirements)
+    - [3.1 Multi-Criteria Scoring Consistency](#31-multi-criteria-scoring-consistency)
+    - [3.2 Evaluation Latency](#32-evaluation-latency)
+    - [3.3 Deterministic Scoring Standards](#33-deterministic-scoring-standards)
+  - [4. Preconditions](#4-preconditions)
+    - [4.1 Transcribed Input Available](#41-transcribed-input-available)
+    - [4.2 Evaluation Rubric Loaded](#42-evaluation-rubric-loaded)
+    - [4.3 Scenario Context Set](#43-scenario-context-set)
+  - [5. Postconditions](#5-postconditions)
+    - [5.1 Metrics Logged](#51-metrics-logged)
+    - [5.2 UI Performance Panel Updated](#52-ui-performance-panel-updated)
+    - [5.3 Analytics Trend Updated](#53-analytics-trend-updated)
+  - [6. Extension Points](#6-extension-points)
+    - [6.1 Performance Weakness Detected](#61-performance-weakness-detected)
 
 ---
 

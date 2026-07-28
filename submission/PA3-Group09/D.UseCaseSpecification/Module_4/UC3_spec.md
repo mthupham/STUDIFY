@@ -9,7 +9,7 @@
 
 | Date | Version | Description | Author |
 | :--- | :--- | :--- | :--- |
-| `23/07/2026` | `1.0` | Initial version of Create Flashcard from Highlighted Text Use-Case Specification | `Group 09` |
+| `23/07/2026` | `1.0` | Initial version of Create Flashcard from Highlighted Text Use-Case Specification | `Thiên Phước` |
 
 ---
 
