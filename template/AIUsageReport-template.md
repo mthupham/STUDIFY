@@ -20,11 +20,23 @@
 
 ## Kim Hằng's AI Usage:
 
+* Tool:
+* Purpose:
+* Prompt used:
+* AI-generated content: (brief description)
+* Student's work and validation:
+
 **Screenshots/Chat History:** *See Appendix*
 
 ---
 
 ## Khánh Linh's AI Usage:
+
+* Tool:
+* Purpose:
+* Prompt used:
+* AI-generated content: (brief description)
+* Student's work and validation:
 
 **Screenshots/Chat History:** *See Appendix*
 
@@ -32,17 +44,35 @@
 
 ## Gia Phúc's AI Usage:
 
+* Tool:
+* Purpose:
+* Prompt used:
+* AI-generated content: (brief description)
+* Student's work and validation:
+
 **Screenshots/Chat History:** *See Appendix*
 
 ---
 
 ## Thiên Phước's AI Usage:
 
+* Tool:
+* Purpose:
+* Prompt used:
+* AI-generated content: (brief description)
+* Student's work and validation:
+
 **Screenshots/Chat History:** *See Appendix*
 
 ---
 
 ## Minh Thư's AI Usage:
+
+* Tool:
+* Purpose:
+* Prompt used:
+* AI-generated content: (brief description)
+* Student's work and validation:
 
 **Screenshots/Chat History:** *See Appendix*
 
