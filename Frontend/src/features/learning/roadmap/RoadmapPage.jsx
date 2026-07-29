@@ -1,14 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
+import { useAuthStore } from '../../auth/store/useAuthStore';
 import roadmapData from '../../../mocks/roadmap.json';
 import './RoadmapPage.css';
 
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
 export default function RoadmapPage() {
+  const token = useAuthStore((state) => state.token);
   const scrollRef = useRef(null);
   const [hoveredNode, setHoveredNode] = useState(null);
   const [pressedNode, setPressedNode] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [pressedCard, setPressedCard] = useState(null);
   const [activeLevelIndex, setActiveLevelIndex] = useState(0);
+  const [assignedLevel, setAssignedLevel] = useState('A1');
+  const [currentLevelTitle, setCurrentLevelTitle] = useState('Beginner');
+  const [loadingRoadmap, setLoadingRoadmap] = useState(true);
+  const [roadmapError, setRoadmapError] = useState(null);
 
   const SECTION_WIDTH = 2000;
   const getNodeTop = (row) => (row === 'top' ? 36 : 180);
@@ -29,11 +38,7 @@ export default function RoadmapPage() {
       const scrollLeft = scrollRef.current.scrollLeft;
       const viewportWidth = scrollRef.current.clientWidth;
       const centerScroll = scrollLeft + viewportWidth / 2;
-      
-      
       const centerViewIndex = Math.floor(centerScroll / SECTION_WIDTH);
-      
-      // Clamp to valid range
       const levelIndex = Math.max(0, Math.min(centerViewIndex, roadmapData.views.length - 1));
       setActiveLevelIndex(levelIndex);
     };
@@ -44,6 +49,38 @@ export default function RoadmapPage() {
       return () => scrollContainer.removeEventListener('scroll', handleScroll);
     }
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadRoadmap = async () => {
+      if (!token) return;
+      setLoadingRoadmap(true);
+      setRoadmapError(null);
+      try {
+        const { data } = await axios.get(`${API_BASE}/placement-test/my-roadmap`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!cancelled) {
+          const assigned = data.data.assignedLevel || 'A1';
+          setAssignedLevel(assigned);
+          setCurrentLevelTitle(data.data.levelTitle || levelLabels[assigned] || 'Beginner');
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setRoadmapError('Không thể tải lộ trình Roadmap.');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingRoadmap(false);
+        }
+      }
+    };
+
+    loadRoadmap();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
 
   const makePath = (views) => {
     const points = views.flatMap((view, viewIndex) =>
@@ -96,26 +133,32 @@ export default function RoadmapPage() {
             <h2 style={styles.title}>Learning Roadmap</h2>
             <p style={styles.sub}>Mastering English: From Beginner to Fluency</p>
           </div>
-          <div style={styles.badge}>🏆 Current: B2 Upper Intermediate</div>
+          <div style={styles.badge}>
+            🏆 Current: {loadingRoadmap ? 'Loading…' : `${assignedLevel} ${currentLevelTitle}`}
+          </div>
         </header>
 
         <section style={styles.levelRibbon}>
           <div style={styles.levelLine} />
-          {roadmapData.levels.map((level, index) => (
-            <div key={level} style={styles.levelBadgeWrapper}>
-              <span style={{ 
-                ...styles.levelBadge, 
-                background: index === activeLevelIndex ? badgeColors[level] : '#CBD5E1',
-                color: index === activeLevelIndex ? '#fff' : '#6B7280',
-                transition: 'all 0.3s ease'
-              }}>{level}</span>
-              <div style={{ 
-                ...styles.levelLabel,
-                color: index === activeLevelIndex ? '#1F2937' : '#9CA3AF',
-                transition: 'color 0.3s ease'
-              }}>{levelLabels[level]}</div>
-            </div>
-          ))}
+          {roadmapData.levels.map((level, index) => {
+            const isCurrent = level === assignedLevel;
+            return (
+              <div key={level} style={styles.levelBadgeWrapper}>
+                <span style={{ 
+                  ...styles.levelBadge, 
+                  background: isCurrent ? badgeColors[level] : index === activeLevelIndex ? badgeColors[level] : '#CBD5E1',
+                  color: isCurrent || index === activeLevelIndex ? '#fff' : '#6B7280',
+                  transition: 'all 0.3s ease'
+                }}>{level}</span>
+                <div style={{ 
+                  ...styles.levelLabel,
+                  color: isCurrent ? '#111827' : index === activeLevelIndex ? '#1F2937' : '#9CA3AF',
+                  fontWeight: isCurrent ? 700 : 500,
+                  transition: 'color 0.3s ease'
+                }}>{levelLabels[level]}</div>
+              </div>
+            );
+          })}
         </section>
 
         <div className="roadmapScroll" ref={scrollRef} style={styles.scrollArea}>

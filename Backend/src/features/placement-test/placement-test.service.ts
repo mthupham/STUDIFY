@@ -11,7 +11,7 @@ export class PlacementTestService implements OnModuleInit {
   private lessonData: any[] = [];
   
   // Giả lập lưu trữ Level hiện tại của User sau khi test (Thay thế bằng DB Sequelize sau này)
-  private userLevelStorage = new Map<string, string>();
+  private userLevelStorage = new Map<string, { assignedLevel: string; percentage: number }>();
 
   onModuleInit() {
     try {
@@ -120,11 +120,11 @@ export class PlacementTestService implements OnModuleInit {
       }
     }
 
-    this.userLevelStorage.set(String(userId), assignedLevel);
+    const percentage = parseFloat(((totalCorrect / questions.length) * 100).toFixed(2));
+    this.userLevelStorage.set(String(userId), { assignedLevel, percentage });
     await this.userService.markOnboardingComplete(userId);
 
     // BỔ SUNG: Tính toán tỷ lệ phần trăm và đưa ra lời phê động y chang trong hình thiết kế
-    const percentage = parseFloat(((totalCorrect / questions.length) * 100).toFixed(2));
     let feedbackTitle = 'KEEP TRYING!';
     let feedbackMessage = 'You are off to a good start. Let\'s build up your foundation together!';
 
@@ -163,7 +163,8 @@ export class PlacementTestService implements OnModuleInit {
    * API LẤY LỘ TRÌNH CHI TIẾT (Đóng gói cấu trúc Chương/Bài học lồng nhau khớp 100% UI Sơ đồ)
    */
   getMyRoadmap(userId: number) {
-    const userLevel = this.userLevelStorage.get(String(userId)) || 'A1';
+    const userPlacement = this.userLevelStorage.get(String(userId)) || { assignedLevel: 'A1', percentage: 0 };
+    const userLevel = userPlacement.assignedLevel;
 
     // 2. Tìm dữ liệu level trong file lesson.json
     const levelGroupData = this.lessonData.find((g) => g.level.toUpperCase() === userLevel.toUpperCase());
@@ -234,6 +235,7 @@ export class PlacementTestService implements OnModuleInit {
       data: {
         userId: userId,
         assignedLevel: userLevel,
+        percentage: userPlacement.percentage,
         levelTitle: levelGroupData.level_title, // Tên level to (Ví dụ: BREAKTHROUGH)
         totalChapters: finalChapters.length,
         chapters: finalChapters // Trả về cấu trúc lồng nhau y chang Frontend mong đợi

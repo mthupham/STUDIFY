@@ -9,7 +9,7 @@ export default function Dashboard() {
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
 
-  const [roadmap, setRoadmap] = useState(null); // { assignedLevel, levelTitle, chapters }
+  const [roadmap, setRoadmap] = useState(null); // { assignedLevel, levelTitle, chapters, percentage }
   const [loadingRoadmap, setLoadingRoadmap] = useState(true);
   const [roadmapError, setRoadmapError] = useState(null);
 
@@ -152,12 +152,12 @@ export default function Dashboard() {
                     stroke="currentColor"
                     strokeWidth="3"
                     strokeLinecap="round"
-                    strokeDasharray={`${firstChapter?.lessons?.[0]?.progress ?? 0} 100.5`}
+                    strokeDasharray={`${roadmap?.percentage ?? 0} 100.5`}
                   />
                 </svg>
                 <div className="absolute flex flex-col items-center justify-center text-center">
                   <span className="text-2xl font-bold tracking-tight text-gray-900">
-                    {firstChapter?.lessons?.[0]?.progress ?? 0}%
+                    {roadmap?.percentage ?? 0}%
                   </span>
                   <span className="text-[10px] font-semibold tracking-wider text-gray-500 uppercase leading-none mt-0.5">
                     COURSE
