@@ -14,6 +14,8 @@ export default function ProfilePage() {
   const token = useAuthStore((state) => state.token);
   const setAuthSession = useAuthStore((state) => state.setAuthSession);
   const profileName = user?.name || "User";
+  const profileInitial =
+  profileName.trim().charAt(0).toUpperCase() || "?";
   const profileEmail = user?.email || "user@gmail.com";
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(profileName);
@@ -76,59 +78,88 @@ export default function ProfilePage() {
   return (
     <div className="w-full h-full p-8 flex flex-col gap-8 bg-gray-50">
       {/* --- PROFILE HEADER SECTION --- */}
-      <header className="w-full p-10 bg-white rounded-xl shadow-sm flex gap-8 items-start">
-        {/* Avatar */}
-        <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-md bg-[#0058BE]">
-          {/* Neu co anh: <img src="..." alt={profileName} className="w-full h-full object-cover" /> */}
-        </div>
+     <header className="w-full p-10 bg-white rounded-xl shadow-sm flex gap-8 items-center">
+  {/* Avatar */}
+  <div
+    className="
+      relative
+      w-40
+      h-40
+      rounded-full
+      overflow-hidden
+      border-4
+      border-white
+      shadow-md
+      bg-[#2563EB]
+      flex
+      items-center
+      justify-center
+      flex-shrink-0
+    "
+    aria-label={`Avatar of ${profileName}`}
+  >
+    <span className="text-white text-6xl font-bold uppercase select-none">
+      {profileInitial}
+    </span>
+  </div>
 
-        {/* User Info */}
-        <div className="flex-1 pt-2 flex flex-col gap-4">
-          <h1 className="text-3xl font-bold text-[#131B2E] font-inter">
-            {profileName}
-          </h1>
+  {/* User Info */}
+  <div className="flex-1 flex flex-col gap-4">
+    <h1 className="text-3xl font-bold text-[#131B2E] font-inter">
+      {profileName}
+    </h1>
 
-          {!isEditing ? (
-            <button
-              onClick={() => {
-                setName(profileName);
-                setEmail(profileEmail);
-                setError("");
-                setMessage("");
-                setIsEditing(true);
-              }}
-              className="px-8 py-3 bg-[#004AC6] text-white font-medium text-sm rounded-lg shadow-sm hover:bg-[#003da4] transition-colors w-max"
-            >
-              Edit Profile
-            </button>
-          ) : (
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleSaveProfile}
-                disabled={isSaving}
-                className="px-8 py-3 bg-[#004AC6] text-white font-medium text-sm rounded-lg shadow-sm hover:bg-[#003da4] transition-colors disabled:opacity-60"
-              >
-                {isSaving ? "Saving..." : "Save"}
-              </button>
-              <button
-                onClick={() => {
-                  setIsEditing(false);
-                  setError("");
-                  setMessage("");
-                  setName(profileName);
-                  setEmail(profileEmail);
-                }}
-                className="px-8 py-3 border border-[#C3C6D7] text-[#434655] font-medium text-sm rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
+    {!isEditing ? (
+      <button
+        onClick={() => {
+          setName(profileName);
+          setEmail(profileEmail);
+          setError("");
+          setMessage("");
+          setIsEditing(true);
+        }}
+        className="px-8 py-3 bg-[#004AC6] text-white font-medium text-sm rounded-lg shadow-sm hover:bg-[#003da4] transition-colors w-max"
+      >
+        Edit Profile
+      </button>
+    ) : (
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleSaveProfile}
+          disabled={isSaving}
+          className="px-8 py-3 bg-[#004AC6] text-white font-medium text-sm rounded-lg shadow-sm hover:bg-[#003da4] transition-colors disabled:opacity-60"
+        >
+          {isSaving ? "Saving..." : "Save"}
+        </button>
 
-          {message && <p className="text-sm text-emerald-600">{message}</p>}
-          {error && <p className="text-sm text-red-600">{error}</p>}
-        </div>
-      </header>
+        <button
+          onClick={() => {
+            setIsEditing(false);
+            setError("");
+            setMessage("");
+            setName(profileName);
+            setEmail(profileEmail);
+          }}
+          className="px-8 py-3 border border-[#C3C6D7] text-[#434655] font-medium text-sm rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    )}
+
+    {message && (
+      <p className="text-sm text-emerald-600">
+        {message}
+      </p>
+    )}
+
+    {error && (
+      <p className="text-sm text-red-600">
+        {error}
+      </p>
+    )}
+  </div>
+</header>
 
       {/* --- MAIN CONTENT AREA (Bento Grid) --- */}
       <main className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
