@@ -16,11 +16,11 @@ export class AuthService {
   ) {}
 
   private generateTokens(payload: { id: number; email: string; role: string }) {
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
     return { accessToken, refreshToken };
   }
-
+s
   // Loại bỏ các field nhạy cảm trước khi trả về client
   private sanitizeUser(user: any) {
     // Nếu là Sequelize instance thì convert sang plain object trước

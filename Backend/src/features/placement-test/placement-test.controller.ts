@@ -1,34 +1,25 @@
-import { Body, Controller, Post, Get, Query, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlacementTestService } from './placement-test.service';
-import { SubmitTestDto } from './submit-test.dto';
+import { SubmitPlacementTestDto } from './dto/submit-placement-test.dto';
 import { JwtGuard } from '../../modules/auth/guards/jwt.guard';
 
+@ApiTags('Placement Test')
 @Controller('placement-test')
 export class PlacementTestController {
   constructor(private readonly placementTestService: PlacementTestService) {}
 
   @Get('questions')
-  getQuestions() {
+  @ApiOperation({ summary: 'Lấy danh sách câu hỏi test đầu vào' })
+  async getQuestions() {
     return this.placementTestService.getQuestions();
   }
 
-  @UseGuards(JwtGuard)
   @Post('submit')
-  submit(@Body() dto: SubmitTestDto, @Req() req) {
-    return this.placementTestService.submitTest(dto, req.user.id);
-  }
-
   @UseGuards(JwtGuard)
-  @Get('my-roadmap')
-  getMyRoadmap(@Req() req) {
-    return this.placementTestService.getMyRoadmap(req.user.id);
-  }
-
-  @Get('lesson-detail')
-  getLessonDetail(
-    @Query('lessonId') lessonId: string,
-    @Query('type') type: string,
-  ) {
-    return this.placementTestService.getLessonDetail(lessonId, type);
+  @ApiOperation({ summary: 'Chấm điểm bài test placement-test' })
+  @ApiResponse({ status: 200, description: 'Chấm điểm và trả kết quả thành công' })
+  async submitTest(@Body() dto: SubmitPlacementTestDto, @Req() req: any) {
+    return this.placementTestService.submitTest(dto, req.user.id);
   }
 }

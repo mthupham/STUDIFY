@@ -48,6 +48,15 @@ export class UserService {
     },
   );
 }
+  async getCurrentLevel(userId: number): Promise<string> {
+      const user = await this.userModel.findByPk(userId);
+      return user?.currentLevel || 'A1';
+  }
+
+  async setCurrentLevel(userId: number, level: string) {
+      await this.userModel.update({ currentLevel: level }, { where: { id: userId } });
+  }
+
 
   async getUserById(id: number) {
   const user = await this.userModel.findByPk(id);
