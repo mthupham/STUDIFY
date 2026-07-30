@@ -121,6 +121,16 @@ export class PlacementTestService implements OnModuleInit {
     }
 
     this.userLevelStorage.set(String(userId), assignedLevel);
+    // Update số giờ học mỗi tuần nếu user có nhập
+    if (dto.weeklyStudyHours !== undefined) {
+      await this.userService.updateWeeklyStudyHours(
+        userId,
+        dto.weeklyStudyHours,
+      );
+    }
+
+
+    // Đánh dấu hoàn thành onboarding
     await this.userService.markOnboardingComplete(userId);
 
     // BỔ SUNG: Tính toán tỷ lệ phần trăm và đưa ra lời phê động y chang trong hình thiết kế

@@ -10,13 +10,17 @@ import UserProfile from "./features/user-profile/profile.jsx";
 import LessonPage from "./features/learning/lesson/LessonPage.tsx";
 import PracticeQuestions from "./features/learning/lesson/PracticeQuestions";
 import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
+import Result from "./features/onboarding/ResultPlacementTest.jsx";
 import { useAuthStore } from "./features/auth/store/useAuthStore";
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
   const user = useAuthStore((state) => state.user);
 
+  console.log("Guard user:", user);
+
   if (user && !user.hasCompletedOnboarding) {
+    console.log("Redirecting to onboarding");
     return <Navigate to="/onboarding" replace />;
   }
 
@@ -34,7 +38,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
 
         <Route path="/onboarding" element={<OnboardingApp />} />
-
+        <Route path="/placement-result" element={<Result />} />
         <Route
           path="/dashboard"
           element={

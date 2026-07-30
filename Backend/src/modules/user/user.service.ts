@@ -82,4 +82,16 @@ export class UserService {
       { where: { id: userId } }
     );
   }
+
+  async updateWeeklyStudyHours(
+  userId: number,
+  weeklyStudyHours: number,
+) {
+  await this.userModel.update(
+    { weeklyStudyHours },
+    {
+      where: { id: userId },
+    },
+  );
+}
 }
