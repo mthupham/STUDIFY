@@ -33,6 +33,21 @@ export class UserService {
     return user;
   }
 
+     async updateResetOtp(
+      email: string,
+        hashedOtp: string | null,
+        expires: Date | null,
+) {
+  await this.userModel.update(
+    {
+      resetOtp: hashedOtp,
+      resetOtpExpires: expires,
+    },
+    {
+      where: { email },
+    },
+  );
+}
   async getCurrentLevel(userId: number): Promise<string> {
       const user = await this.userModel.findByPk(userId);
       return user?.currentLevel || 'A1';
@@ -42,15 +57,6 @@ export class UserService {
       await this.userModel.update({ currentLevel: level }, { where: { id: userId } });
   }
 
-  async updateResetOtp(email: string, hashedOtp: string | null, expires: Date | null) {
-    await this.userModel.update(
-      { 
-        resetOtp: hashedOtp ?? undefined, 
-        resetOtpExpires: expires ?? undefined 
-      },
-      { where: { email } }
-    );
-  }
 
   async getUserById(id: number) {
   const user = await this.userModel.findByPk(id);
