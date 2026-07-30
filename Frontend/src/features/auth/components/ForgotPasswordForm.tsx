@@ -1,35 +1,49 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Image01 from '../../../assets/Studify_Image/Main Registration Container/Section - Left Side_ Informative/Learner focused.png';
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const [currentStep, setCurrentStep] = useState<'email' | 'reset'>('email');
   const navigate = useNavigate();
+  const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email) {
+    if (!email.trim()) {
       return alert('Please enter your email address.');
     }
 
     setIsLoading(true);
     setMessage('');
+    setError('');
 
-    setTimeout(() => {
-      setIsLoading(false);
-      setMessage('If an account exists for this email, we have sent reset instructions.');
+    try {
+      await axios.post(`${apiBaseUrl}/auth/forgot-password`, { email });
+      setMessage('OTP has been sent to your email.');
       setCurrentStep('reset');
-    }, 700);
+    } catch (err: any) {
+      const responseMessage = err?.response?.data?.message;
+      setError(Array.isArray(responseMessage) ? responseMessage.join(', ') : responseMessage || 'Unable to send reset request.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleResetSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!otp.trim()) {
+      return alert('Please enter the OTP sent to your email.');
+    }
 
     if (!newPassword || !confirmPassword) {
       return alert('Please enter and confirm your new password.');
@@ -41,13 +55,26 @@ export default function ForgotPasswordForm() {
 
     setIsLoading(true);
     setMessage('');
+    setError('');
 
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await axios.post(`${apiBaseUrl}/auth/reset-password`, {
+        email,
+        otp,
+        newPassword,
+      });
+
       setMessage('Your password has been updated successfully.');
+      setOtp('');
       setNewPassword('');
       setConfirmPassword('');
-    }, 700);
+      setCurrentStep('email');
+    } catch (err: any) {
+      const responseMessage = err?.response?.data?.message;
+      setError(Array.isArray(responseMessage) ? responseMessage.join(', ') : responseMessage || 'Unable to reset your password.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -82,8 +109,8 @@ export default function ForgotPasswordForm() {
             </h2>
             <p className="font-['Inter'] text-sm text-gray-500">
               {currentStep === 'email'
-                ? 'Enter your email and we will send you a link to reset your password.'
-                : 'Set a new password for your account in a separate reset step.'}
+                ? 'Enter your email and we will send you an OTP to reset your password.'
+                : 'Enter the OTP we sent and set a new password for your account.'}
             </p>
           </div>
 
@@ -105,6 +132,9 @@ export default function ForgotPasswordForm() {
               {message && (
                 <p className="w-full text-center text-xs font-medium text-emerald-600">{message}</p>
               )}
+              {error && (
+                <p className="w-full text-center text-xs font-medium text-red-600">{error}</p>
+              )}
 
               <button
                 type="submit"
@@ -112,12 +142,25 @@ export default function ForgotPasswordForm() {
                 className="mt-2 flex w-full cursor-pointer items-center justify-center rounded-lg bg-sky-700 px-4 py-3 shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <span className="font-['Inter'] text-sm font-semibold text-white">
-                  {isLoading ? 'Sending...' : 'Send Reset Link'}
+                  {isLoading ? 'Sending...' : 'Send OTP'}
                 </span>
               </button>
             </div>
           ) : (
             <div className="flex w-full flex-col items-start gap-4 self-stretch">
+              <div className="flex w-full flex-col gap-1.5 self-stretch">
+                <label className="font-['Inter'] text-xs font-semibold text-gray-700">OTP Code</label>
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter 6-digit OTP"
+                  className="w-full rounded-lg border border-slate-300 bg-transparent px-3.5 py-2.5 text-sm text-gray-900 focus:border-sky-700 focus:outline-none"
+                  disabled={isLoading}
+                  required
+                />
+              </div>
+
               <div className="flex w-full flex-col gap-1.5 self-stretch">
                 <label className="font-['Inter'] text-xs font-semibold text-gray-700">New Password</label>
                 <input
@@ -147,6 +190,9 @@ export default function ForgotPasswordForm() {
               {message && (
                 <p className="w-full text-center text-xs font-medium text-emerald-600">{message}</p>
               )}
+              {error && (
+                <p className="w-full text-center text-xs font-medium text-red-600">{error}</p>
+              )}
 
               <button
                 type="submit"
@@ -163,6 +209,7 @@ export default function ForgotPasswordForm() {
                 onClick={() => {
                   setCurrentStep('email');
                   setMessage('');
+                  setError('');
                 }}
                 className="w-full text-center text-sm font-semibold text-sky-700 hover:underline"
               >

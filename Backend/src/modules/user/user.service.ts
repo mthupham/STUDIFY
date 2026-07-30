@@ -33,15 +33,21 @@ export class UserService {
     return user;
   }
 
-  async updateResetOtp(email: string, hashedOtp: string | null, expires: Date | null) {
-    await this.userModel.update(
-      { 
-        resetOtp: hashedOtp ?? undefined, 
-        resetOtpExpires: expires ?? undefined 
-      },
-      { where: { email } }
-    );
-  }
+     async updateResetOtp(
+      email: string,
+        hashedOtp: string | null,
+        expires: Date | null,
+) {
+  await this.userModel.update(
+    {
+      resetOtp: hashedOtp,
+      resetOtpExpires: expires,
+    },
+    {
+      where: { email },
+    },
+  );
+}
 
   async getUserById(id: number) {
   const user = await this.userModel.findByPk(id);
