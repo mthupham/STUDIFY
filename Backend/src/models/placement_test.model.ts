@@ -9,3 +9,4 @@ export class PlacementTest extends Model<PlacementTest> {
   @HasMany(() => PlacementQuestion)
   declare placementQuestions: PlacementQuestion[];
 }
+

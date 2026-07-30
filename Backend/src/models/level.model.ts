@@ -14,6 +14,11 @@ export class Level extends Model<Level> {
   @Column({ allowNull: false, type: DataType.INTEGER })
   declare roadmapId: number;
 
+  // moi them
+  // level.model.ts
+@Column({ allowNull: false, type: DataType.STRING, unique: true })
+declare code: string; // 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'
+
   @BelongsTo(() => Roadmap)
   declare roadmap: Roadmap;
 
