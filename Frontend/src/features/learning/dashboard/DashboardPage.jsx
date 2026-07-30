@@ -9,7 +9,7 @@ export default function Dashboard() {
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
 
-  const [roadmap, setRoadmap] = useState(null); // { assignedLevel, levelTitle, chapters }
+  const [roadmap, setRoadmap] = useState(null); // { assignedLevel, levelTitle, views, metrics }
   const [loadingRoadmap, setLoadingRoadmap] = useState(true);
   const [roadmapError, setRoadmapError] = useState(null);
 
@@ -20,11 +20,11 @@ export default function Dashboard() {
       setLoadingRoadmap(true);
       setRoadmapError(null);
       try {
-        const { data } = await axios.get(`${API_BASE}/placement-test/my-roadmap`, {
+        const { data } = await axios.get(`${API_BASE}/roadmap`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!cancelled) {
-          setRoadmap(data.data);
+          setRoadmap(data);
         }
       } catch (err) {
         if (!cancelled) {
@@ -45,9 +45,18 @@ export default function Dashboard() {
     };
   }, [token]);
 
-  // Lấy danh sách bài học thật từ chương đầu tiên của lộ trình để thay cho mock "tasks"
-  const firstChapter = roadmap?.chapters?.[0];
-  const realTasks = firstChapter?.lessons ?? [];
+  // Lấy danh sách bài học thật từ level hiện tại (thay cho firstChapter/realTasks cũ)
+  const currentView = roadmap?.views?.find((v) => v.level === roadmap.assignedLevel);
+  const realTasks = currentView?.nodes ?? [];
+
+  // Tách "12/60" thành số để tính % cho vòng tròn tiến độ
+  let progressPercent = 0;
+  if (roadmap?.metrics?.lessons) {
+    const [done, total] = roadmap.metrics.lessons.split("/").map(Number);
+    if (total > 0) {
+      progressPercent = Math.round((done / total) * 100);
+    }
+  }
 
   return (
     /* MAIN CONTENT CANVAS: Toàn bộ vùng hiển thị chính của Dashboard */
@@ -99,7 +108,7 @@ export default function Dashboard() {
                   Mastery Progress
                 </h3>
               </div>
-              {/* Badge level giờ lấy từ kết quả placement test thật, không còn hardcode B2 */}
+              {/* Badge level lấy từ kết quả placement test thật */}
               <span className="rounded-full bg-sky-700 px-4 py-1.5 text-sm font-bold text-white">
                 {loadingRoadmap
                   ? "..."
@@ -120,7 +129,7 @@ export default function Dashboard() {
                   <div>
                     <span className="text-xs text-gray-700 block">Active Lesson</span>
                     <span className="text-base font-medium text-gray-900">
-                      {firstChapter?.chapterTitle || "—"}
+                      {realTasks[0]?.label || "—"}
                     </span>
                   </div>
                 </div>
@@ -152,12 +161,12 @@ export default function Dashboard() {
                     stroke="currentColor"
                     strokeWidth="3"
                     strokeLinecap="round"
-                    strokeDasharray={`${firstChapter?.lessons?.[0]?.progress ?? 0} 100.5`}
+                    strokeDasharray={`${(progressPercent / 100) * 100.5} 100.5`}
                   />
                 </svg>
                 <div className="absolute flex flex-col items-center justify-center text-center">
                   <span className="text-2xl font-bold tracking-tight text-gray-900">
-                    {firstChapter?.lessons?.[0]?.progress ?? 0}%
+                    {progressPercent}%
                   </span>
                   <span className="text-[10px] font-semibold tracking-wider text-gray-500 uppercase leading-none mt-0.5">
                     COURSE
@@ -167,7 +176,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* TODAY'S STUDY PLAN: giờ hiển thị bài học thật từ chương đầu tiên trong lộ trình */}
+          {/* TODAY'S STUDY PLAN: hiển thị bài học thật từ level hiện tại */}
           <div className="flex flex-col gap-6 rounded-2xl border border-slate-300 bg-slate-50 p-8 shadow-sm">
             <div className="flex w-full items-center justify-between">
               <h3 className="text-2xl font-semibold text-gray-900">
@@ -191,29 +200,29 @@ export default function Dashboard() {
               {!loadingRoadmap && !roadmapError && realTasks.length === 0 && (
                 <p className="text-sm text-gray-500">Chưa có bài học nào.</p>
               )}
-              {realTasks.map((lesson) => (
+              {realTasks.map((node) => (
                 <div
-                  key={lesson.lessonId}
+                  key={node.id}
                   className={`flex items-center justify-between rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition ${
-                    lesson.status === "LOCKED" ? "opacity-60" : ""
+                    node.status === "locked" ? "opacity-60" : ""
                   }`}
                 >
                   <div className="flex items-center gap-4">
                     <div
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                        lesson.type === "VOCABULARY" ? "bg-blue-100" : "bg-emerald-100"
+                        node.type === "vocabulary" ? "bg-blue-100" : "bg-emerald-100"
                       }`}
                     >
                       <span className="text-xs font-bold">
-                        {lesson.type === "VOCABULARY" ? "V" : "G"}
+                        {node.type === "vocabulary" ? "V" : "G"}
                       </span>
                     </div>
                     <div>
                       <h4 className="text-base font-medium text-gray-900">
-                        {lesson.title}
+                        {node.label}
                       </h4>
                       <span className="text-xs text-gray-700">
-                        {lesson.status} • {lesson.itemLabel}
+                        {node.status}
                       </span>
                     </div>
                   </div>

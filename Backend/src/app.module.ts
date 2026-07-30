@@ -9,6 +9,8 @@ import { UserModule } from './modules/user/user.module';
 import { ProgressModule } from './modules/progress/progress.module';
 import { sequelizeConfig } from './utils/sequelize.config';
 import { PlacementTestModule } from './features/placement-test/placement-test.module';
+import { RoadmapModule } from './features/learning/roadmap/roadmap.module';
+import { LessonModule } from './features/learning/lesson/lesson.module'; // thêm dòng này
 
 @Module({
   controllers: [AppController],
@@ -34,6 +36,8 @@ import { PlacementTestModule } from './features/placement-test/placement-test.mo
     }),
 
     PlacementTestModule,
+    RoadmapModule,
+    LessonModule, // thêm dòng này
   ],
 })
 export class AppModule {}
