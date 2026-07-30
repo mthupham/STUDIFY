@@ -141,6 +141,7 @@ export class PlacementTestService implements OnModuleInit {
     } as any);
 
     await this.userService.markOnboardingComplete(userId);
+    await this.userService.setCurrentLevel(userId, assignedLevel);
 
     return {
       status: 'success',

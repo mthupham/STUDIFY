@@ -3,6 +3,9 @@ import { InjectModel } from '@nestjs/sequelize';
 import * as path from 'path';
 import * as fs from 'fs';
 import { UserProgress } from '../../../models/user_progress.model';
+import { UserService } from '../../../modules/user/user.service';
+
+const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
 @Injectable()
 export class LessonService implements OnModuleInit {
@@ -11,6 +14,7 @@ export class LessonService implements OnModuleInit {
   constructor(
     @InjectModel(UserProgress)
     private readonly progressModel: typeof UserProgress,
+    private readonly userService: UserService,
   ) {}
 
   onModuleInit() {
@@ -18,14 +22,20 @@ export class LessonService implements OnModuleInit {
       const filePath = path.join(process.cwd(), 'database', 'data', 'lesson.json');
       if (fs.existsSync(filePath)) {
         this.lessonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-        console.log(`[STUDIFY] LessonService đã nạp lesson.json: ${this.lessonData.length} levels`);
       }
     } catch (error) {
       console.error('[STUDIFY ERROR] Không thể đọc lesson.json:', (error as Error).message);
     }
   }
 
-  // 1. Lấy danh sách tất cả bài học (vocab + grammar) theo level, kèm trạng thái hoàn thành của user
+  private getAllLessonIdsInLevel(level: string): string[] {
+    const levelData = this.lessonData.find((l) => l.level.toUpperCase() === level.toUpperCase());
+    if (!levelData) return [];
+    const vocabIds = (levelData.vocabulary_lessons || []).map((v: any) => v.topic_id);
+    const grammarIds = (levelData.grammar_lessons || []).map((g: any) => g.grammar_id);
+    return [...vocabIds, ...grammarIds];
+  }
+
   async getLessonsByLevel(level: string, userId: number) {
     const levelData = this.lessonData.find(
       (l) => l.level.toUpperCase() === level.toUpperCase(),
@@ -36,18 +46,14 @@ export class LessonService implements OnModuleInit {
 
     const vocabLessons = levelData.vocabulary_lessons || [];
     const grammarLessons = levelData.grammar_lessons || [];
-
-    const allLessonIds = [
-      ...vocabLessons.map((v: any) => v.topic_id),
-      ...grammarLessons.map((g: any) => g.grammar_id),
-    ];
+    const allLessonIds = this.getAllLessonIdsInLevel(level);
 
     const progressRecords = await this.progressModel.findAll({
       where: { userId, lessonId: allLessonIds },
     });
     const progressMap = new Map(progressRecords.map((p) => [p.lessonId, p.isCompleted]));
 
-    const lessons = [
+    return [
       ...vocabLessons.map((v: any) => ({
         lessonId: v.topic_id,
         title: v.topic_name,
@@ -63,11 +69,8 @@ export class LessonService implements OnModuleInit {
         isCompleted: progressMap.get(g.grammar_id) || false,
       })),
     ];
-
-    return lessons;
   }
 
-  // 2. Lấy chi tiết nội dung 1 bài học (từ vựng hoặc ngữ pháp), kèm trạng thái hoàn thành
   async getLessonDetail(lessonId: string, userId: number) {
     for (const levelGroup of this.lessonData) {
       const vocabLesson = levelGroup.vocabulary_lessons?.find((l: any) => l.topic_id === lessonId);
@@ -112,7 +115,6 @@ export class LessonService implements OnModuleInit {
     throw new NotFoundException(`Không tìm thấy bài học với ID: ${lessonId}`);
   }
 
-  // 3. Đánh dấu hoàn thành bài học (dùng ở Bước 4, viết sẵn luôn cho tiện)
   async markLessonComplete(lessonId: string, lessonType: 'VOCABULARY' | 'GRAMMAR', userId: number) {
     const [record] = await this.progressModel.findOrCreate({
       where: { userId, lessonId },
@@ -127,6 +129,38 @@ export class LessonService implements OnModuleInit {
 
     if (!record.isCompleted) {
       await record.update({ isCompleted: true, completedAt: new Date() });
+    }
+
+    // Kiểm tra xem đã hoàn thành HẾT lesson trong level của bài này chưa -> tự động lên cấp
+    const level = lessonId.split('_')[0]; // vd "A1_T1" -> "A1"
+    const allLessonIds = this.getAllLessonIdsInLevel(level);
+
+    if (allLessonIds.length > 0) {
+      const completedInLevel = await this.progressModel.count({
+        where: { userId, lessonId: allLessonIds, isCompleted: true },
+      });
+
+      let leveledUp = false;
+      let newLevel: string | null = null;
+
+      if (completedInLevel === allLessonIds.length) {
+        const currentLevel = await this.userService.getCurrentLevel(userId);
+        const currentIndex = LEVELS.indexOf(currentLevel);
+        // Chỉ lên cấp nếu level vừa hoàn thành CHÍNH LÀ level hiện tại của user
+        // (tránh trường hợp hoàn thành lại 1 level cũ đã qua rồi vô tình đẩy cấp)
+        if (currentLevel === level && currentIndex >= 0 && currentIndex < LEVELS.length - 1) {
+          newLevel = LEVELS[currentIndex + 1];
+          await this.userService.setCurrentLevel(userId, newLevel);
+          leveledUp = true;
+        }
+      }
+
+      return {
+        success: true,
+        message: 'Đã đánh dấu hoàn thành bài học.',
+        leveledUp,
+        newLevel,
+      };
     }
 
     return { success: true, message: 'Đã đánh dấu hoàn thành bài học.' };
