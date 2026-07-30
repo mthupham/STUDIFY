@@ -12,6 +12,7 @@ import PracticeQuestions from "./features/learning/lesson/PracticeQuestions";
 import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
 import Result from "./features/onboarding/ResultPlacementTest.jsx";
 import { useAuthStore } from "./features/auth/store/useAuthStore";
+import LessonDetail from "./features/learning/lesson/TheoryDetail";
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
@@ -55,6 +56,17 @@ function App() {
             <OnboardingGuard>
               <MainLayout>
                 <RoadmapPage />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/lessons/:lessonId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <LessonDetail />
               </MainLayout>
             </OnboardingGuard>
           }

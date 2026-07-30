@@ -15,9 +15,9 @@ export class UserProgress extends Model<UserProgress> {
   @BelongsTo(() => User)
   declare user: User;
 
-  // id của VocabularyLesson hoặc GrammarLesson, tùy theo lessonType
-  @Column({ allowNull: false, type: DataType.INTEGER })
-  declare lessonId: number;
+  // Đổi từ INTEGER sang STRING để khớp với topic_id / grammar_id trong lesson.json (vd: "A1_T1", "A1_G1")
+  @Column({ allowNull: false, type: DataType.STRING })
+  declare lessonId: string;
 
   @Column({
     allowNull: false,

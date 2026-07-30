@@ -1,14 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react';
-import roadmapData from '../../../mocks/roadmap.json';
-import './RoadmapPage.css';
+import axios from 'axios';
+import { useAuthStore } from '../../auth/store/useAuthStore';
+import './RoadmapPage.css'; // Đã xóa dòng import mock JSON tĩnh
+
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export default function RoadmapPage() {
+  const token = useAuthStore((state) => state.token);
   const scrollRef = useRef(null);
   const [hoveredNode, setHoveredNode] = useState(null);
   const [pressedNode, setPressedNode] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [pressedCard, setPressedCard] = useState(null);
   const [activeLevelIndex, setActiveLevelIndex] = useState(0);
+  const [assignedLevel, setAssignedLevel] = useState('A1');
+  const [currentLevelTitle, setCurrentLevelTitle] = useState('Beginner');
+  const [loadingRoadmap, setLoadingRoadmap] = useState(true);
+  const [roadmapError, setRoadmapError] = useState(null);
+
+  // Thêm state lưu dữ liệu roadmap từ API
+  const [roadmapData, setRoadmapData] = useState(null);
 
   const SECTION_WIDTH = 2000;
   const getNodeTop = (row) => (row === 'top' ? 36 : 180);
@@ -23,27 +34,85 @@ export default function RoadmapPage() {
     C2: 'Upper Expert'
   };
 
+  // Cập nhật: useEffect cho scroll cần có dependency roadmapData để lấy đúng chiều dài views
   useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer || !roadmapData) return;
+
     const handleScroll = () => {
-      if (!scrollRef.current) return;
-      const scrollLeft = scrollRef.current.scrollLeft;
-      const viewportWidth = scrollRef.current.clientWidth;
+      const scrollLeft = scrollContainer.scrollLeft;
+      const viewportWidth = scrollContainer.clientWidth;
       const centerScroll = scrollLeft + viewportWidth / 2;
-      
-      
       const centerViewIndex = Math.floor(centerScroll / SECTION_WIDTH);
-      
-      // Clamp to valid range
       const levelIndex = Math.max(0, Math.min(centerViewIndex, roadmapData.views.length - 1));
       setActiveLevelIndex(levelIndex);
     };
 
+    scrollContainer.addEventListener('scroll', handleScroll);
+    return () => scrollContainer.removeEventListener('scroll', handleScroll);
+  }, [roadmapData]); // Dependency ở đây
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadRoadmap = async () => {
+      if (!token) return;
+      setLoadingRoadmap(true);
+      setRoadmapError(null);
+      try {
+        // ĐỔI THÀNH URL API CỦA BẠN (Ví dụ: /roadmap/full)
+        // Xóa chữ /full đi, chỉ để /roadmap
+      const { data } = await axios.get(`${API_BASE}/roadmap`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+        if (!cancelled) {
+          // Xử lý tùy theo format trả về của NestJS (thường bọc trong biến data)
+          const payload = data.data || data;
+          
+          setRoadmapData(payload); // Lưu toàn bộ JSON (levels, views, metrics) vào state
+          
+          // Ưu tiên lấy assignedLevel từ payload ngoài cùng, nếu không có thì trích từ metrics
+          const assigned = payload.assignedLevel || (payload.metrics && payload.metrics.level ? payload.metrics.level.substring(0,2) : 'A1');
+          setAssignedLevel(assigned);
+          setCurrentLevelTitle(payload.levelTitle || levelLabels[assigned] || 'Beginner');
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setRoadmapError('Không thể tải lộ trình Roadmap.');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingRoadmap(false);
+        }
+      }
+    };
+
+    loadRoadmap();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
+  // Tự động cuộn ngang tới đúng level hiện tại (assignedLevel) ngay khi data vừa load xong
+  useEffect(() => {
+    if (!roadmapData || !scrollRef.current) return;
+
+    const levelIndex = roadmapData.levels.findIndex((lvl) => lvl === assignedLevel);
+    if (levelIndex <= 0) return; // A1 (index 0) thì không cần cuộn, mặc định đã đúng vị trí
+
     const scrollContainer = scrollRef.current;
-    if (scrollContainer) {
-      scrollContainer.addEventListener('scroll', handleScroll);
-      return () => scrollContainer.removeEventListener('scroll', handleScroll);
-    }
-  }, []);
+    const viewportWidth = scrollContainer.clientWidth;
+    // Căn giữa view của level hiện tại trong khung nhìn
+    const targetScrollLeft =
+      SECTION_WIDTH * levelIndex - viewportWidth / 2 + SECTION_WIDTH / 2;
+
+    scrollContainer.scrollTo({
+      left: Math.max(0, targetScrollLeft),
+      behavior: 'auto', // dùng 'auto' để nhảy thẳng ngay lúc load, tránh hiệu ứng cuộn giật khi vừa vào trang
+    });
+
+    setActiveLevelIndex(levelIndex);
+  }, [roadmapData, assignedLevel]);
 
   const makePath = (views) => {
     const points = views.flatMap((view, viewIndex) =>
@@ -55,22 +124,18 @@ export default function RoadmapPage() {
 
     if (!points.length) return '';
     
-    // Create smooth curves that don't cross nodes
     let path = `M ${points[0].x} ${points[0].y}`;
     for (let i = 1; i < points.length; i++) {
       const prev = points[i - 1];
       const curr = points[i];
       const next = points[i + 1];
       
-      // Control points for smooth Bezier curves
       const dx = curr.x - prev.x;
       const dy = curr.y - prev.y;
       
-      // Place control points 1/3 of the way to next point
       const controlX1 = prev.x + dx * 0.33;
       const controlX2 = curr.x - (next ? (next.x - curr.x) * 0.33 : dx * 0.33);
       
-      // Y control points stay at current row to avoid crossing
       const controlY1 = prev.y;
       const controlY2 = curr.y;
       
@@ -88,6 +153,31 @@ export default function RoadmapPage() {
     C2: '#0EA5E9'
   };
 
+  // HIỂN THỊ LOADING UI
+  if (loadingRoadmap && !roadmapData) {
+    return (
+      <div style={styles.pageBackground}>
+        <div style={{...styles.card, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400}}>
+          <h2 style={{color: '#9CA3AF'}}>Đang tải lộ trình...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // HIỂN THỊ ERROR UI
+  if (roadmapError) {
+    return (
+      <div style={styles.pageBackground}>
+        <div style={{...styles.card, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400}}>
+          <h2 style={{color: '#EF4444'}}>{roadmapError}</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // ĐẢM BẢO ROADMAP DATA ĐÃ SẴN SÀNG TRƯỚC KHI RENDER CÂY
+  if (!roadmapData) return null;
+
   return (
     <div style={styles.pageBackground}>
       <div style={styles.card}>
@@ -96,26 +186,32 @@ export default function RoadmapPage() {
             <h2 style={styles.title}>Learning Roadmap</h2>
             <p style={styles.sub}>Mastering English: From Beginner to Fluency</p>
           </div>
-          <div style={styles.badge}>🏆 Current: B2 Upper Intermediate</div>
+          <div style={styles.badge}>
+            🏆 Current: {`${assignedLevel} ${currentLevelTitle}`}
+          </div>
         </header>
 
         <section style={styles.levelRibbon}>
           <div style={styles.levelLine} />
-          {roadmapData.levels.map((level, index) => (
-            <div key={level} style={styles.levelBadgeWrapper}>
-              <span style={{ 
-                ...styles.levelBadge, 
-                background: index === activeLevelIndex ? badgeColors[level] : '#CBD5E1',
-                color: index === activeLevelIndex ? '#fff' : '#6B7280',
-                transition: 'all 0.3s ease'
-              }}>{level}</span>
-              <div style={{ 
-                ...styles.levelLabel,
-                color: index === activeLevelIndex ? '#1F2937' : '#9CA3AF',
-                transition: 'color 0.3s ease'
-              }}>{levelLabels[level]}</div>
-            </div>
-          ))}
+          {roadmapData.levels.map((level, index) => {
+            const isCurrent = level === assignedLevel;
+            return (
+              <div key={level} style={styles.levelBadgeWrapper}>
+                <span style={{ 
+                  ...styles.levelBadge, 
+                  background: isCurrent ? badgeColors[level] : index === activeLevelIndex ? badgeColors[level] : '#CBD5E1',
+                  color: isCurrent || index === activeLevelIndex ? '#fff' : '#6B7280',
+                  transition: 'all 0.3s ease'
+                }}>{level}</span>
+                <div style={{ 
+                  ...styles.levelLabel,
+                  color: isCurrent ? '#111827' : index === activeLevelIndex ? '#1F2937' : '#9CA3AF',
+                  fontWeight: isCurrent ? 700 : 500,
+                  transition: 'color 0.3s ease'
+                }}>{levelLabels[level]}</div>
+              </div>
+            );
+          })}
         </section>
 
         <div className="roadmapScroll" ref={scrollRef} style={styles.scrollArea}>
@@ -227,6 +323,7 @@ export default function RoadmapPage() {
   );
 }
 
+// Bê nguyên styles cũ của bạn, không đổi 1 chữ
 const styles = {
   pageBackground: {
     background: '#F8F9FA',
@@ -235,7 +332,6 @@ const styles = {
   },
   card: {
     width: '100%',
-    //maxWidth: 1280,
     margin: '0 auto',
     background: '#fff',
     borderRadius: 24,

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsObject, IsOptional, IsNumber } from 'class-validator';
 
-export class SubmitTestDto {
+export class SubmitPlacementTestDto {
   @IsNotEmpty()
   @IsObject()
   answers!: Record<number, string>;
