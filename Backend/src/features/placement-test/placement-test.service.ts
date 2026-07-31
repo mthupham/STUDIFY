@@ -116,6 +116,19 @@ export class PlacementTestService implements OnModuleInit {
       }
     }
 
+    // Update số giờ học mỗi tuần nếu user có nhập
+    if (dto.weeklyStudyHours !== undefined) {
+      await this.userService.updateWeeklyStudyHours(
+        userId,
+        dto.weeklyStudyHours,
+      );
+    }
+
+
+    // Đánh dấu hoàn thành onboarding
+    await this.userService.markOnboardingComplete(userId);
+
+    // BỔ SUNG: Tính toán tỷ lệ phần trăm và đưa ra lời phê động y chang trong hình thiết kế
     const percentage = parseFloat(((totalCorrect / questions.length) * 100).toFixed(2));
     let feedbackTitle = 'KEEP TRYING!';
     let feedbackMessage = "You are off to a good start. Let's build up your foundation together!";
