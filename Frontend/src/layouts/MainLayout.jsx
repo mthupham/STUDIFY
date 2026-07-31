@@ -9,7 +9,7 @@ const navItems = [
   { name: 'Flashcard', path: '/flashcard' },
   { name: 'Study Groups', path: '/study-groups' },
   { name: 'AI Speaking', path: '/ai-speaking' },
-  { name: 'Setting', path: '/settings' },
+  { name: 'Setting', path: '/profile' },
 ];
 
 export default function MainLayout({ children }) {
