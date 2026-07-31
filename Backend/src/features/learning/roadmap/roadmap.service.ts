@@ -29,6 +29,54 @@ export class RoadmapService {
       this.lessonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     }
   }
+  private calculateStreak(progressRecords: UserProgress[]): number {
+  const completedDates = progressRecords
+    .filter((record) => record.isCompleted && record.completedAt)
+    .map((record) => {
+      const date = new Date(record.completedAt);
+      date.setHours(0, 0, 0, 0);
+      return date.getTime();
+    });
+
+  const uniqueDates = [...new Set(completedDates)].sort((a, b) => b - a);
+
+  if (uniqueDates.length === 0) {
+    return 0;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const latestDate = uniqueDates[0];
+
+  if (
+    latestDate !== today.getTime() &&
+    latestDate !== yesterday.getTime()
+  ) {
+    return 0;
+  }
+
+  let streak = 1;
+
+  for (let index = 1; index < uniqueDates.length; index++) {
+    const previousDate = uniqueDates[index - 1];
+    const currentDate = uniqueDates[index];
+
+    const differenceInDays =
+      (previousDate - currentDate) / (1000 * 60 * 60 * 24);
+
+    if (differenceInDays === 1) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
 
   async getRoadmapForUser(userId: number) {
     // 1. Lấy level được assign từ placement test gần nhất
@@ -92,6 +140,7 @@ export class RoadmapService {
     // 4. Tính metrics dựa trên số lesson thực sự đã hoàn thành (toàn bộ, không chỉ level hiện tại)
     const totalLessons = views.reduce((sum, v) => sum + v.nodes.length, 0);
     const completedLessonsCount = completedMap.size;
+    const streak = this.calculateStreak(progressRecords);
 
     return {
       levels: LEVELS,
@@ -101,7 +150,7 @@ export class RoadmapService {
       metrics: {
         level: assignedLevel,
         lessons: `${completedLessonsCount}/${totalLessons}`,
-        streak: 0,
+        streak,
         tip: 'If you pass your quiz, you will unlock the next level immediately',
       },
     };
