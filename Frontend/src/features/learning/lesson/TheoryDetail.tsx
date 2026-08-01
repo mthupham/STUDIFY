@@ -145,10 +145,10 @@ export default function LessonDetail() {
       <div className="w-full bg-blue-600 rounded-3xl shadow-md p-8 md:p-12 flex flex-col justify-center items-center text-center text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] opacity-10" />
         <div className="z-10 flex flex-col items-center gap-4">
-          <span className="px-4 py-1 bg-emerald-800 rounded-full text-xs font-semibold tracking-wide">
+          <span className="px-5 py-2 bg-emerald-800 rounded-full text-sm md:text-base font-semibold tracking-wide">
             LEVEL {data.level}
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+          <h2 className="text-5xl md:text-7xl font-black tracking-tight uppercase leading-tight">
             {data.levelTitle}
           </h2>
           <p className="max-w-2xl text-sm md:text-base text-blue-100 opacity-90 leading-relaxed">

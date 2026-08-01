@@ -29,7 +29,7 @@ export const TheoryCard: React.FC<TheoryCardProps> = ({ onReview }) => {
       </header>
 
       <h3 className="text-slate-900 text-base font-medium m-0">
-        Vocabulary and Grammar lesson
+        Reading and Writing lesson
       </h3>
 
       <footer className="mt-1.5 border-t border-slate-100 pt-4 flex items-center justify-between text-slate-500 text-xs font-semibold">

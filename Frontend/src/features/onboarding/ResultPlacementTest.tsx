@@ -176,31 +176,50 @@ const ResultPage: React.FC = () => {
               />
               <div className="flex flex-col gap-8 lg:flex-row">
                 {/* Score */}
-                <div
-                  className="
-    relative
-    flex
-    h-48
-    w-48
-    items-center
-    justify-center
-    rounded-full
-    border-[12px]
-    border-[#DCE2F3]
-  "
-                >
-                  <div className="text-center">
-                    <h2 className="text-5xl font-bold text-[#151C27]">
-                      {result.meta.totalCorrect}/{result.meta.totalQuestions}
-                    </h2>
-                    <p className="text-sm font-semibold text-[#424754]">
-                      Correct
-                    </p>
-                    <p className="mt-2 text-lg font-bold text-sky-700">
-                      {result.meta.percentage}%
-                    </p>
-                  </div>
-                </div>
+                {(() => {
+                  const progress = result.meta.percentage ?? 0;
+                  const radius = 52;
+                  const circumference = 2 * Math.PI * radius;
+                  const offset = circumference - (progress / 100) * circumference;
+
+                  return (
+                    <div className="relative flex h-48 w-48 items-center justify-center">
+                      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 120 120">
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="52"
+                          className="fill-none stroke-[#DCE2F3] stroke-[12]"
+                        />
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="52"
+                          className="fill-none stroke-[#0058BE] stroke-[12]"
+                          strokeLinecap="round"
+                          style={{
+                            strokeDasharray: circumference,
+                            strokeDashoffset: offset,
+                            transform: "rotate(-90deg)",
+                            transformOrigin: "center",
+                          }}
+                        />
+                      </svg>
+
+                      <div className="relative text-center">
+                        <h2 className="text-5xl font-bold text-[#151C27]">
+                          {result.meta.totalCorrect}/{result.meta.totalQuestions}
+                        </h2>
+                        <p className="text-sm font-semibold text-[#424754]">
+                          Correct
+                        </p>
+                        <p className="mt-2 text-lg font-bold text-sky-700">
+                          {result.meta.percentage}%
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* User Level */}
                 <div className="flex-1">
