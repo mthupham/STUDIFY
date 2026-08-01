@@ -87,6 +87,7 @@ export class RoadmapService {
 
     const rawLevel = latestResult?.levelAssigned || 'BEGINNER';
     const assignedLevel = LEVEL_MAP[rawLevel] || 'A1';
+    const assignedIndex = LEVELS.indexOf(assignedLevel); 
 
     // 2. Lấy toàn bộ tiến độ thật của user, map theo lessonId để tra cứu nhanh
     const progressRecords = await this.progressModel.findAll({
@@ -98,7 +99,7 @@ export class RoadmapService {
 
     // 3. Build views từ lesson.json — tất cả levels, mỗi level các node theo trạng thái thật
     let globalOrder = 1;
-    const views = LEVELS.map((level) => {
+    const views = LEVELS.map((level, levelIndex) => {
       const levelData = this.lessonData.find((l) => l.level === level);
       if (!levelData) return { id: `view${level}`, label: level, level, nodes: [] };
 
@@ -111,6 +112,8 @@ export class RoadmapService {
 
       // Tìm bài đầu tiên CHƯA hoàn thành trong level này — đó sẽ là "active"
       const firstUncompletedIndex = allLessons.findIndex((l) => !completedMap.has(l.id));
+      const isLevelBelowAssigned = levelIndex < assignedIndex;   
+      const isCurrentLevel = levelIndex === assignedIndex;        
 
       const nodes = allLessons.map((lesson, index) => {
         const position = Math.round(5 + (index / Math.max(allLessons.length - 1, 1)) * 90);
@@ -119,7 +122,9 @@ export class RoadmapService {
         let status = 'locked';
         if (completedMap.has(lesson.id)) {
           status = 'completed';
-        } else if (index === firstUncompletedIndex) {
+        } else if (isLevelBelowAssigned) {
+          status = 'available';
+        } else if (isCurrentLevel && index === firstUncompletedIndex) {
           status = 'active';
         }
 
