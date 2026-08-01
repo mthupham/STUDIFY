@@ -13,6 +13,8 @@ import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
 import Result from "./features/onboarding/ResultPlacementTest.jsx";
 import { useAuthStore } from "./features/auth/store/useAuthStore";
 import LessonDetail from "./features/learning/lesson/TheoryDetail";
+import StudyGroupHub from "./features/virtual-study-room/StudyGroup";
+import JoinGroup from "./features/virtual-study-room/JoinGroup"
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
@@ -37,7 +39,6 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
-
         <Route path="/onboarding" element={<OnboardingApp />} />
         <Route path="/placement-result" element={<Result />} />
         <Route
@@ -95,6 +96,26 @@ function App() {
             <OnboardingGuard>
               <MainLayout>
                 <PracticeQuestions />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/study-groups"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <StudyGroupHub />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/join-group"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <JoinGroup />
               </MainLayout>
             </OnboardingGuard>
           }
