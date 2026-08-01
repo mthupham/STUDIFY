@@ -253,6 +253,7 @@ const styles = {
     flexDirection: "column",
     padding: "24px 16px",
     boxSizing: "border-box",
+    zIndex: 200,
   },
   brandArea: {
     marginBottom: 24,
@@ -325,11 +326,14 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     minHeight: "100vh",
+    position: "relative",
   },
   header: {
-    position: "sticky",
+    position: "fixed",
     top: 0,
-    zIndex: 100,
+    left: 280,
+    right: 0,
+    zIndex: 200,
     height: 70,
     background: "#FFFFFF",
     borderBottom: "1px solid #E5E7EB",
@@ -411,7 +415,7 @@ const styles = {
   mainContent: {
     flex: 1,
     overflowY: "auto",
-    padding: 32,
+    padding: "104px 32px 32px",
     background: "#F8FAFC",
     boxSizing: "border-box",
   },
