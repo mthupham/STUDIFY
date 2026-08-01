@@ -10,7 +10,7 @@ import UserProfile from "./features/user-profile/profile.jsx";
 import LessonPage from "./features/learning/lesson/LessonPage.tsx";
 import PracticeQuestions from "./features/learning/lesson/PracticeQuestions";
 import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
-import Result from "./features/onboarding/ResultPlacementTest.jsx";
+import Result from "./features/onboarding/ResultPlacementTest";
 import { useAuthStore } from "./features/auth/store/useAuthStore";
 import LessonDetail from "./features/learning/lesson/TheoryDetail";
 
@@ -62,16 +62,6 @@ function App() {
         />
 
         <Route
-          path="/lessons/:lessonId"
-          element={
-            <OnboardingGuard>
-              <MainLayout>
-                <LessonDetail />
-              </MainLayout>
-            </OnboardingGuard>
-          }
-        />
-        <Route
           path="/profile"
           element={
             <MainLayout>
@@ -89,12 +79,23 @@ function App() {
             </OnboardingGuard>
           }
         />
+        {/* /lessons/practice phải khai báo TRƯỚC /lessons/:lessonId */}
         <Route
           path="/lessons/practice"
           element={
             <OnboardingGuard>
               <MainLayout>
                 <PracticeQuestions />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/lessons/:lessonId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <LessonDetail />
               </MainLayout>
             </OnboardingGuard>
           }

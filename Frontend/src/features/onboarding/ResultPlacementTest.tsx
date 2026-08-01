@@ -38,6 +38,11 @@ const ResultPage: React.FC = () => {
 
   const result = location.state?.result as PlacementResult;
 
+  const { user } = useAuthStore();
+  const markOnboardingCompleted = useAuthStore(
+    (state) => state.markOnboardingCompleted,
+  );
+
   if (!result) {
     return <Navigate to="/placement-test" replace />;
   }
@@ -46,15 +51,10 @@ const ResultPage: React.FC = () => {
     (question) => !question.isCorrect,
   );
 
-  const { user } = useAuthStore();
   const avatarLetter = user?.name?.charAt(0).toUpperCase() ?? "U";
 
   console.log(result);
   console.log(result.testDetails);
-
-  const markOnboardingCompleted = useAuthStore(
-    (state) => state.markOnboardingCompleted,
-  );
 
   const handleStudyNow = () => {
     markOnboardingCompleted();

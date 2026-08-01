@@ -308,18 +308,6 @@ const styles = {
     fontFamily: "Inter, system-ui, sans-serif",
     fontWeight: 500,
   },
-  signOutButton: {
-    marginTop: "auto",
-    width: "100%",
-    padding: "12px 16px",
-    border: "none",
-    borderRadius: 12,
-    background: "#0058BE",
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: 600,
-    cursor: "pointer",
-  },
   mainArea: {
     flex: 1,
     marginLeft: 280,
