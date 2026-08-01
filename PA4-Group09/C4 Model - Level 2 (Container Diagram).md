@@ -1,4 +1,27 @@
-  
+```mermaid
+---
+config:
+  layout: dagre
+---
+graph TB
+    User["👤 Learner / User<br/>[Person]<br/>App user studying English on Studify"]
+    STT_AI["🤖 AI Speech-to-Text & LLM API<br/>[External System]<br/>Transcribes audio, evaluates speaking & powers roleplay scenarios"]
+    S3["☁️ Cloud Storage Service<br/>[External System: AWS S3]<br/>Stores media assets, PDFs, and user uploads"]
+    
+    subgraph SystemBoundary["Studify [Software System]"]
+        WA["📱 Web Application<br/>[Container: React & TypeScript]<br/>Interactive SPA providing UI for Onboarding, Dashboard, Quizzes, Flashcards & Study Rooms"]
+        API["⚙️ Backend API Application<br/>[Container: NestJS & TypeScript]<br/>Handles Auth, Business Logic, Sequelize ORM, Passport.js/JWT, and AI Integration"]
+        DB[("🗄️ Relational Database<br/>[Container: PostgreSQL]<br/>Stores User Profiles, Progress, Flashcards, Group Data, and Lesson Materials")]
+    end
+
+    User -->|Uses / HTTPS| WA
+    WA -->|REST APIs & WebSocket / HTTPS & WSS| API
+    API -->|Sequelize ORM / TCP| DB
+    API -->|HTTPS / REST API| STT_AI
+    API -->|HTTPS / SDK| S3
+```  
+
+
 **1\. Web Application**  
 \- Responsibility: Serves as the single-page application client interface for learners. Handles user interactions for the Onboarding Survey, Self-Study Dashboard, Quizzes, Flashcard system with keyboard shortcuts, Pomodoro Timer, Group Study Rooms, and AI Speaking Assistant.
 
