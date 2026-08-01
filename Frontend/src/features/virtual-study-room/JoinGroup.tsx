@@ -24,17 +24,48 @@ export default function JoinGroupPage() {
       ? `${accessCode.slice(0, 3)}-${accessCode.slice(3)}`
       : accessCode;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<
+    "success" | "error" | "warning" | ""
+  >("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (accessCode.length !== 6) {
-      alert("Vui lòng nhập đủ 6 chữ số mã truy cập.");
+      setMessage("Please enter all 6 digits.");
+      setMessageType("error");
       return;
     }
 
-    // TODO: Gọi API Join Group
+    try {
+      // TODO: gọi API
 
-    navigate("/study-groups");
+      // ====== Demo ======
+      // 0 = success
+      // 1 = full
+      // 2 = invalid
+
+      const result = Math.floor(Math.random() * 3);
+
+      if (result === 0) {
+        setMessage("Successfully joined the study group!");
+        setMessageType("success");
+
+        setTimeout(() => {
+          navigate("/study-groups");
+        }, 1500);
+      } else if (result === 1) {
+        setMessage("This study group is already full.");
+        setMessageType("warning");
+      } else {
+        setMessage("Invalid group access code.");
+        setMessageType("error");
+      }
+    } catch {
+      setMessage("Something went wrong. Please try again.");
+      setMessageType("error");
+    }
   };
 
   return (
@@ -181,6 +212,19 @@ export default function JoinGroupPage() {
               </button>
             </div>
           </form>
+          {message && (
+            <div
+              className={`rounded-xl border px-4 py-3 text-sm font-medium ${
+                messageType === "success"
+                  ? "bg-green-50 border-green-200 text-green-700"
+                  : messageType === "warning"
+                    ? "bg-yellow-50 border-yellow-200 text-yellow-700"
+                    : "bg-red-50 border-red-200 text-red-700"
+              }`}
+            >
+              {message}
+            </div>
+          )}
 
           {/* 3. FOOTER BẢO MẬT (SECURITY FOOTER) */}
           <div className="pt-6 border-t border-slate-100 flex items-center justify-center gap-2 text-xs text-gray-500">

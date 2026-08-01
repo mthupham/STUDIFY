@@ -13,8 +13,11 @@ import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
 import Result from "./features/onboarding/ResultPlacementTest.jsx";
 import { useAuthStore } from "./features/auth/store/useAuthStore";
 import LessonDetail from "./features/learning/lesson/TheoryDetail";
+
 import StudyGroupHub from "./features/virtual-study-room/StudyGroup";
-import JoinGroup from "./features/virtual-study-room/JoinGroup"
+import JoinGroup from "./features/virtual-study-room/JoinGroup";
+import NewGroup from "./features/virtual-study-room/CreateNewGroup";
+import MemberWorkspace from "./features/virtual-study-room/Workspace_Member";
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
@@ -111,11 +114,32 @@ function App() {
           }
         />
         <Route
-          path="/join-group"
+          path="/study-groups/join-group"
           element={
             <OnboardingGuard>
               <MainLayout>
                 <JoinGroup />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/study-groups/new-group"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <NewGroup />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/study-groups/workspace-member"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <MemberWorkspace />
               </MainLayout>
             </OnboardingGuard>
           }

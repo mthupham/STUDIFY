@@ -127,7 +127,7 @@ function HeaderSection() {
       </div>
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate("/join-group")}
+          onClick={() => navigate("/study-groups/join-group")}
           className="px-5 py-2.5 rounded-xl border border-sky-700 text-sky-700 font-medium hover:bg-sky-50 transition flex items-center gap-2"
         >
           {/* User Plus Icon */}
@@ -145,7 +145,10 @@ function HeaderSection() {
           </svg>
           Join Group
         </button>
-        <button className="px-5 py-2.5 rounded-xl bg-sky-700 text-white font-medium shadow-md hover:bg-sky-800 transition flex items-center gap-2">
+        <button
+          onClick={() => navigate("/study-groups/new-group")}
+          className="px-5 py-2.5 rounded-xl bg-sky-700 text-white font-medium shadow-md hover:bg-sky-800 transition flex items-center gap-2"
+        >
           {/* Plus Icon */}
           <svg
             className="w-5 h-5 stroke-current"
@@ -170,10 +173,33 @@ function HeaderSection() {
  * Card hiển thị thông tin chi tiết từng nhóm học
  */
 function GroupCard({ group }: { group: (typeof GROUPS_DATA)[0] }) {
+    const navigate = useNavigate();
   const extraMembers = group.membersCount - group.avatars.length;
 
   return (
-    <div className="p-6 bg-slate-50 border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-md transition flex flex-col justify-between gap-4">
+    <button
+  type="button"
+  onClick={() => navigate(`/study-groups/workspace-member`)}
+  className="
+    w-full
+    text-left
+    p-6
+    bg-slate-50
+    border
+    border-slate-200/80
+    rounded-2xl
+    shadow-sm
+    hover:shadow-md
+    hover:border-sky-300
+    hover:-translate-y-1
+    transition-all
+    flex
+    flex-col
+    justify-between
+    gap-4
+    cursor-pointer
+  "
+>
       <div>
         {/* Header card: Icon + Badge cấp độ */}
         <div className="flex justify-between items-start">
@@ -224,7 +250,7 @@ function GroupCard({ group }: { group: (typeof GROUPS_DATA)[0] }) {
           <span>{group.status}</span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -232,8 +258,10 @@ function GroupCard({ group }: { group: (typeof GROUPS_DATA)[0] }) {
  * Card dạng viền đứt nét để tạo nhóm mới
  */
 function CreateGroupCard() {
+    const navigate = useNavigate();
   return (
-    <button className="p-8 border-2 border-dashed border-slate-300 rounded-2xl hover:border-sky-600 hover:bg-sky-50/50 transition flex flex-col items-center justify-center gap-3 text-gray-600 hover:text-sky-700 min-h-[220px]">
+    <button onClick={() => navigate("/study-groups/new-group")}
+    className="p-8 border-2 border-dashed border-slate-300 rounded-2xl hover:border-sky-600 hover:bg-sky-50/50 transition flex flex-col items-center justify-center gap-3 text-gray-600 hover:text-sky-700 min-h-[220px]">
       <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
         <svg
           className="w-6 h-6 stroke-current"
