@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 import './RoadmapPage.css'; // Đã xóa dòng import mock JSON tĩnh
@@ -7,6 +8,7 @@ const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export default function RoadmapPage() {
   const token = useAuthStore((state) => state.token);
+  const navigate = useNavigate();
   const scrollRef = useRef(null);
   const [hoveredNode, setHoveredNode] = useState(null);
   const [pressedNode, setPressedNode] = useState(null);
@@ -237,7 +239,9 @@ export default function RoadmapPage() {
                       <div key={node.id} style={{ ...styles.nodeWrapper, left: `${node.position}%`, top: getNodeTop(node.row) }}>
                         <button
                           type="button"
-                          onClick={() => {}}
+                          onClick={() => {
+                            if (isClickable) navigate(`/lessons/${node.id}`);
+                          }}
                           onMouseEnter={() => isClickable && setHoveredNode(node.id)}
                           onMouseLeave={() => setHoveredNode(null)}
                           onPointerDown={(event) => {
