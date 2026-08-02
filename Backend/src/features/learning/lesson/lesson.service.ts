@@ -72,47 +72,29 @@ export class LessonService implements OnModuleInit {
   }
 
   async getLessonDetail(lessonId: string, userId: number) {
-    for (const levelGroup of this.lessonData) {
-      const vocabLesson = levelGroup.vocabulary_lessons?.find((l: any) => l.topic_id === lessonId);
-      if (vocabLesson) {
-        const progress = await this.progressModel.findOne({ where: { userId, lessonId } });
-        return {
-          success: true,
-          data: {
-            lessonId: vocabLesson.topic_id,
-            type: 'VOCABULARY',
-            level: levelGroup.level,
-            levelTitle: levelGroup.level_title,
-            title: vocabLesson.topic_name,
-            content: vocabLesson.items || [],
-            isCompleted: progress?.isCompleted || false,
-          },
-        };
-      }
+    const normalizedLessonId = lessonId?.toUpperCase?.() || lessonId;
+    const levelKey = normalizedLessonId.split('_')[0];
 
-      const grammarLesson = levelGroup.grammar_lessons?.find((g: any) => g.grammar_id === lessonId);
-      if (grammarLesson) {
-        const progress = await this.progressModel.findOne({ where: { userId, lessonId } });
-        return {
-          success: true,
-          data: {
-            lessonId: grammarLesson.grammar_id,
-            type: 'GRAMMAR',
-            level: levelGroup.level,
-            levelTitle: levelGroup.level_title,
-            title: grammarLesson.grammar_title,
-            content: {
-              rule: grammarLesson.rule,
-              explanation: grammarLesson.explanation,
-              examples: grammarLesson.examples || [],
-            },
-            isCompleted: progress?.isCompleted || false,
-          },
-        };
-      }
+    const levelGroup = this.lessonData.find(
+      (level) => level.level.toUpperCase() === levelKey.toUpperCase(),
+    );
+
+    if (!levelGroup) {
+      throw new NotFoundException(`Không tìm thấy bài học với ID: ${lessonId}`);
     }
 
-    throw new NotFoundException(`Không tìm thấy bài học với ID: ${lessonId}`);
+    const progress = await this.progressModel.findOne({ where: { userId, lessonId } });
+
+    return {
+      success: true,
+      data: {
+        level: levelGroup.level,
+        level_title: levelGroup.level_title,
+        vocabulary_lessons: levelGroup.vocabulary_lessons || [],
+        grammar_lessons: levelGroup.grammar_lessons || [],
+        isCompleted: progress?.isCompleted || false,
+      },
+    };
   }
 
   async markLessonComplete(lessonId: string, lessonType: 'VOCABULARY' | 'GRAMMAR', userId: number) {

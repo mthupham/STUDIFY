@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 import './RoadmapPage.css'; // Đã xóa dòng import mock JSON tĩnh
@@ -7,6 +8,7 @@ const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export default function RoadmapPage() {
   const token = useAuthStore((state) => state.token);
+  const navigate = useNavigate();
   const scrollRef = useRef(null);
   const [hoveredNode, setHoveredNode] = useState(null);
   const [pressedNode, setPressedNode] = useState(null);
@@ -59,19 +61,13 @@ export default function RoadmapPage() {
       setLoadingRoadmap(true);
       setRoadmapError(null);
       try {
-        // ĐỔI THÀNH URL API CỦA BẠN (Ví dụ: /roadmap/full)
-        // Xóa chữ /full đi, chỉ để /roadmap
-      const { data } = await axios.get(`${API_BASE}/roadmap`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+        const { data } = await axios.get(`${API_BASE}/roadmap`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         if (!cancelled) {
-          // Xử lý tùy theo format trả về của NestJS (thường bọc trong biến data)
           const payload = data.data || data;
-          
-          setRoadmapData(payload); // Lưu toàn bộ JSON (levels, views, metrics) vào state
-          
-          // Ưu tiên lấy assignedLevel từ payload ngoài cùng, nếu không có thì trích từ metrics
+          setRoadmapData(payload);
           const assigned = payload.assignedLevel || (payload.metrics && payload.metrics.level ? payload.metrics.level.substring(0,2) : 'A1');
           setAssignedLevel(assigned);
           setCurrentLevelTitle(payload.levelTitle || levelLabels[assigned] || 'Beginner');
@@ -87,9 +83,17 @@ export default function RoadmapPage() {
       }
     };
 
-    loadRoadmap();
+    const handleLessonCompleted = () => {
+      if (token) {
+        void loadRoadmap();
+      }
+    };
+
+    void loadRoadmap();
+    window.addEventListener('lesson-completed', handleLessonCompleted);
     return () => {
       cancelled = true;
+      window.removeEventListener('lesson-completed', handleLessonCompleted);
     };
   }, [token]);
 
@@ -237,7 +241,9 @@ export default function RoadmapPage() {
                       <div key={node.id} style={{ ...styles.nodeWrapper, left: `${node.position}%`, top: getNodeTop(node.row) }}>
                         <button
                           type="button"
-                          onClick={() => {}}
+                          onClick={() => {
+                            if (isClickable) navigate(`/lessons/${node.id}`);
+                          }}
                           onMouseEnter={() => isClickable && setHoveredNode(node.id)}
                           onMouseLeave={() => setHoveredNode(null)}
                           onPointerDown={(event) => {
