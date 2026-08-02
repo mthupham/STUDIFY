@@ -37,11 +37,20 @@ export default function Dashboard() {
       }
     }
 
+    const handleLessonCompleted = () => {
+      if (token) {
+        void loadRoadmap();
+      }
+    };
+
     if (token) {
-      loadRoadmap();
+      void loadRoadmap();
     }
+
+    window.addEventListener("lesson-completed", handleLessonCompleted);
     return () => {
       cancelled = true;
+      window.removeEventListener("lesson-completed", handleLessonCompleted);
     };
   }, [token]);
 

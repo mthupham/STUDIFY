@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LessonCard } from "./LessonCard";
@@ -119,9 +119,17 @@ export default function LessonPage() {
       }
     }
 
+    const handleLessonCompleted = () => {
+      if (token) {
+        void load();
+      }
+    };
+
     if (token) load();
+    window.addEventListener("lesson-completed", handleLessonCompleted);
     return () => {
       cancelled = true;
+      window.removeEventListener("lesson-completed", handleLessonCompleted);
     };
   }, [token]);
 
@@ -142,7 +150,7 @@ export default function LessonPage() {
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-[#faf8ff] p-8 flex items-center justify-center">
-        <p className="text-slate-500 text-lg">Đang tải bài học...</p>
+        <p className="text-slate-500 text-lg">Loading lessons...</p>
       </div>
     );
   }
@@ -202,7 +210,7 @@ export default function LessonPage() {
                   <span className="hidden md:block absolute left-5 top-0 bottom-0 w-1 rounded-full bg-indigo-100" />
 
                   {section.lessons.length === 0 && (
-                    <p className="text-slate-500 text-sm">Chưa có bài học nào.</p>
+                    <p className="text-slate-500 text-sm">Haven't got any lesson yet.</p>
                   )}
 
                   {section.lessons.map((lesson) => (
