@@ -23,6 +23,9 @@ import MemberWorkspace from "./features/virtual-study-room/Workspace_Member";
 import LeaderWorkspace from "./features/virtual-study-room/Workspace_Leader";
 import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo";
 
+import Pomodoro from "./features/pomodoro/PomodoroTimer";
+import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidget";
+
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
   const user = useAuthStore((state) => state.user);
@@ -40,6 +43,7 @@ function OnboardingGuard({ children }) {
 function App() {
   return (
     <BrowserRouter>
+      <FloatingPomodoroWidget />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
@@ -182,6 +186,16 @@ function App() {
           }
         />
 
+        <Route
+          path="/dashboard/pomodoro"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <Pomodoro />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

@@ -179,7 +179,7 @@ export default function RoadmapPage() {
             minHeight: 400,
           }}
         >
-          <h2 style={{ color: "#9CA3AF" }}>Đang tải lộ trình...</h2>
+          <h2 style={{ color: "#9CA3AF" }}>Loading Roadmap...</h2>
         </div>
       </div>
     );
