@@ -118,7 +118,7 @@ function HeaderSection() {
   return (
     <header className="flex flex-col sm:flex-row justify-between sm:items-end gap-4">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+        <h1 className="!text-3xl !font-bold !text-gray-900 !tracking-tight">
           Study Group Hub
         </h1>
         <p className="text-gray-600 mt-1">

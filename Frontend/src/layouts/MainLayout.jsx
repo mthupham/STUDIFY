@@ -236,18 +236,17 @@ export default function MainLayout({ children }) {
 
 const styles = {
   shell: {
-    minHeight: "100vh",
-    width: "100%",
     display: "flex",
-    background: "#F8FAFC",
+    minHeight: "100vh",
   },
+
   sidebar: {
     position: "fixed",
     top: 0,
     left: 0,
     width: 280,
     height: "calc(100dvh / 0.83)",
-    overflowY: "auto", 
+    overflowY: "auto",
     background: "#FFFFFF",
     borderRight: "1px solid #E5E7EB",
     display: "flex",
@@ -312,25 +311,23 @@ const styles = {
   mainArea: {
     flex: 1,
     marginLeft: 280,
-    display: "flex",
-    flexDirection: "column",
     minHeight: "100vh",
-    position: "relative",
+    background: "#FFFFFF",
   },
   header: {
-    position: "fixed",
+    position: "sticky",
     top: 0,
     left: 280,
     right: 0,
     zIndex: 200,
     height: 70,
-    background: "#FFFFFF",
     borderBottom: "1px solid #E5E7EB",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     padding: "0 32px",
     boxSizing: "border-box",
+    background: "#FFFFFF"
   },
   searchPill: {
     display: "flex",
@@ -403,10 +400,7 @@ const styles = {
   },
   mainContent: {
     flex: 1,
-    overflowY: "auto",
     padding: "104px 32px 32px",
-    background: "#F8FAFC",
-    boxSizing: "border-box",
   },
   signOutButton: {
     marginTop: "auto",
@@ -422,4 +416,3 @@ const styles = {
     transition: "background-color 0.2s ease",
   },
 };
-
