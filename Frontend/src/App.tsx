@@ -7,17 +7,21 @@ import MainLayout from "./layouts/MainLayout.jsx";
 import DashboardPage from "./features/learning/dashboard/DashboardPage.jsx";
 import RoadmapPage from "./features/learning/roadmap/RoadmapPage.jsx";
 import UserProfile from "./features/user-profile/profile.jsx";
-import LessonPage from "./features/learning/lesson/LessonPage.tsx";
-import PracticeQuestions from "./features/learning/lesson/PracticeQuestions";
 import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
 import Result from "./features/onboarding/ResultPlacementTest";
 import { useAuthStore } from "./features/auth/store/useAuthStore";
+
 import LessonDetail from "./features/learning/lesson/TheoryDetail";
+import LessonPage from "./features/learning/lesson/LessonPage.tsx";
+import PracticeQuestions from "./features/learning/lesson/PracticeQuestions";
+import ResultPractice from "./features/learning/lesson/ResultPractice";
 
 import StudyGroupHub from "./features/virtual-study-room/StudyGroup";
 import JoinGroup from "./features/virtual-study-room/JoinGroup";
 import NewGroup from "./features/virtual-study-room/CreateNewGroup";
 import MemberWorkspace from "./features/virtual-study-room/Workspace_Member";
+import LeaderWorkspace from "./features/virtual-study-room/Workspace_Leader";
+import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo";
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
@@ -85,7 +89,17 @@ function App() {
         />
         {/* /lessons/practice phải khai báo TRƯỚC /lessons/:lessonId */}
         <Route
-          path="/lessons/practice"
+          path="/lessons/theory/:lessonId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <LessonDetail />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/lessons/practice/:lessonId"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -95,11 +109,11 @@ function App() {
           }
         />
         <Route
-          path="/lessons/:lessonId"
+          path="/lessons/practice/result"
           element={
             <OnboardingGuard>
               <MainLayout>
-                <LessonDetail />
+                <ResultPractice />
               </MainLayout>
             </OnboardingGuard>
           }
@@ -141,6 +155,28 @@ function App() {
             <OnboardingGuard>
               <MainLayout>
                 <MemberWorkspace />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/study-groups/workspace-leader"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <LeaderWorkspace />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/study-groups/workspace-leader/edit-group"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <EditGroupInfo />
               </MainLayout>
             </OnboardingGuard>
           }

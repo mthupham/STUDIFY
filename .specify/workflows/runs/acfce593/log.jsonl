@@ -1,0 +1,8 @@
+{"event": "step_started", "step_id": "specify", "type": "command", "timestamp": "2026-08-02T05:57:24.942893+00:00"}
+{"event": "step_completed", "step_id": "specify", "status": "completed", "timestamp": "2026-08-02T05:59:34.252993+00:00"}
+{"event": "step_started", "step_id": "review-spec", "type": "gate", "timestamp": "2026-08-02T05:59:34.255675+00:00"}
+{"event": "step_completed", "step_id": "review-spec", "status": "completed", "timestamp": "2026-08-02T06:02:06.241672+00:00"}
+{"event": "step_started", "step_id": "plan", "type": "command", "timestamp": "2026-08-02T06:02:06.247095+00:00"}
+{"event": "step_completed", "step_id": "plan", "status": "failed", "timestamp": "2026-08-02T06:02:09.062758+00:00"}
+{"event": "step_failed", "step_id": "plan", "error": "Command exited with code 1", "timestamp": "2026-08-02T06:02:09.063395+00:00"}
+{"event": "workflow_finished", "status": "failed", "timestamp": "2026-08-02T06:02:09.064928+00:00"}

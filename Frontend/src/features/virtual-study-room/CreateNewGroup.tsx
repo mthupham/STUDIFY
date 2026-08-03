@@ -427,7 +427,7 @@ export default function CreateStudyGroupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 font-['Inter'] text-gray-900">
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-['Inter'] text-gray-900">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* HEADER SECTION */}
         <div className="space-y-2">

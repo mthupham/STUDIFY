@@ -159,7 +159,7 @@ export default function LessonDetail() {
           >
             ← Back to Lessons
           </button>
-          <h1 className="text-slate-900 text-3xl font-bold font-['Inter']">
+          <h1 className="!text-slate-900 !text-3xl !font-bold !font-['Inter'] !text-sky-700">
             Theory
           </h1>
         </div>

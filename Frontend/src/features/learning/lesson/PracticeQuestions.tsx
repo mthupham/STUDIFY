@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type QuestionView = "multiple-choice" | "written";
 
@@ -78,15 +79,33 @@ const questions: QuestionItem[] = [
 ];
 
 export const PracticeQuestions: React.FC = () => {
+  const navigate = useNavigate();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+
+  const [notification, setNotification] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const showNotification = (type: "success" | "error", message: string) => {
+    setNotification({ type, message });
+
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
 
   const currentQuestion = useMemo(
     () => questions[currentQuestionIndex],
-    [currentQuestionIndex]
+    [currentQuestionIndex],
   );
 
   const currentQuestionNumber = currentQuestionIndex + 1;
-  const progressPercentage = ((currentQuestionNumber / questions.length) * 100).toFixed(0);
+  const progressPercentage = (
+    (currentQuestionNumber / questions.length) *
+    100
+  ).toFixed(0);
 
   const handlePrevious = () => {
     setCurrentQuestionIndex((prev) => Math.max(prev - 1, 0));
@@ -96,8 +115,61 @@ export const PracticeQuestions: React.FC = () => {
     setCurrentQuestionIndex((prev) => Math.min(prev + 1, questions.length - 1));
   };
 
+  const handleSubmitAnswer = () => {
+    const answer = answers[currentQuestion.id]?.trim();
+
+    if (!answer) {
+      showNotification(
+        "error",
+        "Please enter or select an answer before submitting.",
+      );
+      return;
+    }
+
+    console.log(currentQuestion.id, answer);
+
+    showNotification("success", "Answer submitted successfully.");
+  };
+
+  const handleFinish = () => {
+    const unanswered = questions.filter(
+      (q) => !answers[q.id] || answers[q.id].trim() === "",
+    );
+
+    if (unanswered.length > 0) {
+      showNotification(
+        "error",
+        `You still have ${unanswered.length} unanswered question(s).`,
+      );
+      return;
+    }
+
+    console.log("Submit all answers:", answers);
+
+    showNotification("success", "Practice submitted successfully.");
+
+    setTimeout(() => {
+      navigate("/lessons/practice/result");
+    }, 1200);
+  };
+
   return (
-    <div className="min-h-screen bg-[#f5f7ff] px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
+      {notification && (
+        <div className="fixed top-6 z-[9999] right-6 z-50 animate-fade-in">
+          <div
+            className={`min-w-[320px] rounded-xl px-5 py-4 shadow-lg border flex items-center gap-3
+      ${
+        notification.type === "success"
+          ? "bg-green-50 border-green-300 text-green-700"
+          : "bg-red-50 border-red-300 text-red-700"
+      }`}
+          >
+            <p className="text-sm font-medium">{notification.message}</p>
+          </div>
+        </div>
+      )}
+
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-6">
         <div className="w-full max-w-3xl text-left">
           <p className="text-sm font-semibold tracking-[0.2em] text-slate-500 uppercase">
@@ -133,17 +205,40 @@ export const PracticeQuestions: React.FC = () => {
                 </h2>
 
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {currentQuestion.options?.map((option) => (
-                    <label
-                      key={option}
-                      className="flex cursor-pointer items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm transition-all hover:border-[#dfe7ff] hover:shadow-md"
-                    >
-                      <span className="text-base font-medium text-slate-700">
-                        {option}
-                      </span>
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-slate-300 bg-white" />
-                    </label>
-                  ))}
+                  {currentQuestion.options?.map((option) => {
+                    const selected = answers[currentQuestion.id] === option;
+
+                    return (
+                      <label
+                        key={option}
+                        onClick={() =>
+                          setAnswers((prev) => ({
+                            ...prev,
+                            [currentQuestion.id]: option,
+                          }))
+                        }
+                        className={`flex cursor-pointer items-center justify-between rounded-2xl px-4 py-4 shadow-sm transition-all
+      ${
+        selected
+          ? "border-blue-600 bg-blue-50"
+          : "border-slate-200 bg-white hover:border-[#dfe7ff]"
+      }`}
+                      >
+                        <span className="text-base font-medium text-slate-700">
+                          {option}
+                        </span>
+
+                        <span
+                          className={`flex h-5 w-5 items-center justify-center rounded-full border-2
+        ${selected ? "border-blue-600 bg-blue-600" : "border-slate-300"}`}
+                        >
+                          {selected && (
+                            <span className="h-2.5 w-2.5 rounded-full bg-white" />
+                          )}
+                        </span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
             ) : (
@@ -156,6 +251,13 @@ export const PracticeQuestions: React.FC = () => {
                 </h2>
 
                 <textarea
+                  value={answers[currentQuestion.id] ?? ""}
+                  onChange={(e) =>
+                    setAnswers((prev) => ({
+                      ...prev,
+                      [currentQuestion.id]: e.target.value,
+                    }))
+                  }
                   className="min-h-[220px] w-full rounded-2xl border border-slate-200 bg-[#f9fbff] px-4 py-4 text-base text-slate-700 outline-none ring-0 transition focus:border-[#4f6ef7] focus:bg-white"
                   placeholder="Type your answer here..."
                 />
@@ -163,6 +265,7 @@ export const PracticeQuestions: React.FC = () => {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
                   <button
                     type="button"
+                    onClick={handleSubmitAnswer}
                     className="rounded-2xl bg-[#4f6ef7] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(79,110,247,0.24)] transition hover:bg-[#3f5fe0]"
                   >
                     Submit Answer
@@ -198,14 +301,23 @@ export const PracticeQuestions: React.FC = () => {
               >
                 Previous Question
               </button>
-              <button
-                type="button"
-                onClick={handleNext}
-                disabled={currentQuestionIndex === questions.length - 1}
-                className="rounded-2xl bg-[#4f6ef7] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(79,110,247,0.24)] transition hover:bg-[#3f5fe0] disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Next Question
-              </button>
+              {currentQuestionIndex === questions.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={handleFinish}
+                  className="rounded-2xl bg-green-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(34,197,94,0.25)] transition hover:bg-green-700"
+                >
+                  Finish Practice
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="rounded-2xl bg-[#4f6ef7] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(79,110,247,0.24)] transition hover:bg-[#3f5fe0]"
+                >
+                  Next Question
+                </button>
+              )}
             </div>
           </div>
         </div>
