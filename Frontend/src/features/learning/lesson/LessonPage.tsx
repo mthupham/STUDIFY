@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LessonCard } from "./LessonCard";
+import { TheoryCard } from "./TheoryCard";
 import type { LessonProps, LessonStatus } from "./LessonCard";
 import { useAuthStore } from "../../auth/store/useAuthStore";
 
@@ -59,19 +60,20 @@ function buildSections(apiLessons: ApiLesson[]): SkillSection[] {
 
   const vocabProps = toLessonProps(vocab);
   const grammarProps = toLessonProps(grammar);
-  const countDone = (list: LessonProps[]) => list.filter((l) => l.status === "completed").length;
+  const countDone = (list: LessonProps[]) =>
+    list.filter((l) => l.status === "completed").length;
 
   return [
     {
       id: "vocabulary",
-      title: "Vocabulary",
+      title: "Reading skill",
       completedText: `${countDone(vocabProps)}/${vocabProps.length} completed`,
       icon: "book",
       lessons: vocabProps,
     },
     {
       id: "grammar",
-      title: "Grammar",
+      title: "Writing skill",
       completedText: `${countDone(grammarProps)}/${grammarProps.length} completed`,
       icon: "pen",
       lessons: grammarProps,
@@ -102,10 +104,13 @@ export default function LessonPage() {
         const assignedLevel = roadmap.assignedLevel || "A1";
 
         // 2. Lấy danh sách lesson thật của level đó
-        const { data: lessonRes } = await axios.get(`${API_BASE}/learning/lessons`, {
-          params: { level: assignedLevel },
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const { data: lessonRes } = await axios.get(
+          `${API_BASE}/learning/lessons`,
+          {
+            params: { level: assignedLevel },
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
 
         if (!cancelled) {
           setLevel(assignedLevel);
@@ -118,21 +123,38 @@ export default function LessonPage() {
       }
     }
 
+    const handleLessonCompleted = () => {
+      if (token) {
+        void load();
+      }
+    };
+
     if (token) load();
+    window.addEventListener("lesson-completed", handleLessonCompleted);
     return () => {
       cancelled = true;
+      window.removeEventListener("lesson-completed", handleLessonCompleted);
     };
   }, [token]);
 
   const handleLessonClick = (lessonId?: string) => {
     if (!lessonId) return;
-    navigate(`/lessons/${lessonId}`);
+    navigate(`/lessons/practice/${lessonId}`);
+  };
+
+  const handleTheoryReview = () => {
+    const firstLessonId = sections[0]?.lessons[0]?.id;
+    if (firstLessonId) {
+      navigate(`/lessons/theory/${firstLessonId}`);
+      return;
+    }
+    navigate("/lessons");
   };
 
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-[#faf8ff] p-8 flex items-center justify-center">
-        <p className="text-slate-500 text-lg">Đang tải bài học...</p>
+        <p className="text-slate-500 text-lg">Loading lessons...</p>
       </div>
     );
   }
@@ -146,79 +168,101 @@ export default function LessonPage() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#faf8ff] p-4 md:p-8">
-      <section className="w-full max-w-6xl mx-auto flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-slate-900 text-3xl md:text-[42px] font-semibold leading-tight tracking-tight m-0">
-            Lesson
-          </h1>
-          {level && (
-            <span className="rounded-full bg-blue-100 text-blue-700 text-sm font-bold px-4 py-1.5">
-              Level {level}
-            </span>
-          )}
-        </div>
+    <div className="w-full p-4 md:p-8">
+      <div className="mx-auto max-w-7xl rounded-3xl bg-[#faf8ff] border border-slate-200 shadow-sm p-8">
+        <section className="flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <h1 className="!text-slate-900 !text-3xl !md:text-[42px] !font-semibold !leading-tight !tracking-tight !m-0">
+              Lesson
+            </h1>
+            {level && (
+              <span className="rounded-full bg-blue-100 text-blue-700 text-sm font-bold px-4 py-1.5">
+                Level {level}
+              </span>
+            )}
+          </div>
 
-        <div className="flex flex-col gap-8">
-          {sections.map((section) => (
-            <section key={section.id} className="flex flex-col gap-4">
-              <header className="flex items-center gap-3">
-                <span className="w-10 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-2">
-                    {section.icon === "pen" ? (
-                      <path
-                        d="M4 16.5V20h3.5L18 9.5L14.5 6L4 16.5Z M13 7.5L16.5 11"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    ) : (
-                      <path
-                        d="M4 6.5C4 5.7 4.7 5 5.5 5H10.5C11.3 5 12 5.7 12 6.5V18H5.5C4.7 18 4 17.3 4 16.5V6.5Z M12 6.5C12 5.7 12.7 5 13.5 5H18.5C19.3 5 20 5.7 20 6.5V16.5C20 17.3 19.3 18 18.5 18H12V6.5Z M7 9H9 M15 9H17"
-                        strokeLinecap="round"
-                      />
+          <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="space-y-8">
+              {sections.map((section) => (
+                <section key={section.id} className="flex flex-col gap-4">
+                  <header className="flex items-center gap-3">
+                    <span className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-5 h-5 fill-none stroke-current stroke-2"
+                      >
+                        {section.icon === "pen" ? (
+                          <path
+                            d="M4 16.5V20h3.5L18 9.5L14.5 6L4 16.5Z M13 7.5L16.5 11"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        ) : (
+                          <path
+                            d="M4 6.5C4 5.7 4.7 5 5.5 5H10.5C11.3 5 12 5.7 12 6.5V18H5.5C4.7 18 4 17.3 4 16.5V6.5Z M12 6.5C12 5.7 12.7 5 13.5 5H18.5C19.3 5 20 5.7 20 6.5V16.5C20 17.3 19.3 18 18.5 18H12V6.5Z M7 9H9 M15 9H17"
+                            strokeLinecap="round"
+                          />
+                        )}
+                      </svg>
+                    </span>
+                    <h2 className="text-slate-900 text-2xl md:text-[30px] font-semibold m-0">
+                      {section.title}
+                    </h2>
+                    <span className="ml-auto rounded-full bg-blue-100 text-slate-600 text-xs font-semibold px-3 py-1">
+                      {section.completedText}
+                    </span>
+                  </header>
+
+                  <div className="relative flex flex-col gap-4 pl-0 md:pl-5">
+                    <span className="hidden md:block absolute left-5 top-0 bottom-0 w-1 rounded-full bg-indigo-100" />
+
+                    {section.lessons.length === 0 && (
+                      <p className="text-slate-500 text-sm">
+                        Haven't got any lesson yet.
+                      </p>
                     )}
-                  </svg>
-                </span>
-                <h2 className="text-slate-900 text-2xl md:text-[30px] font-semibold m-0">
-                  {section.title}
-                </h2>
-                <span className="ml-auto rounded-full bg-blue-100 text-slate-600 text-xs font-semibold px-3 py-1">
-                  {section.completedText}
-                </span>
-              </header>
 
-              <div className="relative flex flex-col gap-4 pl-0 md:pl-5">
-                <span className="hidden md:block absolute left-[18px] top-0 bottom-0 w-1 rounded-full bg-indigo-100" />
-
-                {section.lessons.length === 0 && (
-                  <p className="text-slate-500 text-sm">Chưa có bài học nào.</p>
-                )}
-
-                {section.lessons.map((lesson) => (
-                  <div key={lesson.id} className="relative w-full md:pl-14">
-                    <LessonCard {...lesson} onClick={() => handleLessonClick(lesson.id)} />
-                    {lesson.status === "ongoing" && (
-                      <span className="hidden md:flex absolute -left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border-4 border-[#faf8ff] bg-blue-600 text-white z-20 items-center justify-center">
-                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
-                          <path d="M8 6L18 12L8 18V6Z" />
-                        </svg>
-                      </span>
-                    )}
-                    {lesson.status === "locked" && (
-                      <span className="hidden md:flex absolute -left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border-4 border-[#faf8ff] bg-slate-300 text-white z-20 items-center justify-center">
-                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-2">
-                          <rect x="5" y="11" width="14" height="9" rx="2" />
-                          <path d="M8 11V8C8 5.8 9.8 4 12 4C14.2 4 16 5.8 16 8V11" />
-                        </svg>
-                      </span>
-                    )}
+                    {section.lessons.map((lesson) => (
+                      <div key={lesson.id} className="relative w-full md:pl-16">
+                        {lesson.status === "ongoing" && (
+                          <span className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border-4 border-[#faf8ff] bg-blue-600 text-white z-20 items-center justify-center">
+                            <svg
+                              viewBox="0 0 24 24"
+                              className="w-4 h-4 fill-current"
+                            >
+                              <path d="M8 6L18 12L8 18V6Z" />
+                            </svg>
+                          </span>
+                        )}
+                        {lesson.status === "locked" && (
+                          <span className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full border-4 border-[#faf8ff] bg-slate-300 text-white z-20 items-center justify-center">
+                            <svg
+                              viewBox="0 0 24 24"
+                              className="w-4 h-4 fill-none stroke-current stroke-2"
+                            >
+                              <rect x="5" y="11" width="14" height="9" rx="2" />
+                              <path d="M8 11V8C8 5.8 9.8 4 12 4C14.2 4 16 5.8 16 8V11" />
+                            </svg>
+                          </span>
+                        )}
+                        <LessonCard
+                          {...lesson}
+                          onClick={() => handleLessonClick(lesson.id)}
+                        />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
-      </section>
+                </section>
+              ))}
+            </div>
+
+            <aside className="hidden xl:block">
+              <TheoryCard onReview={handleTheoryReview} />
+            </aside>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

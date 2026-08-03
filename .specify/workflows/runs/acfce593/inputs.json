@@ -1,0 +1,7 @@
+{
+  "inputs": {
+    "spec": "Implement the practice completion workflow. When a learner clicks Finish Practice and submission succeeds, save all answers, mark the practice as completed, persist the completion status in the database, update lesson progress, update module and course progress, refresh the progress bar and completed lesson count, unlock the next lesson when prerequisites are met, refresh all dependent UI without requiring a page reload, and display success or failure notifications instead of browser alerts. Ensure all related frontend and backend logic, APIs, database updates, and state management are implemented consistently with the existing project architecture.",
+    "integration": "copilot",
+    "scope": "full"
+  }
+}
