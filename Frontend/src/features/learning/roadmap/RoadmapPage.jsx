@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuthStore } from "../../auth/store/useAuthStore";
 import "./RoadmapPage.css"; // Đã xóa dòng import mock JSON tĩnh
+import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
@@ -89,7 +89,7 @@ export default function RoadmapPage() {
         }
       } catch (error) {
         if (!cancelled) {
-          setRoadmapError("Không thể tải lộ trình Roadmap.");
+          setRoadmapError('Cannot load Roadmap.');
         }
       } finally {
         if (!cancelled) {
@@ -170,16 +170,8 @@ export default function RoadmapPage() {
   if (loadingRoadmap && !roadmapData) {
     return (
       <div style={styles.pageBackground}>
-        <div
-          style={{
-            ...styles.card,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: 400,
-          }}
-        >
-          <h2 style={{ color: "#9CA3AF" }}>Đang tải lộ trình...</h2>
+        <div style={{...styles.card, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400}}>
+          <h2 style={{color: '#9CA3AF'}}>Loading roadmap...</h2>
         </div>
       </div>
     );
@@ -303,12 +295,11 @@ export default function RoadmapPage() {
                       >
                         <button
                           type="button"
-                          onClick={() => {
-                            if (isClickable) navigate(`/lessons/${node.id}`);
+                         onClick={() => {
+                            if (!isClickable) return;
+                            navigate(`/lessons/${node.id}`);   
                           }}
-                          onMouseEnter={() =>
-                            isClickable && setHoveredNode(node.id)
-                          }
+                          onMouseEnter={() => isClickable && setHoveredNode(node.id)}
                           onMouseLeave={() => setHoveredNode(null)}
                           onPointerDown={(event) => {
                             event.stopPropagation();
@@ -319,44 +310,29 @@ export default function RoadmapPage() {
                           onPointerCancel={() => setPressedNode(null)}
                           style={{
                             ...styles.node,
-                            ...(node.status === "completed"
-                              ? styles.completed
-                              : node.status === "active"
-                                ? styles.active
-                                : styles.locked),
+                            ...(node.status === 'completed' ? styles.completed 
+                              : node.status === 'active' ? styles.active 
+                              : node.status === 'available' ? styles.available 
+                              : styles.locked),
                             ...(isClickable ? styles.actionable : {}),
                             ...(hot ? styles.nodeHover : {}),
                             ...(down ? styles.nodeActive : {}),
                           }}
                         >
-                          {node.status === "completed" && (
-                            <span style={styles.check}>✓</span>
-                          )}
-                          {node.status === "active" && (
-                            <span style={styles.play}>▶</span>
-                          )}
-                          {node.status === "locked" && (
-                            <span style={styles.lock}>🔒</span>
-                          )}
+                          {node.status === 'completed' && <span style={styles.check}>✓</span>}
+                          {node.status === 'active' && <span style={styles.play}>▶</span>}
+                          {node.status === 'available' && <span style={styles.play}>📖</span>} 
+                          {node.status === 'locked' && <span style={styles.lock}>🔒</span>}
                         </button>
-                        <div style={styles.nodeLabelGroup}>
-                          <div
-                            style={{
-                              ...styles.nodeLabel,
-                              color:
-                                node.status === "locked"
-                                  ? "#9CA3AF"
-                                  : "#1F2937",
-                            }}
-                          >
-                            {node.label}
-                          </div>
+                       <div style={styles.nodeLabelGroup}>
+                          {node.status !== 'locked' && (
+                            <div style={styles.nodeLabel}>{node.label}</div>
+                          )}
                           <div style={styles.nodeMeta}>
-                            {node.status === "active"
-                              ? "In progress"
-                              : node.status === "completed"
-                                ? "Completed"
-                                : "Locked"}
+                            {node.status === 'active' ? 'In progress' 
+                              : node.status === 'completed' ? 'Completed' 
+                              : node.status === 'available' ? (node.type === 'vocabulary' ? 'Vocabulary' : 'Grammar')
+                              : 'Locked'}
                           </div>
                         </div>
                       </div>
@@ -601,6 +577,10 @@ const styles = {
     cursor: "default",
     boxShadow: "none",
   },
+  completed: { background: '#047857' },
+  available: { background: '#93C5FD', color: '#1E3A8A' },
+  active: { background: '#1D4ED8', width: 115, height: 115, fontSize: 32 },
+  locked: { background: '#E5E7EB', color: '#6B7280', cursor: 'default', boxShadow: 'none' },
   check: { fontSize: 36 },
   play: { fontSize: 34 },
   lock: { fontSize: 28 },
