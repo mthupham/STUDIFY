@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ChangeRoleModal from "./Modal/ChangeRoleModal";
+import type { RoleType } from "./Modal/ChangeRoleModal";
+import BanMemberModal from "./Modal/BanMemberModal";
+import RemoveMemberModal from "./Modal/RemoveMemberModal";
 
 // ==========================================
 // 1. TYPES & INTERFACES
@@ -30,6 +34,7 @@ interface Member {
   lessons: number;
   streak: number;
   score: number;
+  role: RoleType;
 }
 
 interface Assignment {
@@ -68,6 +73,9 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
       completed: true,
     },
   ]);
+  const [showChangeRoleModal, setShowChangeRoleModal] = useState(false);
+  const [showBanMemberModal, setShowBanMemberModal] = useState(false);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
 
   if (!member) return null;
 
@@ -331,22 +339,23 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
         </div>
 
         {/* Footer Actions */}
+
         <footer className="p-5 bg-slate-100 border-t border-slate-300 flex flex-col gap-2.5 shrink-0">
           <button
-            onClick={() => alert(`Role management for ${member.name}`)}
+            onClick={() => setShowChangeRoleModal(true)}
             className="w-full py-2 px-3 bg-white hover:bg-slate-50 border border-slate-300 text-gray-800 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
           >
             Change Role
           </button>
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={() => alert(`Removed ${member.name}`)}
+              onClick={() => setShowRemoveModal(true)}
               className="py-2 px-3 bg-white hover:bg-red-50 border border-red-200 text-red-700 font-semibold text-xs rounded-lg transition"
             >
               Remove
             </button>
             <button
-              onClick={() => alert(`Banned ${member.name}`)}
+              onClick={() => setShowBanMemberModal(true)}
               className="py-2 px-3 bg-red-700 hover:bg-red-800 text-white font-semibold text-xs rounded-lg transition shadow-sm"
             >
               Ban Member
@@ -354,6 +363,46 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
           </div>
         </footer>
       </aside>
+      <ChangeRoleModal
+        isOpen={showChangeRoleModal}
+        onClose={() => setShowChangeRoleModal(false)}
+        memberName={member.name}
+        memberAvatar={member.avatar}
+        currentRole={member.role}
+        onConfirmRole={(newRole) => {
+          console.log("New role:", newRole);
+
+          // TODO: gọi API đổi role
+
+          setShowChangeRoleModal(false);
+        }}
+      />
+      <RemoveMemberModal
+        isOpen={showRemoveModal}
+        onClose={() => setShowRemoveModal(false)}
+        memberName={member.name}
+        memberAvatar={member.avatar}
+        onConfirmRemove={() => {
+          console.log("Remove:", member.id);
+
+          // TODO: gọi API remove member
+
+          setShowRemoveModal(false);
+        }}
+      />
+      <BanMemberModal
+        isOpen={showBanMemberModal}
+        onClose={() => setShowBanMemberModal(false)}
+        memberName={member.name}
+        memberAvatar={member.avatar}
+        onConfirmBan={() => {
+          console.log("Ban:", member.id);
+
+          // TODO: API ban member
+
+          setShowBanMemberModal(false);
+        }}
+      />
     </div>
   );
 };
@@ -376,6 +425,7 @@ export const GroupDashboard: React.FC = () => {
       lessons: 42,
       streak: 12,
       score: 850,
+      role: "MEMBER",
     },
     {
       id: "m2",
@@ -387,6 +437,7 @@ export const GroupDashboard: React.FC = () => {
       lessons: 65,
       streak: 24,
       score: 1200,
+      role: "MEMBER",
     },
     {
       id: "m3",
@@ -398,6 +449,7 @@ export const GroupDashboard: React.FC = () => {
       lessons: 28,
       streak: 5,
       score: 620,
+      role: "MEMBER",
     },
   ]);
 
@@ -744,7 +796,7 @@ export const GroupDashboard: React.FC = () => {
         <aside className="w-80 bg-slate-50 border-l border-slate-200 flex flex-col shrink-0 overflow-y-auto gap-6 p-6">
           {/* Bento Quick Actions */}
           <div className="grid grid-cols-2 gap-3">
-            <button className="p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
+            <button className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
                   className="w-5 h-5"
@@ -768,7 +820,9 @@ export const GroupDashboard: React.FC = () => {
               </div>
             </button>
 
-            <button className="p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
+            <button 
+            onClick={() => navigate("/study-groups/workspace-leader/repository")} 
+            className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
                   className="w-5 h-5"
