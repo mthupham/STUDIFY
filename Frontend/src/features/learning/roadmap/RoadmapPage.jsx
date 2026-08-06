@@ -170,8 +170,16 @@ export default function RoadmapPage() {
   if (loadingRoadmap && !roadmapData) {
     return (
       <div style={styles.pageBackground}>
-        <div style={{...styles.card, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400}}>
-          <h2 style={{color: '#9CA3AF'}}>Loading roadmap...</h2>
+        <div
+          style={{
+            ...styles.card,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: 400,
+          }}
+        >
+          <h2 style={{ color: "#9CA3AF" }}>Loading Roadmap...</h2>
         </div>
       </div>
     );

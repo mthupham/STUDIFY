@@ -311,7 +311,7 @@ const styles = {
   mainArea: {
     flex: 1,
     marginLeft: 280,
-    minHeight: "100vh",
+    minHeight: "calc(100dvh / 0.83)",
     background: "#FFFFFF",
   },
   header: {
@@ -400,7 +400,7 @@ const styles = {
   },
   mainContent: {
     flex: 1,
-    padding: "104px 32px 32px",
+    padding: "50px 32px 32px",
   },
   signOutButton: {
     marginTop: "auto",

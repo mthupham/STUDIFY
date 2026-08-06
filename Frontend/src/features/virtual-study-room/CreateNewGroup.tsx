@@ -257,7 +257,7 @@ function IconCustomizationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 font-['Inter']">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 font-['Inter']">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"

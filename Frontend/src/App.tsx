@@ -17,11 +17,16 @@ import PracticeQuestions from "./features/learning/lesson/PracticeQuestions";
 import ResultPractice from "./features/learning/lesson/ResultPractice";
 
 import StudyGroupHub from "./features/virtual-study-room/StudyGroup";
-import JoinGroup from "./features/virtual-study-room/JoinGroup";
-import NewGroup from "./features/virtual-study-room/CreateNewGroup";
+import JoinGroup from "./features/virtual-study-room/JoinGroup.tsx";
+import NewGroup from "./features/virtual-study-room/CreateNewGroup.tsx";
 import MemberWorkspace from "./features/virtual-study-room/Workspace_Member";
 import LeaderWorkspace from "./features/virtual-study-room/Workspace_Leader";
-import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo";
+import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo.tsx";
+import RepositoryUpload from "./features/virtual-study-room/RepositoryUpload.tsx";
+import TaskAssignmentDashboard from "./features/virtual-study-room/TaskAssignment.tsx";
+
+import Pomodoro from "./features/pomodoro/PomodoroTimer";
+import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidget";
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
@@ -40,6 +45,7 @@ function OnboardingGuard({ children }) {
 function App() {
   return (
     <BrowserRouter>
+      <FloatingPomodoroWidget />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
@@ -182,6 +188,36 @@ function App() {
           }
         />
 
+        <Route
+          path="/study-groups/workspace-leader/repository"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <RepositoryUpload />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/study-groups/workspace-leader/task-assignment"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <TaskAssignmentDashboard />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/dashboard/pomodoro"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <Pomodoro />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

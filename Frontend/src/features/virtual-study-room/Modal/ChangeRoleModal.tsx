@@ -70,21 +70,21 @@ export const ChangeRoleModal: React.FC<ChangeRoleModalProps> = ({
     {
       id: "MEMBER" as RoleType,
       title: "Member",
-      description: "Có thể tham gia trò chuyện, xem tài liệu và làm bài tập được giao.",
+      description: "Can join discussions, view materials, and complete assigned tasks",
       icon: <UserIcon />,
       badgeColor: "bg-gray-100 text-gray-700",
     },
     {
       id: "MODERATOR" as RoleType,
-      title: "Moderator (Phó nhóm)",
-      description: "Có quyền giao bài tập, quản lý tài liệu và duyệt tin nhắn nhóm.",
+      title: "Moderator",
+      description: "Has the authority to assign tasks, manage materials, and approve group messages.",
       icon: <ShieldIcon />,
       badgeColor: "bg-sky-100 text-sky-800",
     },
     {
       id: "LEADER" as RoleType,
-      title: "Switch Group Leader (Trưởng nhóm)",
-      description: "Chuyển giao quyền sở hữu nhóm hoàn toàn cho thành viên này.",
+      title: "Switch Group Leader",
+      description: "Has full control to manage group members, content, permissions, and transfer ownership.",
       icon: <CrownIcon />,
       badgeColor: "bg-amber-100 text-amber-800",
     },
@@ -130,7 +130,7 @@ export const ChangeRoleModal: React.FC<ChangeRoleModalProps> = ({
               </div>
             )}
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500 font-medium">Thay đổi vai trò cho</span>
+              <span className="text-xs text-gray-500 font-medium">Changing role:</span>
               <span className="text-sm font-bold text-gray-900">{memberName}</span>
             </div>
           </div>
@@ -156,7 +156,7 @@ export const ChangeRoleModal: React.FC<ChangeRoleModalProps> = ({
                       <h4 className="text-sm font-bold text-gray-900">{role.title}</h4>
                       {role.id === currentRole && (
                         <span className="px-2 py-0.5 bg-slate-200 text-gray-700 text-[10px] font-bold rounded uppercase">
-                          Hiện tại
+                          Current Role
                         </span>
                       )}
                     </div>
@@ -183,7 +183,7 @@ export const ChangeRoleModal: React.FC<ChangeRoleModalProps> = ({
             <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
               <AlertTriangleIcon />
               <div className="text-xs text-amber-900 leading-relaxed">
-                <span className="font-bold">Cảnh báo chuyển nhượng:</span> Bạn chuẩn bị trao quyền <strong>Group Leader</strong> cho <strong>{memberName}</strong>. Bạn sẽ không còn giữ quyền kiểm soát tối cao của nhóm này nữa.
+                <span className="font-bold">Transfer Warning:</span> You are about to grant the <strong>Group Leader</strong> role to <strong>{memberName}</strong>. You will no longer have ultimate control over this group.
               </div>
             </div>
           )}
@@ -195,7 +195,7 @@ export const ChangeRoleModal: React.FC<ChangeRoleModalProps> = ({
             onClick={onClose}
             className="px-4 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-gray-700 text-xs font-semibold rounded-xl transition shadow-sm"
           >
-            Hủy
+            Cancel
           </button>
           <button
             onClick={handleSave}
@@ -205,7 +205,7 @@ export const ChangeRoleModal: React.FC<ChangeRoleModalProps> = ({
                 : "bg-sky-700 hover:bg-sky-800"
             }`}
           >
-            {selectedRole === "LEADER" ? "Xác nhận chuyển Leader" : "Lưu thay đổi"}
+            {selectedRole === "LEADER" ? "Confirm Transfer" : "Save changes"}
           </button>
         </footer>
 

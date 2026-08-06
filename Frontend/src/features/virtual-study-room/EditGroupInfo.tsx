@@ -436,7 +436,7 @@ export const EditGroupSettings: React.FC = () => {
 
       setTimeout(() => {
         setNotification(null);
-        navigate('/study-groups/workspace-leader')
+        navigate("/study-groups/workspace-leader");
       }, 3000);
     } catch (error) {
       setNotification({
@@ -451,10 +451,10 @@ export const EditGroupSettings: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-['Inter',sans-serif]">
+    <div className="min-h-screen text-slate-900 font-['Inter',sans-serif]">
       {showIconModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-2xl p-6 w-[420px] shadow-xl">
+          <div className="bg-white rounded-2xl p-6 w-[420px] shadow-2xl border border-slate-200">
             <div className="flex justify-between items-center mb-5">
               <h3 className="text-xl font-semibold text-gray-900">
                 Choose Group Icon
@@ -536,7 +536,7 @@ export const EditGroupSettings: React.FC = () => {
         </div>
       )}
       {/* Top Header / App Bar */}
-      <header className="sticky top-0 z-10 bg-slate-50 px-4 py-5 sm:px-8 flex items-center gap-4">
+      <header className="sticky top-0 z-10 px-4 py-5 sm:px-8 flex items-center gap-4">
         <button
           type="button"
           onClick={() => navigate("/study-groups/workspace-leader")}

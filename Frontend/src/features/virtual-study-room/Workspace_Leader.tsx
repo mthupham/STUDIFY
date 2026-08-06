@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ChangeRoleModal from "./Modal/ChangeRoleModal";
+import type { RoleType } from "./Modal/ChangeRoleModal";
+import BanMemberModal from "./Modal/BanMemberModal";
+import RemoveMemberModal from "./Modal/RemoveMemberModal";
 
 // ==========================================
 // 1. TYPES & INTERFACES
@@ -30,14 +34,7 @@ interface Member {
   lessons: number;
   streak: number;
   score: number;
-}
-
-interface Assignment {
-  id: string;
-  title: string;
-  dueDate: string;
-  progress: string;
-  statusColor: "emerald" | "sky";
+  role: RoleType;
 }
 
 // ==========================================
@@ -68,6 +65,9 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
       completed: true,
     },
   ]);
+  const [showChangeRoleModal, setShowChangeRoleModal] = useState(false);
+  const [showBanMemberModal, setShowBanMemberModal] = useState(false);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
 
   if (!member) return null;
 
@@ -216,7 +216,8 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
               <h4 className="text-sm font-semibold text-gray-900">
                 Assigned Tasks
               </h4>
-              <button className="text-xs font-semibold text-sky-700 hover:underline">
+              <button 
+              className="text-xs font-semibold text-sky-700 hover:underline">
                 View All
               </button>
             </div>
@@ -331,22 +332,23 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
         </div>
 
         {/* Footer Actions */}
+
         <footer className="p-5 bg-slate-100 border-t border-slate-300 flex flex-col gap-2.5 shrink-0">
           <button
-            onClick={() => alert(`Role management for ${member.name}`)}
+            onClick={() => setShowChangeRoleModal(true)}
             className="w-full py-2 px-3 bg-white hover:bg-slate-50 border border-slate-300 text-gray-800 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
           >
             Change Role
           </button>
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={() => alert(`Removed ${member.name}`)}
+              onClick={() => setShowRemoveModal(true)}
               className="py-2 px-3 bg-white hover:bg-red-50 border border-red-200 text-red-700 font-semibold text-xs rounded-lg transition"
             >
               Remove
             </button>
             <button
-              onClick={() => alert(`Banned ${member.name}`)}
+              onClick={() => setShowBanMemberModal(true)}
               className="py-2 px-3 bg-red-700 hover:bg-red-800 text-white font-semibold text-xs rounded-lg transition shadow-sm"
             >
               Ban Member
@@ -354,6 +356,46 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
           </div>
         </footer>
       </aside>
+      <ChangeRoleModal
+        isOpen={showChangeRoleModal}
+        onClose={() => setShowChangeRoleModal(false)}
+        memberName={member.name}
+        memberAvatar={member.avatar}
+        currentRole={member.role}
+        onConfirmRole={(newRole) => {
+          console.log("New role:", newRole);
+
+          // TODO: gọi API đổi role
+
+          setShowChangeRoleModal(false);
+        }}
+      />
+      <RemoveMemberModal
+        isOpen={showRemoveModal}
+        onClose={() => setShowRemoveModal(false)}
+        memberName={member.name}
+        memberAvatar={member.avatar}
+        onConfirmRemove={() => {
+          console.log("Remove:", member.id);
+
+          // TODO: gọi API remove member
+
+          setShowRemoveModal(false);
+        }}
+      />
+      <BanMemberModal
+        isOpen={showBanMemberModal}
+        onClose={() => setShowBanMemberModal(false)}
+        memberName={member.name}
+        memberAvatar={member.avatar}
+        onConfirmBan={() => {
+          console.log("Ban:", member.id);
+
+          // TODO: API ban member
+
+          setShowBanMemberModal(false);
+        }}
+      />
     </div>
   );
 };
@@ -376,6 +418,7 @@ export const GroupDashboard: React.FC = () => {
       lessons: 42,
       streak: 12,
       score: 850,
+      role: "MEMBER",
     },
     {
       id: "m2",
@@ -387,6 +430,7 @@ export const GroupDashboard: React.FC = () => {
       lessons: 65,
       streak: 24,
       score: 1200,
+      role: "MEMBER",
     },
     {
       id: "m3",
@@ -398,6 +442,7 @@ export const GroupDashboard: React.FC = () => {
       lessons: 28,
       streak: 5,
       score: 620,
+      role: "MEMBER",
     },
   ]);
 
@@ -437,23 +482,6 @@ export const GroupDashboard: React.FC = () => {
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
-
-  const pendingAssignments: Assignment[] = [
-    {
-      id: "a1",
-      title: "Weekly Vocabulary Quiz",
-      dueDate: "Oct 25, 4:00 PM",
-      progress: "8/12 Done",
-      statusColor: "emerald",
-    },
-    {
-      id: "a2",
-      title: "Case Study Analysis",
-      dueDate: "Oct 28, 9:00 AM",
-      progress: "0/12 Done",
-      statusColor: "sky",
-    },
-  ];
 
   const inviteCode = "LP-B2-99";
 
@@ -569,11 +597,6 @@ export const GroupDashboard: React.FC = () => {
               />
             </svg>
             Edit Group Info
-          </button>
-          <button className="p-2.5 text-gray-400 hover:text-gray-600 hover:bg-slate-100 rounded-xl transition-colors">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-            </svg>
           </button>
         </div>
       </header>
@@ -744,7 +767,9 @@ export const GroupDashboard: React.FC = () => {
         <aside className="w-80 bg-slate-50 border-l border-slate-200 flex flex-col shrink-0 overflow-y-auto gap-6 p-6">
           {/* Bento Quick Actions */}
           <div className="grid grid-cols-2 gap-3">
-            <button className="p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
+            <button 
+            onClick={() => navigate("/study-groups/workspace-leader/task-assignment")} 
+            className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
                   className="w-5 h-5"
@@ -768,7 +793,9 @@ export const GroupDashboard: React.FC = () => {
               </div>
             </button>
 
-            <button className="p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
+            <button 
+            onClick={() => navigate("/study-groups/workspace-leader/repository")} 
+            className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
                   className="w-5 h-5"
@@ -886,58 +913,6 @@ export const GroupDashboard: React.FC = () => {
                   <span>Invite New Members</span>
                 </>
               )}
-            </button>
-          </div>
-
-          {/* Pending Assignments Section */}
-          <div className="p-4 bg-white rounded-xl border border-slate-200 flex flex-col gap-4 shadow-sm">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="text-gray-900 font-bold text-xs uppercase tracking-wider">
-                PENDING ASSIGNMENTS
-              </h3>
-              <button className="text-sky-700 hover:text-sky-800 text-[11px] font-bold transition-colors">
-                View All
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-2.5">
-              {pendingAssignments.map((assignment) => (
-                <div
-                  key={assignment.id}
-                  className={`p-3 bg-slate-50 rounded-lg border-l-4 ${
-                    assignment.statusColor === "emerald"
-                      ? "border-l-emerald-600"
-                      : "border-l-sky-700"
-                  } flex flex-col gap-1`}
-                >
-                  <p className="text-gray-900 text-xs font-bold">
-                    {assignment.title}
-                  </p>
-                  <div className="flex justify-between items-center text-[11px] text-gray-500 mt-0.5">
-                    <span>{assignment.dueDate}</span>
-                    <span className="font-semibold text-gray-700">
-                      {assignment.progress}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button className="w-full py-2.5 bg-sky-700 hover:bg-sky-800 text-white text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm mt-1">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Create New Assignment
             </button>
           </div>
         </aside>

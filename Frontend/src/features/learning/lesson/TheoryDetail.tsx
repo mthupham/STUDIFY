@@ -149,7 +149,7 @@ export default function LessonDetail() {
   const grammarLessons = data.grammar_lessons ?? [];
 
   return (
-    <div className="w-full min-h-screen p-4 md:p-8 flex flex-col gap-8 bg-[#faf8ff]">
+    <div className="w-full min-h-screen p-4 md:p-8 flex flex-col gap-8">
       <div className="w-full flex justify-between items-center border-b border-slate-200 pb-4">
         <div className="flex items-center gap-3">
           <button
