@@ -23,6 +23,7 @@ import MemberWorkspace from "./features/virtual-study-room/Workspace_Member";
 import LeaderWorkspace from "./features/virtual-study-room/Workspace_Leader";
 import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo";
 
+
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
   const user = useAuthStore((state) => state.user);
@@ -41,6 +42,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />

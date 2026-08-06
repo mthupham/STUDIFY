@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useGroupChat } from "./hooks/useGroupChat";
 
 // --- Types ---
 interface FileItem {
@@ -29,76 +30,18 @@ interface Message {
 
 export const BusinessEnglishHub: React.FC = () => {
   // --- States ---
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      sender: "Maria Dupont",
-      senderColor: "text-sky-700",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-      time: "10:24 AM",
-      text: "Good morning everyone! I've just uploaded the prep material for our meeting simulation tomorrow. Please take a look at the negotiation phrases.",
-    },
-    {
-      id: "2",
-      sender: "Maria Dupont",
-      senderColor: "text-sky-700",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-      time: "10:25 AM",
-      file: {
-        id: "f1",
-        name: "Business Vocabulary.pdf",
-        size: "2.4 MB",
-        type: "pdf",
-      },
-    },
-    {
-      id: "3",
-      sender: "James Lee",
-      senderColor: "text-emerald-800",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-      time: "10:42 AM",
-      text: "Thanks Maria! This is exactly what I needed for my presentation next week. Should we meet 15 minutes early to go over the roles?",
-    },
-    {
-      id: "4",
-      sender: "Alex Rivera (You)",
-      senderColor: "text-blue-600",
-      avatar:
-        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
-      time: "11:05 AM",
-      text: "I'm in! Let's do it.",
-      isSelf: true,
-    },
-  ]);
-
   const [inputMessage, setInputMessage] = useState("");
   const [copiedCode, setCopiedCode] = useState(false);
   const [showAllMembers, setShowAllMembers] = useState(false);
 
   const inviteCode = "LP-B2-99";
+  const { messages, sendMessage, currentUserId } = useGroupChat(inviteCode);
 
   // --- Handlers ---
   const handleSendMessage = () => {
     if (!inputMessage.trim()) return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      sender: "Alex Rivera (You)",
-      senderColor: "text-blue-600",
-      avatar:
-        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      text: inputMessage,
-      isSelf: true,
-    };
-
-    setMessages((prev) => [...prev, newMessage]);
+    sendMessage(inputMessage);
     setInputMessage("");
   };
 
@@ -178,65 +121,26 @@ export const BusinessEnglishHub: React.FC = () => {
             {messages.map((msg) => (
               <div key={msg.id} className="flex items-start gap-3.5 group">
                 <img
-                  src={msg.avatar}
-                  alt={msg.sender}
+                  src={msg.sender?.avatar || "https://via.placeholder.com/40"}
+                  alt={msg.sender?.name || "Member avatar"}
                   className="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-100 shadow-sm"
                 />
                 <div className="flex flex-col gap-1 max-w-[80%]">
                   <div className="flex items-baseline gap-2">
-                    <span
-                      className={`font-semibold text-sm ${msg.senderColor || "text-gray-900"}`}
-                    >
-                      {msg.sender}
+                    <span className="font-semibold text-sm text-gray-900">
+                      {msg.sender?.id === currentUserId ? "You" : msg.sender?.name || "Unknown"}
                     </span>
-                    <span className="text-gray-400 text-xs">{msg.time}</span>
+                    <span className="text-gray-400 text-xs">
+                      {new Date(msg.createdAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
                   </div>
 
                   {msg.text && (
                     <div className="text-gray-800 text-sm leading-relaxed bg-slate-50 p-3 rounded-2xl rounded-tl-none border border-slate-100">
                       {msg.text}
-                    </div>
-                  )}
-
-                  {/* File Attachment Card */}
-                  {msg.file && (
-                    <div className="w-72 p-3.5 bg-white rounded-xl border border-slate-200 flex items-center gap-3 shadow-sm hover:border-slate-300 transition-colors cursor-pointer">
-                      <div className="w-10 h-10 bg-red-50 text-red-600 rounded-lg flex items-center justify-center shrink-0">
-                        <svg
-                          className="w-5 h-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-gray-900 text-sm font-medium truncate">
-                          {msg.file.name}
-                        </p>
-                        <p className="text-gray-500 text-xs">
-                          {msg.file.size} • PDF Document
-                        </p>
-                      </div>
-                      <button className="text-gray-400 hover:text-gray-600 p-1">
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                          />
-                        </svg>
-                      </button>
                     </div>
                   )}
                 </div>

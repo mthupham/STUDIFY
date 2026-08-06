@@ -297,7 +297,7 @@ export default function RoadmapPage() {
                           type="button"
                          onClick={() => {
                             if (!isClickable) return;
-                            navigate(`/lessons/${node.id}`);   
+                            navigate(`/lessons/theory/${node.id}`);
                           }}
                           onMouseEnter={() => isClickable && setHoveredNode(node.id)}
                           onMouseLeave={() => setHoveredNode(null)}
