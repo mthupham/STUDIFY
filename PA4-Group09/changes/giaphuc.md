@@ -11,5 +11,5 @@
 
 * Resolve evaluator feedback on "abusing \<\<include\>\> as a workflow" (Functional Decomposition).  
 * Align written specifications strictly with standard UML Use Case rules.  
-* Resolve the problem of “UC specs should be merged into one file”
+* Resolve the problem of “UC specs should be merged into one file” by merging all Module 5 specs into one file
 
