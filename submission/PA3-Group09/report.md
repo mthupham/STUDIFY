@@ -245,26 +245,26 @@ flowchart LR
 
     %% System Boundary
     subgraph AI_Speaking_Assistant ["AI Speaking Assistant"]
-        UC51(("UC5.1: Speech recognition"))
-        UC52(("UC5.2: Generate appropriate reply"))
-        UC53(("UC5.3: Evaluate performance on specific criteria"))
-        UC54(("UC5.4: Provide guidance on how to improve"))
+        UC5(("UC5: Practice Speaking with AI"))
+        UC51(("UC5.1: Speech Recognition"))
+        UC52(("UC5.2: Generate AI Reply"))
+        UC53(("UC5.3: Evaluate Performance"))
+        UC54(("UC5.4: Provide Improvement Guidance"))
     end
 
-    %% Primary Interactions
-    Learner --> UC51
-    Learner --> UC52
+    %% Primary Actor Interactions
+    Learner --> UC5
 
-    %% Relationships
-    UC52 -. "<<include>>" .-> UC51
-    UC53 -. "<<include>>" .-> UC51
+    %% Include Relationships 
+    UC5 -. "<<include>>" .-> UC51
+    UC5 -. "<<include>>" .-> UC52
+    UC5 -. "<<include>>" .-> UC53
+
+    %% Extend Relationship 
     UC54 -. "<<extend>>" .-> UC53
 
     %% Secondary Actor Interactions
-    UC51 --> AI
-    UC52 --> AI
-    UC53 --> AI
-    UC54 --> AI
+    UC5 --> AI
 ```
 
 # D. Use-Case Specification
