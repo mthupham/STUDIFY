@@ -37,14 +37,6 @@ interface Member {
   role: RoleType;
 }
 
-interface Assignment {
-  id: string;
-  title: string;
-  dueDate: string;
-  progress: string;
-  statusColor: "emerald" | "sky";
-}
-
 // ==========================================
 // 2. MEMBER PROFILE DRAWER COMPONENT
 // ==========================================
@@ -224,7 +216,8 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
               <h4 className="text-sm font-semibold text-gray-900">
                 Assigned Tasks
               </h4>
-              <button className="text-xs font-semibold text-sky-700 hover:underline">
+              <button 
+              className="text-xs font-semibold text-sky-700 hover:underline">
                 View All
               </button>
             </div>
@@ -490,23 +483,6 @@ export const GroupDashboard: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
 
-  const pendingAssignments: Assignment[] = [
-    {
-      id: "a1",
-      title: "Weekly Vocabulary Quiz",
-      dueDate: "Oct 25, 4:00 PM",
-      progress: "8/12 Done",
-      statusColor: "emerald",
-    },
-    {
-      id: "a2",
-      title: "Case Study Analysis",
-      dueDate: "Oct 28, 9:00 AM",
-      progress: "0/12 Done",
-      statusColor: "sky",
-    },
-  ];
-
   const inviteCode = "LP-B2-99";
 
   // --- Handlers ---
@@ -621,11 +597,6 @@ export const GroupDashboard: React.FC = () => {
               />
             </svg>
             Edit Group Info
-          </button>
-          <button className="p-2.5 text-gray-400 hover:text-gray-600 hover:bg-slate-100 rounded-xl transition-colors">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-            </svg>
           </button>
         </div>
       </header>
@@ -796,7 +767,9 @@ export const GroupDashboard: React.FC = () => {
         <aside className="w-80 bg-slate-50 border-l border-slate-200 flex flex-col shrink-0 overflow-y-auto gap-6 p-6">
           {/* Bento Quick Actions */}
           <div className="grid grid-cols-2 gap-3">
-            <button className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
+            <button 
+            onClick={() => navigate("/study-groups/workspace-leader/task-assignment")} 
+            className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
                   className="w-5 h-5"
@@ -940,58 +913,6 @@ export const GroupDashboard: React.FC = () => {
                   <span>Invite New Members</span>
                 </>
               )}
-            </button>
-          </div>
-
-          {/* Pending Assignments Section */}
-          <div className="p-4 bg-white rounded-xl border border-slate-200 flex flex-col gap-4 shadow-sm">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="text-gray-900 font-bold text-xs uppercase tracking-wider">
-                PENDING ASSIGNMENTS
-              </h3>
-              <button className="text-sky-700 hover:text-sky-800 text-[11px] font-bold transition-colors">
-                View All
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-2.5">
-              {pendingAssignments.map((assignment) => (
-                <div
-                  key={assignment.id}
-                  className={`p-3 bg-slate-50 rounded-lg border-l-4 ${
-                    assignment.statusColor === "emerald"
-                      ? "border-l-emerald-600"
-                      : "border-l-sky-700"
-                  } flex flex-col gap-1`}
-                >
-                  <p className="text-gray-900 text-xs font-bold">
-                    {assignment.title}
-                  </p>
-                  <div className="flex justify-between items-center text-[11px] text-gray-500 mt-0.5">
-                    <span>{assignment.dueDate}</span>
-                    <span className="font-semibold text-gray-700">
-                      {assignment.progress}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button className="w-full py-2.5 bg-sky-700 hover:bg-sky-800 text-white text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm mt-1">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Create New Assignment
             </button>
           </div>
         </aside>

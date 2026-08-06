@@ -101,27 +101,18 @@ const getInitialStorage = (initialFocus = 25, initialBreak = 5): PomodoroStorage
   if (saved) {
     try {
       const data: PomodoroStorage = JSON.parse(saved);
-
-      if (data.isRunning && data.endTime) {
-        const remain = Math.floor((data.endTime - Date.now()) / 1000);
-        if (remain > 0) {
-          return { ...data, timeLeft: remain };
-        } else {
-          const isFocus = data.mode === "focus";
-          const nextMode: TimerMode = isFocus ? "break" : "focus";
-          const nextDuration = (isFocus ? data.breakTime : data.focusTime) * 60;
-          return {
-            ...data,
-            mode: nextMode,
-            completedSessions: isFocus ? data.completedSessions + 1 : data.completedSessions,
-            isRunning: false,
-            endTime: null,
-            totalTime: nextDuration,
-            timeLeft: nextDuration,
-          };
-        }
-      }
-      return data;
+      // Khi reload trang, luôn mặc định chuyển về mode Focus
+      const defaultTotal = (data.focusTime || initialFocus) * 60;
+      return {
+        focusTime: data.focusTime || initialFocus,
+        breakTime: data.breakTime || initialBreak,
+        mode: "focus",
+        completedSessions: data.completedSessions || 0,
+        isRunning: false,
+        endTime: null,
+        totalTime: defaultTotal,
+        timeLeft: defaultTotal,
+      };
     } catch (e) {
       console.error("Failed to parse pomodoro storage", e);
     }
@@ -147,11 +138,9 @@ const initialDerived = calculateDerived(initialData.timeLeft, initialData.totalT
 // ZUSTAND STORE
 // =========================================================================
 export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
-  // Đồng bộ LocalStorage & Title Tab
   const updateStorageAndTitle = (state: Partial<PomodoroStoreState>) => {
     const currentState = { ...get(), ...state };
 
-    // 1. Lưu Storage
     const storageData: PomodoroStorage = {
       focusTime: currentState.focusTime,
       breakTime: currentState.breakTime,
@@ -164,7 +153,6 @@ export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(storageData));
 
-    // 2. Đổi Title tab
     if (currentState.isRunning) {
       const modeLabel = currentState.mode === "focus" ? "Focus" : "Break";
       document.title = `(${currentState.formattedTime}) ${modeLabel} - Studify`;
@@ -173,7 +161,6 @@ export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
     }
   };
 
-  // Hàm dừng đếm ngược
   const stopInterval = () => {
     if (timerInterval) {
       clearInterval(timerInterval);
@@ -181,7 +168,6 @@ export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
     }
   };
 
-  // Hàm hoàn thành Session & Tự động chuyển mode + Auto-start
   const handleTimerComplete = () => {
     const { mode, completedSessions, dailyGoal, breakTime, focusTime } = get();
 
@@ -232,15 +218,16 @@ export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
     }
   };
 
-  // Hàm chạy mỗi giây
   const startInterval = () => {
     stopInterval();
 
+    // Chạy kiểm tra mỗi 200ms để đảm bảo đếm chính xác từng giây
     timerInterval = setInterval(() => {
       const { endTime, totalTime } = get();
       if (!endTime) return;
 
-      const remain = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      // SỬA LỖI: Dùng Math.ceil thay vì Math.floor
+      const remain = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
       const derived = calculateDerived(remain, totalTime);
 
       if (remain === 0) {
@@ -250,20 +237,14 @@ export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
         set(nextState);
         updateStorageAndTitle(nextState);
       }
-    }, 1000);
+    }, 200);
   };
 
-  // Nếu trước đó đang chạy (vd: F5 trang), tự động tiếp tục interval
-  if (initialData.isRunning && initialData.endTime) {
-    setTimeout(() => startInterval(), 0);
-  }
-
-  // Bắt sự kiện visibilitychange để đồng bộ thời gian thực lập tức khi active tab
   if (typeof document !== "undefined") {
     document.addEventListener("visibilitychange", () => {
       const { isRunning, endTime, totalTime } = get();
       if (document.visibilityState === "visible" && isRunning && endTime) {
-        const remain = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+        const remain = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
         const derived = calculateDerived(remain, totalTime);
 
         if (remain === 0) {
@@ -278,7 +259,6 @@ export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
   }
 
   return {
-    // Initial State
     focusTime: initialData.focusTime,
     breakTime: initialData.breakTime,
     mode: initialData.mode,
@@ -290,7 +270,6 @@ export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
     endTime: initialData.endTime,
     ...initialDerived,
 
-    // Actions
     requestNotificationPermission: () => {
       if ("Notification" in window && Notification.permission === "default") {
         Notification.requestPermission();
@@ -317,13 +296,15 @@ export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
       }
     },
 
+    // Reset luôn quay về Mode Focus
     resetTimer: () => {
       stopInterval();
-      const { mode, focusTime, breakTime } = get();
-      const seconds = (mode === "focus" ? focusTime : breakTime) * 60;
+      const { focusTime } = get();
+      const seconds = focusTime * 60;
       const derived = calculateDerived(seconds, seconds);
 
       const nextState = {
+        mode: "focus" as TimerMode,
         isRunning: false,
         endTime: null,
         totalTime: seconds,
@@ -381,5 +362,4 @@ export const usePomodoroStore = create<PomodoroStoreState>((set, get) => {
   };
 });
 
-// Fix lỗi: Export default đúng Hook
 export default usePomodoroStore;
