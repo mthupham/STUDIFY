@@ -223,36 +223,17 @@ flowchart LR
 flowchart LR
     User((User))
 
-    subgraph System["Module 4: Other Utilities"]
+    subgraph System["Module 4: Study Utilities"]
         direction TB
         
-        UC1(["Use Pomodoro Timer"])
-        
-        UC2(["Create Flashcard"])
-        UC2_1(["Enter Flashcard Manually"])
-        UC2_2(["Create Flashcard from Highlighted Text"])
-        UC2_3(["Write Explanation"])
-        UC2_4(["Add Tags"])
-
-        UC3(["Study Flashcards"])
-        UC3_1(["Filter Flashcards by Tag"])
-        UC3_2(["Flip Card to View Explanation"])
-        UC3_3(["Mark Study Status"])
+        UC1(["M4-UC1: Use Pomodoro Timer"])
+        UC2(["M4-UC2: Create Flashcard"])
+        UC3(["M4-UC3: Study Flashcards"])
     end
 
     User --- UC1
     User --- UC2
     User --- UC3
-
-    UC2_1 --> UC2
-    UC2_2 --> UC2
-
-    UC2 -.->|include| UC2_3
-    UC2_4 -.->|extend| UC2
-
-    UC3_1 -.->|extend| UC3
-    UC3 -.->|include| UC3_2
-    UC3 -.->|include| UC3_3
 ```
 
 ### 5. AI Speaking Assistant Use-Case Model
