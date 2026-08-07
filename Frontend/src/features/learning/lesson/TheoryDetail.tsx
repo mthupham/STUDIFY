@@ -50,7 +50,7 @@ const VocabularySection: React.FC<{ vocabulary: VocabularyLesson }> = ({ vocabul
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded-xl flex justify-center items-center shadow-sm border border-emerald-100/50">
+          <div className="w-10 h-10 text-emerald-600 dark:text-emerald-400 rounded-xl flex justify-center items-center shadow-sm border border-emerald-100/50">
             <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-2">
               <path d="M4 6.5C4 5.7 4.7 5 5.5 5H10.5C11.3 5 12 5.7 12 6.5V18H5.5C4.7 18 4 17.3 4 16.5V6.5Z M12 6.5C12 5.7 12.7 5 13.5 5H18.5C19.3 5 20 5.7 20 6.5V16.5C20 17.3 19.3 18 18.5 18H12V6.5Z" />
             </svg>
@@ -129,7 +129,7 @@ const GrammarSection: React.FC<{ grammar: GrammarLesson }> = ({ grammar }) => {
     <div className="flex flex-col gap-5 mt-6 pt-6 border-t border-slate-100">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-orange-50 dark:bg-orange-950/20 text-orange-600 dark:text-orange-400 rounded-xl flex justify-center items-center shadow-sm border border-orange-100/50">
+          <div className="w-10 h-10 text-orange-600 dark:text-orange-400 rounded-xl flex justify-center items-center shadow-sm border border-orange-100/50">
             <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-2">
               <path d="M4 16.5V20h3.5L18 9.5L14.5 6L4 16.5Z" strokeLinejoin="round" />
             </svg>
@@ -495,7 +495,7 @@ export default function LessonDetail() {
   return (
     <div className="w-full min-h-screen p-4 md:p-8 flex flex-col gap-6 max-w-5xl mx-auto pb-28">
       {/* 1. Sticky Navigation Bar */}
-      <div className="sticky top-4 z-40 bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-md">
+      <div className="sticky top-4 z-[9999] bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/roadmap")}
@@ -505,7 +505,7 @@ export default function LessonDetail() {
             ← Roadmap
           </button>
           <span className="h-4 w-px bg-slate-200" />
-          <h1 className="text-slate-900 text-lg font-bold">Theory Review</h1>
+          <h1 className="!text-slate-900 !text-lg !font-bold">Theory Review</h1>
         </div>
 
         {/* Mid Navigation Controls */}
@@ -555,7 +555,7 @@ export default function LessonDetail() {
           <span className="px-4 py-1.5 bg-emerald-800/80 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-700/30">
             Level {data.level}
           </span>
-          <h2 className="text-3xl md:text-5xl font-black tracking-tight uppercase">
+          <h2 className="!text-slate-900 !text-lg !font-bold !text-white">
             {data.level_title}
           </h2>
         </div>
