@@ -29,6 +29,7 @@
 * AI-generated content: An explanation of the grading flow, distinguishing single-answer submission vs. full-session submission, and how controller/service/question data interact.
 * Student's work and validation: Used the explanation to design the actual grading API structure in the STUDIFY backend; cross-checked the suggested flow against the project's existing controller/service pattern before implementing.
 **Screenshots/Chat History:** *See Appendix*
+---
 **2.**
 * Tool: ChatGPT
 * Purpose: Understand how frontend code should interpret different API response structures
@@ -36,6 +37,7 @@
 * AI-generated content: An explanation of common response-wrapping patterns and how nested response structures affect how frontend state should be set.
 * Student's work and validation: Verified the actual response shape returned by the backend endpoint before writing the frontend state-handling code, to avoid assuming the wrong structure.
 **Screenshots/Chat History:** *See Appendix*
+---
 **3.**
 * Tool: ChatGPT
 * Purpose: Understand the avatar upload architecture across backend and frontend
@@ -43,6 +45,9 @@
 * AI-generated content: An explanation of how uploaded files flow from Multer through storage, how they are linked to a user record via JWT, and how the frontend falls back to a default avatar when none exists.
 * Student's work and validation: Applied the explanation to trace and confirm the existing avatar upload implementation in the STUDIFY codebase rather than writing new code from the AI's answer.
 **Screenshots/Chat History:** *See Appendix*
+
+---
+
 **4.**
 * Tool: ChatGPT
 * Purpose: Understand the forgot-password and OTP authentication flow
@@ -50,6 +55,7 @@
 * AI-generated content: An explanation of the end-to-end OTP security flow, covering hashing, expiration, single-use deletion, and the Gmail/Nodemailer email-sending requirements.
 * Student's work and validation: Used the explanation to review and validate the security logic already implemented in the password-reset feature, checking that hashing and expiration handling matched the recommended practice.
 **Screenshots/Chat History:** *See Appendix*
+---
 **5.**
 * Tool: ChatGPT
 * Purpose: Determine correct grading behavior for different question types
