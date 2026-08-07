@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 type QuestionType = "multiple-choice" | "written";
 type ResultStatus = "correct" | "incorrect" | "review";
@@ -125,7 +125,7 @@ const practiceResults: QuestionResultItem[] = [
 
 export const ResultPractice: React.FC = () => {
   const [filter, setFilter] = useState<"all" | "correct" | "incorrect" | "written">("all");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // Tính toán thống kê điểm số
   const stats = useMemo(() => {
@@ -149,8 +149,32 @@ export const ResultPractice: React.FC = () => {
 
   return (
     <div className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-5xl flex-col gap-8">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6">
         
+        {/* ================= TOP BACK BUTTON ================= */}
+        <div>
+          <button
+            type="button"
+            onClick={() => navigate('/lessons')}
+            className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+          >
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            Back to Lessons
+          </button>
+        </div>
+
         {/* ================= HEADER & SCORE SUMMARY ================= */}
         <div className="w-full rounded-[24px] border border-slate-200/80 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -223,7 +247,7 @@ export const ResultPractice: React.FC = () => {
 
         {/* ================= QUESTION LIST DETAILED REVIEW ================= */}
         <div className="flex flex-col gap-6">
-          {filteredQuestions.map((item, index) => {
+          {filteredQuestions.map((item) => {
             const isMultipleChoice = item.type === "multiple-choice";
 
             return (

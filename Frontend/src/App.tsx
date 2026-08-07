@@ -117,7 +117,17 @@ function App() {
           }
         />
         <Route
-          path="/lessons/practice/:lessonId"
+          path="/lessons/practice/reading/:lessonId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <PracticeQuestions />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/lessons/practice/writing/:lessonId"
           element={
             <OnboardingGuard>
               <MainLayout>
