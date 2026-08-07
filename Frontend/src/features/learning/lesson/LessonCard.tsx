@@ -42,21 +42,29 @@ export const LessonCard: React.FC<LessonProps> = ({
       break;
   }
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      onClick?.();
-    }
-  };
+ const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+  if (status === "locked") {
+    return;
+  }
 
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    onClick?.();
+  }
+};
   return (
-    <article
-      role="button"
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={handleKeyDown}
-      className={`${baseCardStyle} ${statusCardStyle} cursor-pointer select-none hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]`}
-    >
+   <article
+  role="button"
+  tabIndex={status === "locked" ? -1 : 0}
+  onClick={status === "locked" ? undefined : onClick}
+  onKeyDown={handleKeyDown}
+  aria-disabled={status === "locked"}
+  className={`${baseCardStyle} ${statusCardStyle} ${
+    status === "locked"
+      ? "cursor-not-allowed"
+      : "cursor-pointer hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
+  } select-none`}
+>
       <header className="flex flex-col md:flex-row md:items-start justify-between gap-2 md:gap-3">
         <h3 className="m-0 text-slate-900 text-lg md:text-xl font-semibold leading-snug">
           {title}

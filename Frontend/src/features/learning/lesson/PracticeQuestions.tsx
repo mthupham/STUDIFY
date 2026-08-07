@@ -1,88 +1,32 @@
-import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 type QuestionView = "multiple-choice" | "written";
 
 interface QuestionItem {
-  id: number;
+  id: string;
   type: QuestionView;
   question: string;
   options?: string[];
 }
 
-const questions: QuestionItem[] = [
-  {
-    id: 1,
-    type: "multiple-choice",
-    question:
-      '"If you want to succeed in the meeting, you\'ll need to ________ your ideas clearly."',
-    options: ["lay out", "set up", "put off", "call off"],
-  },
-  {
-    id: 2,
-    type: "written",
-    question:
-      '"How would you politely decline a coffee invitation while mentioning you have a meeting?"',
-  },
-  {
-    id: 3,
-    type: "multiple-choice",
-    question:
-      '"She decided to ________ the job offer because the salary was too low."',
-    options: ["turn down", "take up", "look into", "bring about"],
-  },
-  {
-    id: 4,
-    type: "written",
-    question:
-      '"Describe your main career goals for the next five years in two sentences."',
-  },
-  {
-    id: 5,
-    type: "multiple-choice",
-    question:
-      '"We need to ________ a new strategy to increase our monthly active users."',
-    options: ["come up with", "run out of", "look back on", "keep up with"],
-  },
-  {
-    id: 6,
-    type: "written",
-    question:
-      '"Write a professional greeting line for an email to a potential project partner."',
-  },
-  {
-    id: 7,
-    type: "multiple-choice",
-    question:
-      '"The manager asked us to ________ the report before the weekend deadline."',
-    options: ["go over", "hand in", "break down", "set aside"],
-  },
-  {
-    id: 8,
-    type: "written",
-    question:
-      '"How would you explain a complex technical bug to a non-technical stakeholder?"',
-  },
-  {
-    id: 9,
-    type: "multiple-choice",
-    question:
-      '"I am really looking forward to ________ working with you on this campaign."',
-    options: ["starting to", "get to", "proceeding", "begun"],
-  },
-  {
-    id: 10,
-    type: "written",
-    question:
-      '"Summarize what constructive feedback means to you in your own words."',
-  },
-];
 
 export const PracticeQuestions: React.FC = () => {
   const navigate = useNavigate();
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const { lessonId } = useParams<{ lessonId: string }>();
 
+  const [questions, setQuestions] = useState<QuestionItem[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+
+const getAccessToken = () => {
+  return (
+    localStorage.getItem("accessToken") ||
+    localStorage.getItem("access_token") ||
+    localStorage.getItem("token")
+  );
+};
   const [notification, setNotification] = useState<{
     type: "success" | "error";
     message: string;
@@ -95,11 +39,67 @@ export const PracticeQuestions: React.FC = () => {
       setNotification(null);
     }, 3000);
   };
+      useEffect(() => {
+  const fetchQuestions = async () => {
+    if (!lessonId) {
+      showNotification("error", "Không tìm thấy lesson ID.");
+      setLoading(false);
+      return;
+    }
 
-  const currentQuestion = useMemo(
-    () => questions[currentQuestionIndex],
-    [currentQuestionIndex],
-  );
+    try {
+      setLoading(true);
+
+      const token = getAccessToken();
+
+      const response = await fetch(
+        `http://localhost:3000/learning/lessons/${lessonId}/questions`,
+        {
+          headers: {
+            ...(token
+              ? {
+                  Authorization: `Bearer ${token}`,
+                }
+              : {}),
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Không thể tải câu hỏi.",
+        );
+      }
+const questionList =
+  data.questions ||
+  data.data?.questions ||
+  [];
+
+setQuestions(questionList);
+      setCurrentQuestionIndex(0);
+    } catch (error) {
+      console.error("Load questions error:", error);
+
+      showNotification(
+        "error",
+        error instanceof Error
+          ? error.message
+          : "Không thể tải câu hỏi.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  void fetchQuestions();
+}, [lessonId]);
+
+ const currentQuestion = useMemo(
+  () => questions[currentQuestionIndex],
+  [questions, currentQuestionIndex],
+);
 
   const currentQuestionNumber = currentQuestionIndex + 1;
   const progressPercentage = (
@@ -128,31 +128,99 @@ export const PracticeQuestions: React.FC = () => {
 
     console.log(currentQuestion.id, answer);
 
+
     showNotification("success", "Answer submitted successfully.");
   };
 
-  const handleFinish = () => {
-    const unanswered = questions.filter(
-      (q) => !answers[q.id] || answers[q.id].trim() === "",
+ const handleFinish = async () => {
+  const unanswered = questions.filter(
+    (q) => !answers[q.id] || answers[q.id].trim() === "",
+  );
+
+  if (unanswered.length > 0) {
+    showNotification(
+      "error",
+      `You still have ${unanswered.length} unanswered question(s).`,
+    );
+    return;
+  }
+
+  if (!lessonId) {
+    showNotification("error", "Không tìm thấy lesson ID.");
+    return;
+  }
+
+  try {
+    const token =
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("access_token") ||
+      localStorage.getItem("token");
+
+    const response = await fetch(
+      `http://localhost:3000/learning/lessons/${lessonId}/submit-practice`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token
+            ? {
+                Authorization: `Bearer ${token}`,
+              }
+            : {}),
+        },
+        body: JSON.stringify({
+          answers,
+        }),
+      },
     );
 
-    if (unanswered.length > 0) {
-      showNotification(
-        "error",
-        `You still have ${unanswered.length} unanswered question(s).`,
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Không thể nộp bài practice.",
       );
-      return;
     }
 
-    console.log("Submit all answers:", answers);
-
-    showNotification("success", "Practice submitted successfully.");
+    showNotification(
+      "success",
+      "Practice submitted successfully.",
+    );
 
     setTimeout(() => {
-      navigate("/lessons/practice/result");
-    }, 1200);
-  };
+      navigate("/lessons/practice/result", {
+        state: {
+          result: data,
+        },
+      });
+    }, 800);
+  } catch (error) {
+    console.error("Submit practice error:", error);
 
+    showNotification(
+      "error",
+      error instanceof Error
+        ? error.message
+        : "Không thể nộp bài practice.",
+    );
+  }
+};
+
+if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p className="text-slate-500">Loading questions...</p>
+    </div>
+  );
+}
+
+if (questions.length === 0 || !currentQuestion) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p className="text-red-500">Không tìm thấy câu hỏi.</p>
+    </div>
+  );
+}
   return (
     <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       {notification && (
@@ -186,7 +254,7 @@ export const PracticeQuestions: React.FC = () => {
         <div className="w-full rounded-[24px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:p-8 lg:p-10">
           <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 pb-5">
             <span className="rounded-full bg-[#eaf2ff] px-3 py-1 text-sm font-semibold text-[#315dc7]">
-              B2 Level
+   {lessonId?.split("_")[0]} Level
             </span>
             <span className="text-sm text-slate-500">•</span>
             <div className="flex items-center gap-2 text-sm text-slate-500">

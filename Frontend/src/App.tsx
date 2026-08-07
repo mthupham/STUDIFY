@@ -102,8 +102,19 @@ function App() {
                 <LessonDetail />
               </MainLayout>
             </OnboardingGuard>
+            
           }
         />
+        <Route
+  path="/lessons/practice/result"
+  element={
+    <OnboardingGuard>
+      <MainLayout>
+        <ResultPractice />
+      </MainLayout>
+    </OnboardingGuard>
+  }
+/>
         <Route
           path="/lessons/practice/:lessonId"
           element={
@@ -114,16 +125,7 @@ function App() {
             </OnboardingGuard>
           }
         />
-        <Route
-          path="/lessons/practice/result"
-          element={
-            <OnboardingGuard>
-              <MainLayout>
-                <ResultPractice />
-              </MainLayout>
-            </OnboardingGuard>
-          }
-        />
+        
         <Route
           path="/study-groups"
           element={
