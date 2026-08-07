@@ -68,29 +68,29 @@
 
 ## Khánh Linh
 **Screenshot 1 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_1a.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_1a.png)
 **Screenshot 2 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_1b.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_1b.png)
 **Screenshot 3 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_1c.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_1c.png)
 **Screenshot 4 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_2.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_2.png)
 **Screenshot 5 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_3a.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_3a.png)
 **Screenshot 6 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_3b.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_3b.png)
 **Screenshot 7:**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_3c.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_3c.png)
 **Screenshot 8 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_4a.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_4a.png)
 **Screenshot 9 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_4b.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_4b.png)
 **Screenshot 10 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_4c.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_4c.png)
 **Screenshot 11 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_5a.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_5a.png)
 **Screenshot 12 :**
-![klinh AI Usage - Screenshot 1a](../evidence/phuoc_screenshots/klinh_5b.png)
+![klinh AI Usage - Screenshot 1a](../evidence/klinh_screenshots/klinh_5b.png)
 
 
 --
