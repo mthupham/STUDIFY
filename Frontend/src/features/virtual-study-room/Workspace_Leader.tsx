@@ -9,23 +9,6 @@ import { useGroupChat } from "./hooks/useGroupChat";
 // ==========================================
 // 1. TYPES & INTERFACES
 // ==========================================
-interface TaskItem {
-  title: string;
-  description: string;
-  dueDate: string;
-}
-
-interface Message {
-  id: string;
-  sender: string;
-  senderRole?: string;
-  avatar: string;
-  time: string;
-  text?: string;
-  isSelf?: boolean;
-  task?: TaskItem;
-}
-
 interface Member {
   id: string;
   name: string;

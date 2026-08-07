@@ -73,7 +73,7 @@ export class LessonService implements OnModuleInit {
 
   async getLessonDetail(lessonId: string, userId: number) {
     const normalizedLessonId = lessonId?.toUpperCase?.() || lessonId;
-    const levelKey = normalizedLessonId.split('_')[0];
+    const levelKey = normalizedLessonId.includes('_') ? normalizedLessonId.split('_')[0] : normalizedLessonId;
 
     const levelGroup = this.lessonData.find(
       (level) => level.level.toUpperCase() === levelKey.toUpperCase(),
@@ -83,15 +83,41 @@ export class LessonService implements OnModuleInit {
       throw new NotFoundException(`Không tìm thấy bài học với ID: ${lessonId}`);
     }
 
-    const progress = await this.progressModel.findOne({ where: { userId, lessonId } });
+    const vocabLessons = levelGroup.vocabulary_lessons || [];
+    const grammarLessons = levelGroup.grammar_lessons || [];
+    const numLessons = Math.min(vocabLessons.length, grammarLessons.length);
+
+    const allLessonIds = this.getAllLessonIdsInLevel(levelGroup.level);
+    const progressRecords = await this.progressModel.findAll({
+      where: { userId, lessonId: allLessonIds },
+    });
+    const progressMap = new Map(progressRecords.map((p) => [p.lessonId, p.isCompleted]));
+
+    const pairedLessons: any[] = [];
+    for (let i = 0; i < numLessons; i++) {
+      const vocab = vocabLessons[i];
+      const grammar = grammarLessons[i];
+      const isVocabCompleted = progressMap.get(vocab.topic_id) || false;
+      const isGrammarCompleted = progressMap.get(grammar.grammar_id) || false;
+
+      pairedLessons.push({
+        lessonIndex: i + 1,
+        vocabulary: vocab,
+        grammar: grammar,
+        isCompleted: isVocabCompleted && isGrammarCompleted,
+      });
+    }
+
+    const progress = normalizedLessonId.includes('_')
+      ? await this.progressModel.findOne({ where: { userId, lessonId: normalizedLessonId } })
+      : null;
 
     return {
       success: true,
       data: {
         level: levelGroup.level,
         level_title: levelGroup.level_title,
-        vocabulary_lessons: levelGroup.vocabulary_lessons || [],
-        grammar_lessons: levelGroup.grammar_lessons || [],
+        pairedLessons,
         isCompleted: progress?.isCompleted || false,
       },
     };

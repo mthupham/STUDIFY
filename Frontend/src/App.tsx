@@ -107,6 +107,16 @@ function App() {
           }
         />
         <Route
+          path="/lesson/:level/:lessonIndex"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <LessonDetail />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
           path="/lessons/practice/:lessonId"
           element={
             <OnboardingGuard>
