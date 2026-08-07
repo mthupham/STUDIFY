@@ -28,6 +28,7 @@ import TaskAssignmentDashboard from "./features/virtual-study-room/TaskAssignmen
 import Pomodoro from "./features/pomodoro/PomodoroTimer";
 import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidget";
 
+
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
   const user = useAuthStore((state) => state.user);
@@ -47,6 +48,7 @@ function App() {
     <BrowserRouter>
       <FloatingPomodoroWidget />
       <Routes>
+
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />

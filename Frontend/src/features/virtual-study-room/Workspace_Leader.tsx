@@ -4,6 +4,7 @@ import ChangeRoleModal from "./Modal/ChangeRoleModal";
 import type { RoleType } from "./Modal/ChangeRoleModal";
 import BanMemberModal from "./Modal/BanMemberModal";
 import RemoveMemberModal from "./Modal/RemoveMemberModal";
+import { useGroupChat } from "./hooks/useGroupChat";
 
 // ==========================================
 // 1. TYPES & INTERFACES
@@ -442,39 +443,6 @@ export const GroupDashboard: React.FC = () => {
       lessons: 28,
       streak: 5,
       score: 620,
-      role: "MEMBER",
-    },
-  ]);
-
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      sender: "Alex Thompson",
-      senderRole: "ADMIN",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-      time: "10:42 AM",
-      text: "Hey everyone! I've just uploaded the case study for Thursday's debate. Please review the 'Market Entry' section before our call. Let me know if you have questions!",
-    },
-    {
-      id: "2",
-      sender: "Sarah Chen",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-      time: "10:45 AM",
-      text: "Thanks Alex! I'll take a look during lunch. Should we also focus on the vocabulary list from last week?",
-    },
-    {
-      id: "3",
-      sender: "Marco Rossi",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-      time: "10:50 AM",
-      task: {
-        title: "New Task Assigned",
-        description: "Review Rhetorical Devices PDF",
-        dueDate: "DUE IN 2H",
-      },
     },
   ]);
 
@@ -484,25 +452,13 @@ export const GroupDashboard: React.FC = () => {
   const [copiedCode, setCopiedCode] = useState(false);
 
   const inviteCode = "LP-B2-99";
+  const { messages, sendMessage, currentUserId } = useGroupChat(inviteCode);
 
   // --- Handlers ---
   const handleSendMessage = () => {
     if (!inputMessage.trim()) return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      sender: "You",
-      avatar:
-        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      text: inputMessage,
-      isSelf: true,
-    };
-
-    setMessages((prev) => [...prev, newMessage]);
+    sendMessage(inputMessage);
     setInputMessage("");
   };
 
@@ -617,65 +573,26 @@ export const GroupDashboard: React.FC = () => {
             {messages.map((msg) => (
               <div key={msg.id} className="flex items-start gap-3.5 group">
                 <img
-                  src={msg.avatar}
-                  alt={msg.sender}
+                  src={msg.sender?.avatar || "https://via.placeholder.com/40"}
+                  alt={msg.sender?.name || "Member avatar"}
                   className="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-100 shadow-sm"
                 />
                 <div className="flex flex-col gap-1 max-w-[80%]">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-sm text-gray-900">
-                      {msg.sender}
+                      {msg.sender?.id === currentUserId ? "You" : msg.sender?.name || "Unknown"}
                     </span>
-                    {msg.senderRole && (
-                      <span className="px-2 py-0.5 bg-sky-100 text-sky-800 text-[10px] font-bold rounded uppercase tracking-wider">
-                        {msg.senderRole}
-                      </span>
-                    )}
-                    <span className="text-gray-400 text-xs">{msg.time}</span>
+                    <span className="text-gray-400 text-xs">
+                      {new Date(msg.createdAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
                   </div>
 
                   {msg.text && (
                     <div className="text-gray-800 text-sm leading-relaxed bg-slate-50 p-3.5 rounded-2xl rounded-tl-none border border-slate-100">
                       {msg.text}
-                    </div>
-                  )}
-
-                  {msg.task && (
-                    <div className="w-80 p-4 bg-white rounded-xl border border-slate-200 flex flex-col gap-3 shadow-sm hover:border-slate-300 transition-colors">
-                      <div className="flex items-start gap-3">
-                        <div className="w-9 h-9 bg-emerald-50 text-emerald-700 rounded-lg flex items-center justify-center shrink-0">
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-gray-900 text-sm font-bold">
-                            {msg.task.title}
-                          </p>
-                          <p className="text-gray-500 text-xs mt-0.5">
-                            {msg.task.description}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between items-center pt-2 border-t border-slate-100">
-                        <span className="px-2 py-0.5 bg-rose-100 text-rose-700 text-[10px] font-bold rounded uppercase tracking-wider">
-                          {msg.task.dueDate}
-                        </span>
-                        <button className="text-sky-700 hover:text-sky-800 text-xs font-bold transition-colors">
-                          View Task
-                        </button>
-                      </div>
                     </div>
                   )}
                 </div>

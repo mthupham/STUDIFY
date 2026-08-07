@@ -11,6 +11,7 @@ import { sequelizeConfig } from './utils/sequelize.config';
 import { PlacementTestModule } from './features/placement-test/placement-test.module';
 import { RoadmapModule } from './features/learning/roadmap/roadmap.module';
 import { LessonModule } from './features/learning/lesson/lesson.module'; // thêm dòng này
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   controllers: [AppController],
@@ -35,9 +36,10 @@ import { LessonModule } from './features/learning/lesson/lesson.module'; // thê
       }),
     }),
 
+    ChatModule,
     PlacementTestModule,
     RoadmapModule,
-    LessonModule, // thêm dòng này
+    LessonModule, 
   ],
 })
 export class AppModule {}
