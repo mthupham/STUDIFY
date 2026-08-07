@@ -137,15 +137,26 @@ function App() {
           }
         />
         <Route
-          path="/lessons/practice/result"
+  path="/lessons/practice/result"
+  element={
+    <OnboardingGuard>
+      <MainLayout>
+        <ResultPractice />
+      </MainLayout>
+    </OnboardingGuard>
+  }
+/>
+        <Route
+          path="/lessons/practice/:lessonId"
           element={
             <OnboardingGuard>
               <MainLayout>
-                <ResultPractice />
+                <PracticeQuestions />
               </MainLayout>
             </OnboardingGuard>
           }
         />
+        
         <Route
           path="/study-groups"
           element={
