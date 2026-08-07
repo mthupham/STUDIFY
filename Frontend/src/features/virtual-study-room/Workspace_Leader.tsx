@@ -443,6 +443,7 @@ export const GroupDashboard: React.FC = () => {
       lessons: 28,
       streak: 5,
       score: 620,
+      role: "MEMBER"
     },
   ]);
 
