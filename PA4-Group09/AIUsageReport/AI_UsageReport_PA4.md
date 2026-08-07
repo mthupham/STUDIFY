@@ -94,38 +94,38 @@
 
 **Prompt 1**
 * **Tool:** ChatGPT
-* **Purpose:** (28/07/2026) Asked ChatGPT to explain how an API for submitting answers in the lesson/exercise grading feature should work, including the difference between submitting a single answer and submitting a whole practice session.
-* **Prompt used:** *Not provided*
-* **AI-generated content:** *Not provided*
-* **Student's work and validation:** Improved understanding of the backend grading flow and the responsibilities of the controller, service, and question data.
+* **Purpose:** Understand how the answer-submission API for the lesson/exercise grading feature should be designed
+* **Prompt used:** "Explain how an API for submitting answers should work, including the difference between submitting a single answer and submitting a whole practice session."
+* **AI-generated content:** An explanation of the grading flow, distinguishing single-answer submission vs. full-session submission, and how controller/service/question data interact.
+* **Student's work and validation:** Used the explanation to design the actual grading API structure in the STUDIFY backend; cross-checked the suggested flow against the project's existing controller/service pattern before implementing.
 
 **Prompt 2**
 * **Tool:** ChatGPT
-* **Purpose:** (29/07/2026) Asked how frontend code should interpret API response structures, such as `data.questions` versus `data.data.questions`.
-* **Prompt used:** *Not provided*
-* **AI-generated content:** *Not provided*
-* **Student's work and validation:** Clarified how frontend state depends on the exact JSON structure returned by the backend.
+* **Purpose:** Understand how frontend code should interpret different API response structures
+* **Prompt used:** "How should frontend code interpret API responses such as `data.questions` versus `data.data.questions`?"
+* **AI-generated content:** An explanation of common response-wrapping patterns and how nested response structures affect how frontend state should be set.
+* **Student's work and validation:** Verified the actual response shape returned by the backend endpoint before writing the frontend state-handling code, to avoid assuming the wrong structure.
 
 **Prompt 3**
 * **Tool:** ChatGPT
-* **Purpose:** (29/07/2026) Asked about the avatar upload architecture — the roles of Multer, static assets, the controller/service/model relationship, database mapping, JWT-based user ownership, and frontend fallback avatars.
-* **Prompt used:** *Not provided*
-* **AI-generated content:** *Not provided*
-* **Student's work and validation:** Clarified how uploaded user files are connected to backend storage, database records, and authenticated users.
+* **Purpose:** Understand the avatar upload architecture across backend and frontend
+* **Prompt used:** "Explain the roles of Multer, static assets, controller/service/model, database mapping, JWT user ownership, and frontend fallback avatars in an avatar upload feature."
+* **AI-generated content:** An explanation of how uploaded files flow from Multer through storage, how they are linked to a user record via JWT, and how the frontend falls back to a default avatar when none exists.
+* **Student's work and validation:** Applied the explanation to trace and confirm the existing avatar upload implementation in the STUDIFY codebase rather than writing new code from the AI's answer.
 
 **Prompt 4**
 * **Tool:** ChatGPT
-* **Purpose:** (30/07/2026) Asked how the forgot-password and OTP authentication flow works — controller/service responsibilities, DTO validation, OTP hashing, expiration time, deletion after use, Nodemailer, Gmail 2-Step Verification, and App Passwords.
-* **Prompt used:** *Not provided*
-* **AI-generated content:** *Not provided*
-* **Student's work and validation:** Gained a complete understanding of the password-reset security flow and email authentication requirements.
+* **Purpose:** Understand the forgot-password and OTP authentication flow
+* **Prompt used:** "How does password-reset OTP work, including controller/service responsibilities, DTO validation, OTP hashing, expiration time, deletion after use, Nodemailer, Gmail 2-Step Verification, and App Passwords?"
+* **AI-generated content:** An explanation of the end-to-end OTP security flow, covering hashing, expiration, single-use deletion, and the Gmail/Nodemailer email-sending requirements.
+* **Student's work and validation:** Used the explanation to review and validate the security logic already implemented in the password-reset feature, checking that hashing and expiration handling matched the recommended practice.
 
 **Prompt 5**
 * **Tool:** ChatGPT
-* **Purpose:** (06/08/2026) Asked how multiple-choice answers can be automatically graded while written answers should be treated differently and shown for review rather than automatically marked correct or incorrect.
-* **Prompt used:** *Not provided*
-* **AI-generated content:** *Not provided*
-* **Student's work and validation:** Helped define separate grading behavior for objective and written questions.
+* **Purpose:** Determine correct grading behavior for different question types
+* **Prompt used:** "How can multiple-choice answers be automatically graded while written answers are treated differently and shown for review instead of automatically marked correct or incorrect?"
+* **AI-generated content:** An explanation of the distinction between auto-gradable objective questions and written questions requiring manual/deferred review.
+* **Student's work and validation:** Used this distinction to define the grading rules applied in the STUDIFY quiz feature, then implemented and tested the logic separately for each question type.
 
 **Screenshots/Chat History:** *See Appendix*
 
@@ -374,7 +374,7 @@ flowchart LR
 
 **Prompt 3**
 ![](./evidence/phuc_screenshots/phuc_3.1.png)
-![](./evidence/phuc_screenshots/phuc_3.2png)
+![](./evidence/phuc_screenshots/phuc_3.2.png)
 
 ## Thiên Phước
 
