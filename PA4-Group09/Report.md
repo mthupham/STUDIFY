@@ -290,19 +290,29 @@ The System Context diagram is the highest-level view in the C4 Model. It treats 
 C4Context
   title System Context Diagram (Level 1) - Studify System
 
-  Person(student, "Student / Working Professional", "Learner who registers/logs in, takes the CEFR placement test, follows the personalized IT-English roadmap, practices with Flashcards & Pomodoro, joins study groups, and practices speaking with the AI assistant.")
-  Person(groupMaster, "Group Leader (Study Group Master)", "A learner who created or leads a small study group (2-5 members); assigns tasks with deadlines and shares study materials with group members.")
+  %% Layout styling configuration
+  UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 
-  System(studify, "Studify System", "An independent web application for learning conversational and IT-specialized English, integrating account management, CEFR-based self-study, interactive study groups, and AI-assisted speaking practice.")
+  %% Actors
+  Person(student, "Learner", "Student / Working Professional using the platform for self-study and AI speaking practice.")
+  Person(groupMaster, "Group Leader", "Learner who creates/manages a study group (2-5 members), assigns tasks, and shares study materials.")
 
-  System_Ext(aiService, "AI Speech & LLM Service", "Third-party AI service (Speech-to-Text & LLM) that transcribes spoken audio and evaluates grammar, vocabulary, context relevance, and provides feedback/suggestions.")
-  System_Ext(cloudStorage, "Cloud Storage Service", "Cloud storage provider (e.g., AWS S3 / Cloudinary) used to store and serve shared study group materials such as PDFs and images.")
+  %% Main System
+  System(studify, "Studify System", "Web application integrating account management, CEFR roadmaps, study groups, flashcards, and AI speaking assistant.")
 
-  Rel(student, studify, "Registers/logs in, takes placement test, follows roadmap, solves quizzes, uses Flashcards/Pomodoro, joins groups, practices AI speaking", "HTTPS / Web Browser")
-  Rel(groupMaster, studify, "Creates groups, assigns tasks with deadlines, uploads PDF/image materials, tracks member progress", "HTTPS / Web Browser")
+  %% External Systems
+  System_Ext(aiService, "AI Speech & LLM Service", "Third-party AI API (STT & LLM) for speech transcription, grammar/vocab evaluation, and feedback.")
+  System_Ext(cloudStorage, "Cloud Storage Service", "Cloud provider (AWS S3 / Cloudinary) for storing and serving shared study materials (PDFs, images).")
+  System_Ext(emailService, "Email / SMTP Service", "External mail service (Nodemailer / Gmail SMTP) for account verification and notifications.")
 
-  Rel(studify, aiService, "Sends audio recordings & scenario prompts; receives transcriptions and evaluation scores (Grammar, Vocab, Context) with guidance", "HTTPS / REST API")
-  Rel(studify, cloudStorage, "Uploads, stores, and serves download URLs for shared group materials (PDF, Images)", "HTTPS / REST API")
+  %% Relationships - Primary Users
+  Rel(student, studify, "Takes tests, follows roadmaps, uses Flashcards/Pomodoro, joins groups, practices AI speaking", "HTTPS / Web Browser")
+  Rel(groupMaster, studify, "Creates groups, manages tasks/deadlines, uploads study materials, tracks progress", "HTTPS / Web Browser")
+
+  %% Relationships - External Systems
+  Rel(studify, aiService, "Sends audio recordings & prompts; receives transcriptions and evaluation scores", "HTTPS / REST API")
+  Rel(studify, cloudStorage, "Uploads, stores, and fetches download URLs for shared files", "HTTPS / REST API")
+  Rel(studify, emailService, "Sends system notification emails and verification codes", "SMTP / REST API")
 ```
 
 ### 2.1 Written Explanation
@@ -331,22 +341,23 @@ config:
 ---
 graph TB
     %% Actors (Aligned with Level 1 Context Diagram)
-    Student["👤 Student / Working Professional<br/>[Person]<br/>Learner using Studify to study English, track progress, and complete tasks"]
-    Leader["👑 Group Leader / Study Master<br/>[Person]<br/>User who creates study rooms, assigns group tasks, and uploads shared materials"]
+    Student["Student / Working Professional<br/>[Person]<br/>Learner using Studify to study English, track progress, and complete tasks"]
+    Leader["Group Leader / Study Master<br/>[Person]<br/>User who creates study rooms, assigns group tasks, and uploads shared materials"]
 
     %% External Systems
-    STT_AI["🤖 AI Speech-to-Text & LLM API<br/>[External System]<br/>Transcribes audio, evaluates speaking, and powers roleplay scenarios"]
-    S3["☁️ Cloud Storage Service<br/>[External System: AWS S3]<br/>Stores media assets, PDFs, and user uploads"]
+    STT_AI["AI Speech-to-Text & LLM API<br/>[External System]<br/>Transcribes audio, evaluates speaking, and powers roleplay scenarios"]
+    S3["Cloud Storage Service<br/>[External System: AWS S3]<br/>Stores media assets, PDFs, and user uploads"]
+    SMTP["Email / SMTP Service<br/>[External System: Nodemailer / Gmail]<br/>Handles account verification and email notifications"]
 
     %% Software System Boundary
     subgraph SystemBoundary["Studify Platform [Software System]"]
-        WA["📱 Web Application<br/>[Container: React & TypeScript]<br/>Interactive SPA providing UI for Onboarding, Dashboard, Quizzes, Flashcards & Study Rooms"]
-        API["⚙️ Backend API Application<br/>[Container: NestJS & TypeScript]<br/>Handles Auth, Business Logic, Sequelize ORM, Passport.js/JWT, and AI Integration"]
-        DB[("🗄️ Relational Database<br/>[Container: PostgreSQL]<br/>Stores User Profiles, Progress, Flashcards, Group Data, and Lesson Materials")]
+        WA["Web Application<br/>[Container: React & TypeScript]<br/>Interactive SPA providing UI for Onboarding, Dashboard, Quizzes, Flashcards & Study Rooms"]
+        API["Backend API Application<br/>[Container: NestJS & TypeScript]<br/>Handles Auth, Business Logic, Sequelize ORM, Passport.js/JWT, and AI Integration"]
+        DB[("Relational Database<br/>[Container: PostgreSQL]<br/>Stores User Profiles, Progress, Flashcards, Group Data, and Lesson Materials")]
     end
 
     %% User Interactions
-    Student -->|Learns, takes quizzes & practice speaking / HTTPS| WA
+    Student -->|Learns, takes quizzes & practices speaking / HTTPS| WA
     Leader -->|Manages groups, assigns tasks & uploads files / HTTPS| WA
 
     %% Internal Communication
@@ -355,7 +366,8 @@ graph TB
 
     %% External API Communication
     API -->|HTTPS / REST API| STT_AI
-    API -->|HTTPS / AWS SDK| S3  
+    API -->|HTTPS / AWS SDK| S3
+    API -->|SMTP / REST API| SMTP
 ```
 
 **1\. Web Application**  
