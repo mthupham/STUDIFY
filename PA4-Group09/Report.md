@@ -18,8 +18,8 @@
     - [2.1 Written Explanation](#21-written-explanation)
 - [C - Software Architecture: Container Diagram and Component Diagram](#c---software-architecture-container-diagram-and-component-diagram)
   - [C4 Model - Level 2 (Container Diagram):](#c4-model---level-2-container-diagram)
-    - [**A. AI Speech-to-Text \& LLM API**](#a-ai-speech-to-text--llm-api)
-    - [**B. Cloud Storage Service**](#b-cloud-storage-service)
+    - [A. AI Speech-to-Text \& LLM API](#a-ai-speech-to-text--llm-api)
+    - [B. Cloud Storage Service](#b-cloud-storage-service)
   - [C4 Model - Level 3 (Component Diagram):](#c4-model---level-3-component-diagram)
     - [1. Web Application Container (Frontend)](#1-web-application-container-frontend)
       - [Container Description](#container-description)
@@ -45,6 +45,8 @@
       - [Node 2: Application Server / Host Node](#node-2-application-server--host-node)
       - [Node 3: Database Server Host Node](#node-3-database-server-host-node)
       - [Node 4: External Cloud \& SaaS Services](#node-4-external-cloud--saas-services)
+- [E - Implement 2 Functional Groups using Spec Kit](#e---implement-2-functional-groups-using-spec-kit)
+- [F - AI Usage Report and Weekly Report](#f---ai-usage-report-and-weekly-report)
 
 # A - Revised Use-Case Specification - 2nd submission
 [Click here to view the Changes.pdf](./Changes.pdf)
@@ -264,6 +266,8 @@ flowchart LR
 * **Function 05**: AI Speaking: [Specs](./A.UseCaseSpecification/Module_5/M5_specs.pdf)
 
 # B - Software Architecture: System Context Diagram
+> **Authors:** [Kim Hằng] | **Reviewer:** [Minh Thư] | **Editor:** [Kim Hằng]
+
 ## Tech Stack
 The Studify platform utilizes a modern web development stack to deliver a responsive user experience and handle its core functionalities. Below is the detailed breakdown of the technologies used, strictly reflecting the current project implementation:
 
@@ -283,6 +287,7 @@ The Studify platform utilizes a modern web development stack to deliver a respon
     *   **Cloud Storage Service:** (e.g., AWS S3) To store media assets such as group documents, PDFs, and user uploads.
 
 ## C4 Model — Level 1: System Context Diagram
+> **Authors:** [Khánh Linh] | **Reviewer:** [Minh Thư] | **Editor:** [Khánh Linh]
 
 The System Context diagram is the highest-level view in the C4 Model. It treats Studify as a single black-box system, and shows only: (1) who the human actors are, and (2) which external systems it depends on. Internal structure (frontend, backend, database) is intentionally *not* shown at this level — that level of detail belongs to the Level 2 Container diagram.
 
@@ -334,6 +339,8 @@ Notably, PostgreSQL and the JWT/bcrypt authentication mechanism are **not** repr
 
 # C - Software Architecture: Container Diagram and Component Diagram
 ## C4 Model - Level 2 (Container Diagram):
+> **Authors:** [Gia Phúc] | **Reviewer:** [Minh Thư] | **Editor:** [Gia Phúc]
+
 ```mermaid  
 ---
 config:
@@ -408,19 +415,21 @@ graph TB
 
 **4\. External Systems**
 
-### **A. AI Speech-to-Text & LLM API**
+### A. AI Speech-to-Text & LLM API
 
 * **Responsibility:** Transcribes user speech audio to text, simulates roleplay scenarios, analyzes grammar and vocabulary selection, checks context adherence, and returns actionable feedback and scoring for F5.  
 * **Technology / Framework:** External SaaS API (e.g., OpenAI API / Google Gemini API).  
 * **Communication Protocol:** **HTTPS / REST API** triggered directly by the NestJS Backend API.
 
-### **B. Cloud Storage Service**
+### B. Cloud Storage Service
 
 * **Responsibility:** Stores media assets such as group PDF documents, study room attachments, user uploads, and images for shared repositories (F3.4).  
 * **Technology / Framework:** External Cloud Storage (e.g., AWS S3).  
 * **Communication Protocol:** **HTTPS** using AWS SDK / pre-signed URLs managed by the NestJS Backend API.
 
 ## C4 Model - Level 3 (Component Diagram):
+> **Authors:** [Thiên Phước] | **Reviewer:** [Minh Thư] | **Editor:** [Thiên Phước]
+
 The following Level 3 Component Diagrams zoom into the internal structure of the **Web Application (Frontend)** and **Backend API Application (Backend)** containers. We focus on **two core features** that together best represent the internal structure of each container:
 
 - **Authentication (Login / Register / Forgot Password)** — demonstrates the UI component layer, Zustand global state, Axios HTTP calls, client-side route guarding, and token persistence in the Frontend; and the Controller -> Service -> Guard -> UserService -> MailService -> Database pipeline in the Backend.
@@ -671,6 +680,7 @@ graph TB
   - **Relationships:** Called exclusively by `AuthService` during the `forgotPassword` flow. Communicates externally with **Gmail SMTP** as the mail delivery service.
 
 # D - Deployment Diagram
+> **Authors:** [Minh Thư] | **Reviewer:** [Thiên Phước] | **Editor:** [Minh Thư]
 
 ## 1. System Deployment Architecture
 
@@ -779,3 +789,18 @@ graph TB
 ---
 
 > **Note:** Detailed Level 3 Component Descriptions for both the Web Application Container (Frontend) and the Backend API Application Container (Backend) are documented under **[Section C — C4 Model Level 3 (Component Diagram)](#c4-model---level-3-component-diagram)** above, in accordance with standard C4 Model documentation structure.
+
+# E - Implement 2 Functional Groups using Spec Kit
+> **Authors:** [Minh Thư] | **Reviewer:** [Thiên Phước] | **Editor:** [Minh Thư]
+
+**Video Demo Link:** [YouTube Unlisted/Public Link](https://www.youtube.com/watch?v=VaBwFC_cYxw)
+
+**Source code:** See in folder `/SourceCode`
+
+# F - AI Usage Report and Weekly Report
+> **Authors:** [Thiên Phước] | **Reviewer:** [Minh Thư] | **Editor:** [Thiên Phước]
+
+* AI Usage Report: [AI Usage](./AIUsageReport/AI_UsageReport_PA4.pdf)
+* Weekly Reports: [Weekly Reports](./WeeklyReports.pdf)
+* Jira Task Assignment and Progress for Sprint 4: ![alt text](Jira.png)
+
