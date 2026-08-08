@@ -47,6 +47,7 @@
       - [Node 4: External Cloud \& SaaS Services](#node-4-external-cloud--saas-services)
 - [E - Implement 2 Functional Groups using Spec Kit](#e---implement-2-functional-groups-using-spec-kit)
 - [F - AI Usage Report and Weekly Report](#f---ai-usage-report-and-weekly-report)
+- [Appendix: Gitlog](#appendix-gitlog)
 
 # A - Revised Use-Case Specification - 2nd submission
 [Click here to view the Changes.pdf](./Changes.pdf)
@@ -795,7 +796,7 @@ graph TB
 
 **Video Demo Link:** [YouTube Unlisted/Public Link](https://www.youtube.com/watch?v=VaBwFC_cYxw)
 
-**Source code:** See in folder `/SourceCode`
+**Source code:** See at folder `/SourceCode`
 
 # F - AI Usage Report and Weekly Report
 > **Authors:** [Thiên Phước] | **Reviewer:** [Minh Thư] | **Editor:** [Thiên Phước]
@@ -804,3 +805,5 @@ graph TB
 * Weekly Reports: [Weekly Reports](./WeeklyReports.pdf)
 * Jira Task Assignment and Progress for Sprint 4: ![alt text](Jira.png)
 
+# Appendix: Gitlog
+* See at: [gitlog](./gitlog.txt)
