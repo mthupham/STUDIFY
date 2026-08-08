@@ -23,6 +23,13 @@ export class User extends Model<User> {
     declare phone: string;
 
     @Column({
+    allowNull: true,
+    type: DataType.STRING,
+    field: 'current_level',
+    })
+    declare currentLevel: string;
+
+    @Column({
         allowNull: true,
         defaultValue: UserRole.USER,
         type: DataType.ENUM(...Object.values(UserRole)),
@@ -48,10 +55,11 @@ export class User extends Model<User> {
     declare hasCompletedOnboarding: boolean;
 
     @Column({ allowNull: true, type: DataType.STRING, field: 'reset_otp' })
-    declare resetOtp: string;
+    declare resetOtp: string | null;
 
     @Column({ allowNull: true, type: DataType.DATE, field: 'reset_otp_expires' })
-    declare resetOtpExpires: Date;
+    declare resetOtpExpires: Date | null;
+
 
     toJSON() {
         const values = { ...this.get() } as Record<string, unknown>;
