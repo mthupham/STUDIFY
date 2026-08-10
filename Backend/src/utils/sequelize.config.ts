@@ -17,20 +17,43 @@ import { UserProgress } from '../models/user_progress.model';
 import { PlacementTestResult } from '@/models/placement_test_result.model';
 import { PlacementTestQuestion } from '@/models/placement_test_question.model';
 import { Message } from '@/models/message.model';
+import { StudyGroup } from '../models/study_group.model';
+import { GroupMember } from '../models/group_member.model';
 
-export const sequelizeConfig = (configService: ConfigService): SequelizeModuleOptions => ({
+export const sequelizeConfig = (
+  configService: ConfigService,
+): SequelizeModuleOptions => ({
   dialect: 'postgres',
   host: configService.get<string>('DB_HOST'),
-  port: configService.get<number>('DB_PORT') ? Number(configService.get<number>('DB_PORT')) : 5432,
-  username: configService.get<string>('DB_USERNAME') ?? configService.get<string>('DB_USER'),
+  port: configService.get<number>('DB_PORT')
+    ? Number(configService.get<number>('DB_PORT'))
+    : 5432,
+  username:
+    configService.get<string>('DB_USERNAME') ??
+    configService.get<string>('DB_USER'),
   password: configService.get<string>('DB_PASSWORD'),
   database: configService.get<string>('DB_NAME'),
   models: [
-    User, Level, VocabularyLesson, VocabularyItem,
-    GrammarLesson, GrammarExample, QuestionBank, Question, Roadmap,
-    PlacementTest, PlacementQuestion, RequiredLevelTest, RequiredQuestion,
-    UserProgress, PlacementTestQuestion, PlacementTestResult, Message
-  ],  
+    User,
+    Level,
+    VocabularyLesson,
+    VocabularyItem,
+    GrammarLesson,
+    GrammarExample,
+    QuestionBank,
+    Question,
+    Roadmap,
+    PlacementTest,
+    PlacementQuestion,
+    RequiredLevelTest,
+    RequiredQuestion,
+    UserProgress,
+    PlacementTestQuestion,
+    PlacementTestResult,
+    Message,
+    StudyGroup,
+    GroupMember,
+  ],
   sync: { force: false, alter: true },
   autoLoadModels: true,
   synchronize: true,

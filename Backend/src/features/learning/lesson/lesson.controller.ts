@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Req, UseGuards, Body } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { JwtGuard } from '../../../modules/auth/guards/jwt.guard';
 import { SubmitAnswerDto } from './dto/submit-answer.dto';

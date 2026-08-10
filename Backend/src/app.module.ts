@@ -12,6 +12,7 @@ import { PlacementTestModule } from './features/placement-test/placement-test.mo
 import { RoadmapModule } from './features/learning/roadmap/roadmap.module';
 import { LessonModule } from './features/learning/lesson/lesson.module'; // thêm dòng này
 import { ChatModule } from './modules/chat/chat.module';
+import { VirtualStudyRoomModule } from './features/virtual-study-room/virtual-study-room.module';
 
 @Module({
   controllers: [AppController],
@@ -40,6 +41,7 @@ import { ChatModule } from './modules/chat/chat.module';
     PlacementTestModule,
     RoadmapModule,
     LessonModule, 
+    VirtualStudyRoomModule,
   ],
 })
 export class AppModule {}

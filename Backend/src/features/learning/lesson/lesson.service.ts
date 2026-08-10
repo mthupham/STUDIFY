@@ -236,7 +236,7 @@ async submitMultipleChoiceAnswer(
 
   if (!questionBankItem) {
     throw new NotFoundException(
-      `Không tìm thấy câu hỏi ${questionId} trong questionbank.json`,
+      `Không tìm thấy câu hỏi ${questionId} trong questionbank.`,
     );
   }
 
