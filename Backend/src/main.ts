@@ -16,7 +16,7 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: ['http://localhost:5173'],
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
   });
 
@@ -31,31 +31,10 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const logger = new Logger('Bootstrap');
-  const maxAttempts = 10;
-  let port = Number(process.env.PORT ?? 3000);
-
-  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-    try {
-      await app.listen(port);
-      logger.log(`Server started on http://localhost:${port}`);
-      logger.log(`Swagger docs available at http://localhost:${port}/api`);
-      return;
-    } catch (error) {
-      const addressInUse =
-        typeof error === 'object' &&
-        error !== null &&
-        'code' in error &&
-        (error as NodeJS.ErrnoException).code === 'EADDRINUSE';
-
-      if (addressInUse && attempt < maxAttempts - 1) {
-        logger.warn(`Port ${port} is busy. Trying ${port + 1} instead.`);
-        port += 1;
-        continue;
-      }
-
-      throw error;
-    }
-  }
+  const port = Number(process.env.PORT ?? 3000);
+  await app.listen(port, '0.0.0.0');
+  logger.log(`Server started on port ${port}`);
+  logger.log(`Swagger docs available at /api`);
 }
 
 bootstrap();

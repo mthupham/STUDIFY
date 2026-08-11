@@ -14,6 +14,7 @@ interface QuestionItem {
 export const PracticeQuestions: React.FC = () => {
   const navigate = useNavigate();
   const { lessonId } = useParams<{ lessonId: string }>();
+  const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
   const [questions, setQuestions] = useState<QuestionItem[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -53,7 +54,7 @@ const getAccessToken = () => {
       const token = getAccessToken();
 
       const response = await fetch(
-        `http://localhost:3000/learning/lessons/${lessonId}/questions`,
+        `${API_URL}learning/lessons/${lessonId}/questions`,
         {
           headers: {
             ...(token
@@ -157,7 +158,7 @@ setQuestions(questionList);
       localStorage.getItem("token");
 
     const response = await fetch(
-      `http://localhost:3000/learning/lessons/${lessonId}/submit-practice`,
+      `${API_URL}/learning/lessons/${lessonId}/submit-practice`,
       {
         method: "POST",
         headers: {
