@@ -5,5 +5,5 @@ export class JoinGroupDto {
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(10)
-  code: string;
+  code!: string;
 }
