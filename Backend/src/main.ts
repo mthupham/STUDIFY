@@ -30,11 +30,32 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
-  
   const logger = new Logger('Bootstrap');
-  logger.log(`Server started on http://localhost:3000`);
-  logger.log(`Swagger docs available at http://localhost:3000/api`);
+  const maxAttempts = 10;
+  let port = Number(process.env.PORT ?? 3000);
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    try {
+      await app.listen(port);
+      logger.log(`Server started on http://localhost:${port}`);
+      logger.log(`Swagger docs available at http://localhost:${port}/api`);
+      return;
+    } catch (error) {
+      const addressInUse =
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as NodeJS.ErrnoException).code === 'EADDRINUSE';
+
+      if (addressInUse && attempt < maxAttempts - 1) {
+        logger.warn(`Port ${port} is busy. Trying ${port + 1} instead.`);
+        port += 1;
+        continue;
+      }
+
+      throw error;
+    }
+  }
 }
 
 bootstrap();

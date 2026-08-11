@@ -11,6 +11,9 @@ import { sequelizeConfig } from './utils/sequelize.config';
 import { PlacementTestModule } from './features/placement-test/placement-test.module';
 import { RoadmapModule } from './features/learning/roadmap/roadmap.module';
 import { LessonModule } from './features/learning/lesson/lesson.module'; // thêm dòng này
+import { ChatModule } from './modules/chat/chat.module';
+import { VirtualStudyRoomModule } from './features/virtual-study-room/virtual-study-room.module';
+import { FlashcardModule } from './features/flashcard/flashcard.module';
 
 @Module({
   controllers: [AppController],
@@ -35,9 +38,12 @@ import { LessonModule } from './features/learning/lesson/lesson.module'; // thê
       }),
     }),
 
+    ChatModule,
     PlacementTestModule,
     RoadmapModule,
-    LessonModule, // thêm dòng này
+    LessonModule, 
+    VirtualStudyRoomModule,
+    FlashcardModule,
   ],
 })
 export class AppModule {}

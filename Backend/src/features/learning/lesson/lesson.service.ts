@@ -4,28 +4,121 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { UserProgress } from '../../../models/user_progress.model';
 import { UserService } from '../../../modules/user/user.service';
-
 const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
 @Injectable()
 export class LessonService implements OnModuleInit {
   private lessonData: any[] = [];
-
+private questionBankData: any[] = [];
   constructor(
-    @InjectModel(UserProgress)
-    private readonly progressModel: typeof UserProgress,
-    private readonly userService: UserService,
-  ) {}
+  @InjectModel(UserProgress)
+  private readonly progressModel: typeof UserProgress,
+
+
+
+  private readonly userService: UserService,
+) {}
 
   onModuleInit() {
+    this.lessonData = this.loadJsonFile('lesson.json');
+    this.questionBankData = this.loadJsonFile('questionbank.json');
+  }
+
+  private getDataFilePath(fileName: string): string {
+    return path.resolve(__dirname, '../../../../database/data', fileName);
+  }
+
+  private loadJsonFile(fileName: string): any[] {
     try {
-      const filePath = path.join(process.cwd(), 'database', 'data', 'lesson.json');
-      if (fs.existsSync(filePath)) {
-        this.lessonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      const filePath = this.getDataFilePath(fileName);
+      if (!fs.existsSync(filePath)) {
+        return [];
       }
+      return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     } catch (error) {
-      console.error('[STUDIFY ERROR] Không thể đọc lesson.json:', (error as Error).message);
+      console.error(`[STUDIFY ERROR] Không thể đọc ${fileName}:`, (error as Error).message);
+      return [];
     }
+  }
+
+  private normalizeText(value: string): string {
+    return value?.trim().toLowerCase() ?? '';
+  }
+
+  private findLessonById(lessonId: string) {
+    const normalizedLessonId = lessonId?.toUpperCase?.() || lessonId;
+
+    for (const levelGroup of this.lessonData) {
+      const vocabLesson = (levelGroup.vocabulary_lessons || []).find(
+        (lesson: any) => lesson.topic_id.toUpperCase() === normalizedLessonId,
+      );
+      if (vocabLesson) {
+        return { lesson: vocabLesson, lessonType: 'VOCABULARY' as const };
+      }
+
+      const grammarLesson = (levelGroup.grammar_lessons || []).find(
+        (lesson: any) => lesson.grammar_id.toUpperCase() === normalizedLessonId,
+      );
+      if (grammarLesson) {
+        return { lesson: grammarLesson, lessonType: 'GRAMMAR' as const };
+      }
+    }
+
+    return null;
+  }
+
+  private findQuestionInBank(questionId: string) {
+    if (!questionId) return null;
+
+    return this.questionBankData
+      .flatMap((item: any) => [
+        ...(item.reading_questions || []),
+        ...(item.writing_questions || []),
+      ])
+      .find((question: any) => question.question_id === questionId);
+  }
+
+  async getLessonQuestions(lessonId: string) {
+    const lessonInfo = this.findLessonById(lessonId);
+    if (!lessonInfo) {
+      throw new NotFoundException(`Không tìm thấy bài học với ID: ${lessonId}`);
+    }
+
+    const topicName =
+      lessonInfo.lesson.topic_name || lessonInfo.lesson.topic || lessonInfo.lesson.grammar_title;
+
+    const questionBank = this.questionBankData.find(
+      (item: any) =>
+        item.topic?.toLowerCase() === topicName?.toLowerCase() ||
+        item.lesson_id?.toLowerCase() === lessonId.toLowerCase(),
+    );
+
+    if (!questionBank) {
+      throw new NotFoundException(
+        `Chưa hỗ trợ câu hỏi cho bài học này hoặc không tìm thấy question bank cho '${lessonId}'.`,
+      );
+    }
+
+    const questions = [
+      ...(questionBank.reading_questions || []).map((question: any) => ({
+        id: question.question_id,
+        type: 'multiple-choice' as const,
+        question: question.question_text,
+        options: question.options || [],
+      })),
+      ...(questionBank.writing_questions || []).map((question: any) => ({
+        id: question.question_id,
+        type: 'written' as const,
+        question: question.question_text,
+      })),
+    ];
+
+    return {
+      success: true,
+      lessonId,
+      topic: questionBank.topic,
+      questions,
+    };
   }
 
   private getAllLessonIdsInLevel(level: string): string[] {
@@ -73,7 +166,7 @@ export class LessonService implements OnModuleInit {
 
   async getLessonDetail(lessonId: string, userId: number) {
     const normalizedLessonId = lessonId?.toUpperCase?.() || lessonId;
-    const levelKey = normalizedLessonId.split('_')[0];
+    const levelKey = normalizedLessonId.includes('_') ? normalizedLessonId.split('_')[0] : normalizedLessonId;
 
     const levelGroup = this.lessonData.find(
       (level) => level.level.toUpperCase() === levelKey.toUpperCase(),
@@ -83,19 +176,245 @@ export class LessonService implements OnModuleInit {
       throw new NotFoundException(`Không tìm thấy bài học với ID: ${lessonId}`);
     }
 
-    const progress = await this.progressModel.findOne({ where: { userId, lessonId } });
+    const vocabLessons = levelGroup.vocabulary_lessons || [];
+    const grammarLessons = levelGroup.grammar_lessons || [];
+    const numLessons = Math.min(vocabLessons.length, grammarLessons.length);
+
+    const allLessonIds = this.getAllLessonIdsInLevel(levelGroup.level);
+    const progressRecords = await this.progressModel.findAll({
+      where: { userId, lessonId: allLessonIds },
+    });
+    const progressMap = new Map(progressRecords.map((p) => [p.lessonId, p.isCompleted]));
+
+    const pairedLessons: any[] = [];
+    for (let i = 0; i < numLessons; i++) {
+      const vocab = vocabLessons[i];
+      const grammar = grammarLessons[i];
+      const isVocabCompleted = progressMap.get(vocab.topic_id) || false;
+      const isGrammarCompleted = progressMap.get(grammar.grammar_id) || false;
+
+      pairedLessons.push({
+        lessonIndex: i + 1,
+        vocabulary: vocab,
+        grammar: grammar,
+        isCompleted: isVocabCompleted && isGrammarCompleted,
+      });
+    }
+
+    const progress = normalizedLessonId.includes('_')
+      ? await this.progressModel.findOne({ where: { userId, lessonId: normalizedLessonId } })
+      : null;
 
     return {
       success: true,
       data: {
         level: levelGroup.level,
         level_title: levelGroup.level_title,
-        vocabulary_lessons: levelGroup.vocabulary_lessons || [],
-        grammar_lessons: levelGroup.grammar_lessons || [],
+        pairedLessons,
         isCompleted: progress?.isCompleted || false,
       },
     };
   }
+async submitMultipleChoiceAnswer(
+  lessonId: string,
+  questionId: string,
+  userAnswer: string,
+  userId: number,
+) {
+  const multipleChoiceTypes = [
+    'vocabulary_in_context',
+    'multiple_choice_detail',
+    'main_idea_matching',
+    'true_false_not_given',
+  ];
+
+  const questionBankItem = this.questionBankData.find((bank: any) =>
+    (bank.reading_questions || []).some(
+      (question: any) => question.question_id === questionId,
+    ),
+  );
+
+  if (!questionBankItem) {
+    throw new NotFoundException(
+      `Không tìm thấy câu hỏi ${questionId} trong questionbank.`,
+    );
+  }
+
+  const question = questionBankItem.reading_questions.find(
+    (item: any) => item.question_id === questionId,
+  );
+
+  if (!multipleChoiceTypes.includes(question.type)) {
+    throw new NotFoundException(
+      `Câu hỏi ${questionId} không thuộc nhóm trắc nghiệm`,
+    );
+  }
+
+  if (
+    !Array.isArray(question.options) ||
+    question.options.length === 0
+  ) {
+    throw new NotFoundException(
+      `Câu hỏi ${questionId} không có danh sách lựa chọn`,
+    );
+  }
+
+  const submittedAnswer = userAnswer
+    .trim()
+    .toLowerCase();
+
+  const correctAnswer = String(
+    question.correct_answer,
+  ).trim();
+
+  const isCorrect =
+    submittedAnswer === correctAnswer.toLowerCase();
+
+  return {
+    success: true,
+    lessonId,
+    questionBankLessonId: questionBankItem.lesson_id,
+    questionId: question.question_id,
+    originalType: question.type,
+    questionType: 'multiple-choice',
+    status: 'graded',
+    isCorrect,
+    userAnswer,
+    correctAnswer,
+    userId,
+  };
+}
+async submitPractice(
+  lessonId: string,
+  answers: Record<string, string>,
+  userId: number,
+) {
+  const questionBank = this.questionBankData.find((bank: any) => {
+    const allQuestions = [
+      ...(bank.reading_questions || []),
+      ...(bank.writing_questions || []),
+    ];
+
+    return allQuestions.some(
+      (question: any) =>
+        Object.prototype.hasOwnProperty.call(
+          answers,
+          question.question_id,
+        ),
+    );
+  });
+
+  if (!questionBank) {
+    throw new NotFoundException(
+      `Không tìm thấy question bank cho bài ${lessonId}`,
+    );
+  }
+
+  const readingQuestions =
+    questionBank.reading_questions || [];
+
+  const writingQuestions =
+    questionBank.writing_questions || [];
+
+  const testDetails: any[] = [];
+
+  let correctAnswersCount = 0;
+  let multipleChoiceCount = 0;
+  let writtenCount = 0;
+
+  for (const question of readingQuestions) {
+    const userAnswer =
+      answers[question.question_id] || '';
+
+    const correctAnswer = String(
+      question.correct_answer || '',
+    );
+
+    const isCorrect =
+      this.normalizeText(userAnswer) ===
+      this.normalizeText(correctAnswer);
+
+    if (isCorrect) {
+      correctAnswersCount++;
+    }
+
+    multipleChoiceCount++;
+
+    testDetails.push({
+      questionId: question.question_id,
+      type: 'multiple-choice',
+      originalType: question.type,
+      questionText: question.question_text,
+      options: question.options || [],
+      userAnswer,
+      correctAnswer,
+      status: isCorrect ? 'correct' : 'incorrect',
+      isCorrect,
+    });
+  }
+
+  for (const question of writingQuestions) {
+    const userAnswer =
+      answers[question.question_id] || '';
+
+    writtenCount++;
+
+    testDetails.push({
+      questionId: question.question_id,
+      type: 'written',
+      originalType: question.type,
+      questionText: question.question_text,
+      userAnswer,
+      sampleAnswer: question.correct_answer || '',
+      status: 'review',
+      isCorrect: null,
+    });
+  }
+
+  const totalQuestions =
+    multipleChoiceCount + writtenCount;
+
+  const percentage =
+    multipleChoiceCount > 0
+      ? Math.round(
+          (correctAnswersCount / multipleChoiceCount) *
+            100,
+        )
+      : 0;
+
+  const feedback = {
+  message:
+    percentage >= 80
+      ? 'Great job!'
+      : percentage >= 50
+        ? 'Good effort. Keep practicing.'
+        : 'You should review this lesson again.',
+};
+
+const recommendation =
+  percentage >= 80
+    ? 'Continue to the next lesson.'
+    : 'Review incorrect answers before continuing.';
+
+
+return {
+  success: true,
+
+  lessonId,
+  questionBankLessonId: questionBank.lesson_id,
+  userId,
+  meta: {
+    totalQuestions,
+    multipleChoiceCount,
+    writtenCount,
+    correctAnswersCount,
+    percentage,
+  },
+  feedback,
+  testDetails,
+  recommendation,
+};
+}
 
   async markLessonComplete(lessonId: string, lessonType: 'VOCABULARY' | 'GRAMMAR', userId: number) {
     const [record] = await this.progressModel.findOrCreate({
