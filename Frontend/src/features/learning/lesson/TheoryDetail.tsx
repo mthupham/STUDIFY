@@ -46,7 +46,6 @@ interface LessonDetailData {
 const VocabularySection: React.FC<{ vocabulary: VocabularyLesson }> = ({
   vocabulary,
 }) => {
-  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-5">
@@ -123,8 +122,6 @@ const VocabularySection: React.FC<{ vocabulary: VocabularyLesson }> = ({
 // Reusable Component: GrammarSection
 // ----------------------------------------------------
 const GrammarSection: React.FC<{ grammar: GrammarLesson }> = ({ grammar }) => {
-  const navigate = useNavigate();
-
   return (
     <div className="flex flex-col gap-5 mt-6 pt-6 border-t border-slate-100">
       <div className="flex flex-wrap items-center justify-between gap-4">

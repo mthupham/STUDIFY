@@ -28,6 +28,8 @@ import TaskAssignmentDashboard from "./features/virtual-study-room/TaskAssignmen
 import Pomodoro from "./features/pomodoro/PomodoroTimer";
 import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidget";
 
+import FlashcardLibrary from "./features/flashcard/flashcard-decks";
+import DeckDetailView from "./features/flashcard/flashcard-detail-view.tsx";
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
@@ -251,10 +253,33 @@ function App() {
             </OnboardingGuard>
           }
         />
+
+        <Route
+          path="/flashcard"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <FlashcardLibrary />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/flashcard/:deckId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <DeckDetailView />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default App;
