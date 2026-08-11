@@ -19,6 +19,8 @@ import { PlacementTestQuestion } from '@/models/placement_test_question.model';
 import { Message } from '@/models/message.model';
 import { StudyGroup } from '../models/study_group.model';
 import { GroupMember } from '../models/group_member.model';
+import { Deck } from '../models/deck.model';
+import { Flashcard } from '../models/flashcard.model';
 
 export const sequelizeConfig = (
   configService: ConfigService,
@@ -53,9 +55,10 @@ export const sequelizeConfig = (
     Message,
     StudyGroup,
     GroupMember,
+     Deck,
+  Flashcard,
   ],
-  sync: { force: false, alter: true },
   autoLoadModels: true,
-  synchronize: true,
+  synchronize: false,
   logging: false,
 });
