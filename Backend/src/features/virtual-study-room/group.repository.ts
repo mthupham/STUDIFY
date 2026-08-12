@@ -1,7 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
+
 import { StudyGroup } from '../../models/study_group.model';
 import { GroupMember } from '../../models/group_member.model';
+
+interface CreateGroupAttributes {
+  name: string;
+  description: string | null;
+  icon: string;
+  code: string;
+  createdBy: number;
+}
 
 @Injectable()
 export class GroupRepository {
@@ -25,14 +35,20 @@ export class GroupRepository {
 
   async createGroup(
     name: string,
+    description: string | null,
+    icon: string,
     code: string,
     createdBy: number,
   ): Promise<StudyGroup> {
-    return this.studyGroupModel.create({
+    const data: CreateGroupAttributes = {
       name,
+      description,
+      icon,
       code,
       createdBy,
-    });
+    };
+
+    return this.studyGroupModel.create(data as any);
   }
 
   async createMember(
@@ -56,6 +72,39 @@ export class GroupRepository {
       where: {
         groupId,
         userId,
+      },
+    });
+  }
+
+  async findGroupsByUserId(userId: number): Promise<StudyGroup[]> {
+    const memberships = await this.groupMemberModel.findAll({
+      where: {
+        userId,
+      },
+    });
+
+    const groupIds = memberships.map(
+      (member) => member.groupId,
+    );
+
+    if (groupIds.length === 0) {
+      return [];
+    }
+
+    return this.studyGroupModel.findAll({
+      where: {
+        id: {
+          [Op.in]: groupIds,
+        },
+      },
+      order: [['createdAt', 'DESC']],
+    });
+  }
+
+  async deleteGroup(groupId: number): Promise<void> {
+    await this.studyGroupModel.destroy({
+      where: {
+        id: groupId,
       },
     });
   }

@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 
 import { GroupRepository } from '../group.repository';
@@ -11,24 +12,19 @@ import { generateGroupCode } from '../utilities/group-code.util';
 
 @Injectable()
 export class GroupService {
-  constructor(
-    private readonly groupRepository: GroupRepository,
-  ) {}
+  constructor(private readonly groupRepository: GroupRepository) {}
 
-  async createGroup(
-    dto: CreateGroupDto,
-    userId: number,
-  ) {
+  async createGroup(dto: CreateGroupDto, userId: number) {
     let code: string;
 
     do {
       code = generateGroupCode();
-    } while (
-      await this.groupRepository.findGroupByCode(code)
-    );
+    } while (await this.groupRepository.findGroupByCode(code));
 
     const group = await this.groupRepository.createGroup(
       dto.name,
+      dto.description ?? null,
+      dto.icon,
       code,
       userId,
     );
@@ -46,6 +42,8 @@ export class GroupService {
         group: {
           id: group.id,
           name: group.name,
+          description: group.description,
+          icon: group.icon,
           code: group.code,
           createdBy: group.createdBy,
         },
@@ -57,27 +55,19 @@ export class GroupService {
       },
     };
   }
-
-  async joinGroup(
-    dto: JoinGroupDto,
-    userId: number,
-  ) {
+  async joinGroup(dto: JoinGroupDto, userId: number) {
     const code = dto.code.trim().toUpperCase();
 
-    const group =
-      await this.groupRepository.findGroupByCode(code);
+    const group = await this.groupRepository.findGroupByCode(code);
 
     if (!group) {
-      throw new NotFoundException(
-        'Study group not found.',
-      );
+      throw new NotFoundException('Study group not found.');
     }
 
-    const existingMember =
-      await this.groupRepository.findMember(
-        group.id,
-        userId,
-      );
+    const existingMember = await this.groupRepository.findMember(
+      group.id,
+      userId,
+    );
 
     if (existingMember) {
       throw new ConflictException(
@@ -85,12 +75,11 @@ export class GroupService {
       );
     }
 
-    const member =
-      await this.groupRepository.createMember(
-        group.id,
-        userId,
-        'MEMBER',
-      );
+    const member = await this.groupRepository.createMember(
+      group.id,
+      userId,
+      'MEMBER',
+    );
 
     return {
       status: 'success',
@@ -107,6 +96,35 @@ export class GroupService {
           joinedAt: member.joinedAt,
         },
       },
+    };
+  }
+
+  async getUserGroups(userId: number) {
+    const groups = await this.groupRepository.findGroupsByUserId(userId);
+    return {
+      status: 'success',
+      data: groups,
+    };
+  }
+
+  async deleteGroup(groupId: number, userId: number) {
+    const group = await this.groupRepository.findGroupById(groupId);
+
+    if (!group) {
+      throw new NotFoundException('Group not found.');
+    }
+
+    if (group.createdBy !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to delete this group.',
+      );
+    }
+
+    await this.groupRepository.deleteGroup(groupId);
+
+    return {
+      status: 'success',
+      message: 'Group deleted successfully.',
     };
   }
 }

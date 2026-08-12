@@ -14,11 +14,10 @@ export default function JoinGroupPage() {
 
   // Hàm xử lý chỉ cho phép nhập tối đa 6 ký tự số và tự động định dạng
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // Chỉ lấy chữ số
-    if (rawValue.length <= 6) {
-      setAccessCode(rawValue);
-    }
-  };
+  // Loại bỏ ký tự đặc biệt, chỉ giữ lại chữ cái, số và dấu gạch ngang (-), đồng thời viết hoa
+  const cleanCode = e.target.value.replace(/[^a-zA-Z0-9-]/g, "").toUpperCase();
+  setAccessCode(cleanCode);
+};
 
   // Định dạng hiển thị mã dạng "XXX-XXX"
   const formattedCode =

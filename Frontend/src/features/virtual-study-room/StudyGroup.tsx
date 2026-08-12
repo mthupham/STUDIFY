@@ -1,59 +1,8 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-// ==========================================
-// DỮ LIỆU MẪU (MOCK DATA)
-// ==========================================
-
-const GROUPS_DATA = [
-  {
-    id: "1",
-    title: "Parisian Nomads",
-    level: "B1 Level",
-    levelColor: "bg-emerald-100 text-emerald-700",
-    description:
-      "Mastering everyday French conversations through immersive weekly chats.",
-    iconBg: "bg-blue-100 text-sky-700",
-    status: "Starts in 2h",
-    statusType: "time",
-    membersCount: 14, // 2 hiển thị + 12
-    avatars: [
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-    ],
-  },
-  {
-    id: "2",
-    title: "Nihongo Readers",
-    level: "Literature",
-    levelColor: "bg-slate-200 text-gray-700",
-    description:
-      "Deep diving into contemporary Japanese novels and kanji nuance.",
-    iconBg: "bg-orange-100 text-amber-800",
-    status: "Private",
-    statusType: "lock",
-    membersCount: 46, // 1 hiển thị + 45
-    avatars: [
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-    ],
-  },
-  {
-    id: "3",
-    title: "Business English Pro",
-    level: "C1 Level",
-    levelColor: "bg-blue-100 text-sky-700",
-    description:
-      "Corporate communication, negotiation, and high-level presentations.",
-    iconBg: "bg-emerald-100 text-emerald-800",
-    status: "Active Now",
-    statusType: "active",
-    membersCount: 10, // 2 hiển thị + 8
-    avatars: [
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&auto=format&fit=crop&q=80",
-    ],
-  },
-];
+import { getMyGroups } from "./services/groupService";
+import type { StudyGroup } from "./services/groupService";
+import { useAuthStore } from "../auth/store/useAuthStore";
 
 const UPCOMING_MEETUPS = [
   {
@@ -79,24 +28,67 @@ const UPCOMING_MEETUPS = [
 // ==========================================
 
 export default function StudyGroupHub() {
+  const { token } = useAuthStore();
+
+  const [groups, setGroups] = useState<StudyGroup[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError("");
+
+        const data = await getMyGroups(token);
+        setGroups(data);
+      } catch (error) {
+        console.error("Failed to fetch study groups:", error);
+        setError("Failed to load your study groups.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGroups();
+  }, [token]);
+
   return (
     <div className="max-w-6xl mx-auto p-6 md:p-8 space-y-8 font-['Inter'] text-gray-900">
-      {/* 1. HEADER SECTION */}
       <HeaderSection />
 
-      {/* 2. MAIN BENTO GRID LAYOUT */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cột trái: Danh sách nhóm học */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {GROUPS_DATA.map((group) => (
-            <GroupCard key={group.id} group={group} />
-          ))}
 
-          {/* Card phôi (Placeholder) tạo nhóm mới */}
+          {loading && (
+            <div className="col-span-full text-center py-10 text-gray-500">
+              Loading your study groups...
+            </div>
+          )}
+
+          {!loading && error && (
+            <div className="col-span-full text-center py-10 text-red-600">
+              {error}
+            </div>
+          )}
+
+          {!loading &&
+            !error &&
+            groups.map((group) => (
+              <GroupCard
+                key={group.id}
+                group={group}
+              />
+            ))}
+
           <CreateGroupCard />
         </div>
 
-        {/* Cột phải: Sidebar Thống kê & Sự kiện */}
         <div className="space-y-6">
           <EngagementCard />
           <UpcomingEventsCard />
@@ -172,82 +164,66 @@ function HeaderSection() {
 /**
  * Card hiển thị thông tin chi tiết từng nhóm học
  */
-function GroupCard({ group }: { group: (typeof GROUPS_DATA)[0] }) {
-    const navigate = useNavigate();
-  const extraMembers = group.membersCount - group.avatars.length;
+function GroupCard({ group }: { group: StudyGroup }) {
+  const navigate = useNavigate();
 
   return (
     <button
-  type="button"
-  onClick={() => navigate(`/study-groups/workspace-member`)}
-  className="
-    w-full
-    text-left
-    p-6
-    bg-slate-50
-    border
-    border-slate-200/80
-    rounded-2xl
-    shadow-sm
-    hover:shadow-md
-    hover:border-sky-300
-    hover:-translate-y-1
-    transition-all
-    flex
-    flex-col
-    justify-between
-    gap-4
-    cursor-pointer
-  "
->
+      type="button"
+      onClick={() =>
+        navigate(`/study-groups/workspace-member`)
+      }
+      className="
+        w-full
+        text-left
+        p-6
+        bg-slate-50
+        border
+        border-slate-200/80
+        rounded-2xl
+        shadow-sm
+        hover:shadow-md
+        hover:border-sky-300
+        hover:-translate-y-1
+        transition-all
+        flex
+        flex-col
+        justify-between
+        gap-4
+        cursor-pointer
+      "
+    >
       <div>
-        {/* Header card: Icon + Badge cấp độ */}
         <div className="flex justify-between items-start">
-          <div
-            className={`w-14 h-14 ${group.iconBg} rounded-2xl flex items-center justify-center`}
-          >
-            {/* Book/Group Icon Placeholder */}
-            <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24">
+          <div className="w-14 h-14 bg-blue-100 text-sky-700 rounded-2xl flex items-center justify-center">
+            <svg
+              className="w-7 h-7 fill-current"
+              viewBox="0 0 24 24"
+            >
               <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
             </svg>
           </div>
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-bold ${group.levelColor}`}
-          >
-            {group.level}
+
+          <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-700">
+            Study Group
           </span>
         </div>
 
-        {/* Tiêu đề & Mô tả */}
-        <h3 className="text-lg font-bold text-gray-900 mt-4">{group.title}</h3>
-        <p className="text-sm font-normal text-gray-600 mt-1 line-clamp-2 leading-relaxed">
-          {group.description}
+        <h3 className="text-lg font-bold text-gray-900 mt-4">
+          {group.name}
+        </h3>
+
+        <p className="text-sm text-gray-600 mt-1">
+          Group code:{" "}
+          <span className="font-bold text-sky-700">
+            {group.code}
+          </span>
         </p>
       </div>
 
-      {/* Footer card: Danh sách thành viên + Trạng thái */}
-      <div className="flex items-center justify-between pt-2 border-t border-slate-200/40">
-        {/* Thành viên (Avatar Stack) */}
-        <div className="flex items-center -space-x-2">
-          {group.avatars.map((imgUrl, idx) => (
-            <img
-              key={idx}
-              src={imgUrl}
-              alt="Member Avatar"
-              className="w-8 h-8 rounded-full border-2 border-slate-50 object-cover"
-            />
-          ))}
-          {extraMembers > 0 && (
-            <div className="w-8 h-8 rounded-full border-2 border-slate-50 bg-slate-200 flex items-center justify-center text-[10px] font-bold text-gray-800">
-              +{extraMembers}
-            </div>
-          )}
-        </div>
-
-        {/* Trạng thái nhóm */}
-        <div className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
-          <StatusIcon type={group.statusType} />
-          <span>{group.status}</span>
+      <div className="pt-2 border-t border-slate-200/40">
+        <div className="text-xs text-gray-500">
+          Created by user #{group.createdBy}
         </div>
       </div>
     </button>

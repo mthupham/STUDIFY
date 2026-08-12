@@ -7,12 +7,14 @@ import { GroupMember } from '../../models/group_member.model';
 import { GroupController } from './controller/group.controller';
 import { GroupRepository } from './group.repository';
 import { GroupService } from './services/group.service';
+import { User } from '../../models/user.model';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([
       StudyGroup,
       GroupMember,
+      User,
     ]),
   ],
 

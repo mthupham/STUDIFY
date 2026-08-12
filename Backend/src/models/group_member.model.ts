@@ -1,9 +1,14 @@
 import {
+  BelongsTo,
   Column,
   DataType,
+  ForeignKey,
   Model,
   Table,
 } from "sequelize-typescript";
+
+import { StudyGroup } from "./study_group.model";
+import { User } from "./user.model";
 
 export enum GroupMemberRole {
   LEADER = "LEADER",
@@ -15,6 +20,7 @@ export enum GroupMemberRole {
   timestamps: false,
 })
 export class GroupMember extends Model {
+  @ForeignKey(() => StudyGroup)
   @Column({
     allowNull: false,
     type: DataType.INTEGER,
@@ -22,12 +28,19 @@ export class GroupMember extends Model {
   })
   declare groupId: number;
 
+  @BelongsTo(() => StudyGroup)
+  declare group: StudyGroup;
+
+  @ForeignKey(() => User)
   @Column({
     allowNull: false,
     type: DataType.INTEGER,
     field: "userId",
   })
   declare userId: number;
+
+  @BelongsTo(() => User)
+  declare user: User;
 
   @Column({
     allowNull: false,
