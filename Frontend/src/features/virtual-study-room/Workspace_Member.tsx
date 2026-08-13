@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useGroupChat } from "./hooks/useGroupChat";
+import type { StudyGroup } from "./services/groupService";
 
 // --- Types ---
 interface FileItem {
@@ -28,14 +29,21 @@ interface Message {
   file?: FileItem;
 }
 
-export const BusinessEnglishHub: React.FC = () => {
+interface BusinessEnglishHubProps {
+  groupId: number;
+  groupData: StudyGroup;
+}
+
+export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
+  groupId,
+  groupData,
+}) => {
   // --- States ---
   const [inputMessage, setInputMessage] = useState("");
   const [copiedCode, setCopiedCode] = useState(false);
   const [showAllMembers, setShowAllMembers] = useState(false);
 
-  const inviteCode = "LP-B2-99";
-  const { messages, sendMessage, currentUserId } = useGroupChat(inviteCode);
+  const { messages, sendMessage, currentUserId } = useGroupChat(String(groupId));
 
   // --- Handlers ---
   const handleSendMessage = () => {
@@ -46,7 +54,7 @@ export const BusinessEnglishHub: React.FC = () => {
   };
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(inviteCode);
+    navigator.clipboard.writeText(groupData.code);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
   };
@@ -64,11 +72,11 @@ export const BusinessEnglishHub: React.FC = () => {
           </div>
           <div className="flex flex-col gap-0.5">
             <h2 className="text-gray-900 text-xl font-semibold leading-tight">
-              B2 Business English Hub
+              {groupData.name}
             </h2>
             <div className="flex items-center gap-3">
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs font-mono font-medium rounded">
-                #{inviteCode}
+                #{groupData.code}
               </span>
               <div className="flex items-center gap-1.5 text-gray-600 text-xs font-medium">
                 <svg
@@ -78,7 +86,7 @@ export const BusinessEnglishHub: React.FC = () => {
                 >
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                 </svg>
-                <span>8 / 10 Members</span>
+                <span>{groupData.members?.length ?? 0} / 5 Members</span>
               </div>
             </div>
           </div>
@@ -241,7 +249,7 @@ export const BusinessEnglishHub: React.FC = () => {
               </span>
               <div className="flex justify-between items-center">
                 <span className="text-sky-700 text-xl font-mono font-bold">
-                  {inviteCode}
+                  {groupData.code}
                 </span>
                 <button
                   onClick={handleCopyCode}

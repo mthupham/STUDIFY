@@ -171,7 +171,7 @@ function GroupCard({ group }: { group: StudyGroup }) {
     <button
       type="button"
       onClick={() =>
-        navigate(`/study-groups/workspace-member`)
+        navigate(`/study-groups/${group.id}/workspace`)
       }
       className="
         w-full

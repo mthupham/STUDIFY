@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 
 import { StudyGroup } from '../../models/study_group.model';
 import { GroupMember } from '../../models/group_member.model';
+import { User } from '../../models/user.model';
 
 interface CreateGroupAttributes {
   name: string;
@@ -107,5 +108,55 @@ export class GroupRepository {
         id: groupId,
       },
     });
+  }
+
+  async findGroupWithMembers(groupId: number): Promise<StudyGroup | null> {
+    return this.studyGroupModel.findByPk(groupId, {
+      include: [
+        {
+          model: GroupMember,
+          include: [
+            {
+              model: User,
+              attributes: ['id', 'name', 'email', 'avatar'],
+            },
+          ],
+        },
+      ],
+    });
+  }
+
+  async getUserRole(groupId: number, userId: number): Promise<string | null> {
+    const member = await this.findMember(groupId, userId);
+    return member ? member.role : null;
+  }
+
+  async countMembers(groupId: number): Promise<number> {
+    return this.groupMemberModel.count({
+      where: { groupId },
+    });
+  }
+
+  async updateMemberRole(groupId: number, userId: number, role: string): Promise<[number]> {
+    return this.groupMemberModel.update(
+      { role },
+      { where: { groupId, userId } },
+    );
+  }
+
+  async deleteMember(groupId: number, userId: number): Promise<number> {
+    return this.groupMemberModel.destroy({
+      where: { groupId, userId },
+    });
+  }
+
+  async updateGroup(
+    groupId: number,
+    updateData: Partial<{ name: string; description: string | null; icon: string }>,
+  ): Promise<StudyGroup> {
+    await this.studyGroupModel.update(updateData, {
+      where: { id: groupId },
+    });
+    return this.studyGroupModel.findByPk(groupId) as Promise<StudyGroup>;
   }
 }

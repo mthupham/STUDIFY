@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { TaskModal, MEMBER_OPTIONS } from "./Modal/TaskModal";
 import type { Assignment, TaskStatus, CategoryType } from "./Modal/TaskModal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // ==========================================
 // INITIAL MOCK DATA
@@ -392,6 +392,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { groupId } = useParams<{ groupId: string }>();
 
   // States quản lý Modal
   const [isAssignModalOpen, setIsAssignModalOpen] = useState<boolean>(false);
@@ -478,7 +479,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
       {/* Top Navigation */}
       <div>
         <button
-          onClick={() => navigate("/study-groups/workspace-leader/")}
+          onClick={() => navigate(`/study-groups/${groupId}/workspace`)}
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-sky-700 hover:bg-slate-100 px-3 py-1.5 rounded-lg transition-colors -ml-3"
         >
           <ArrowLeftIcon className="w-4 h-4" />

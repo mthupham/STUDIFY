@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 // ==========================================
 // 1. TYPES & INTERFACES
@@ -254,24 +254,30 @@ const INITIAL_FILES: FileItem[] = [
 // 4. MAIN COMPONENT
 // ==========================================
 export default function RepositoryUpload() {
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'All' | 'Documents' | 'Images' | 'Audio'>('All');
   const [files, setFiles] = useState<FileItem[]>(INITIAL_FILES);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
-  const [isDragActive, setIsDragActive] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isDragActive, setIsDragActive] = useState(false);
 
   // States quản lý ẩn file & Popup More Options
   const [hiddenFileIds, setHiddenFileIds] = useState<number[]>([]);
   const [activeMenuFileId, setActiveMenuFileId] = useState<number | null>(null);
-
-  const [uploadState, setUploadState] = useState<UploadState>({
+  const [uploadState, setUploadState] = useState<{
+    status: 'idle' | 'uploading' | 'success' | 'error';
+    progress: number;
+    fileName: string;
+    errorMessage: string;
+  }>({
     status: 'idle',
     progress: 0,
     fileName: '',
     errorMessage: ''
   });
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const { groupId } = useParams<{ groupId: string }>();
   const uploadIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const dragCounterRef = useRef<number>(0);
 
@@ -487,7 +493,7 @@ export default function RepositoryUpload() {
       {/* Top Navigation */}
       <div>
         <button 
-          onClick={() => navigate('/study-groups/workspace-leader/')}
+          onClick={() => navigate(`/study-groups/${groupId}/workspace`)}
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-sky-700 hover:bg-slate-100 px-3 py-1.5 rounded-lg transition-colors -ml-3"
         >
           <ArrowLeftIcon className="w-4 h-4" />

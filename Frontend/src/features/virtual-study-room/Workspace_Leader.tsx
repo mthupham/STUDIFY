@@ -5,6 +5,9 @@ import type { RoleType } from "./Modal/ChangeRoleModal";
 import BanMemberModal from "./Modal/BanMemberModal";
 import RemoveMemberModal from "./Modal/RemoveMemberModal";
 import { useGroupChat } from "./hooks/useGroupChat";
+import { useAuthStore } from "../auth/store/useAuthStore";
+import { changeMemberRole, removeMember } from "./services/groupService";
+import type { StudyGroup, GroupMember } from "./services/groupService";
 
 // ==========================================
 // 1. TYPES & INTERFACES
@@ -21,6 +24,12 @@ interface Member {
   role: RoleType;
 }
 
+interface GroupDashboardProps {
+  groupId: number;
+  groupData: StudyGroup;
+  onGroupUpdated: () => void;
+}
+
 // ==========================================
 // 2. MEMBER PROFILE DRAWER COMPONENT
 // ==========================================
@@ -28,12 +37,18 @@ interface MemberProfileDrawerProps {
   member: Member | null;
   isOpen: boolean;
   onClose: () => void;
+  groupId: number;
+  token: string;
+  onGroupUpdated: () => void;
 }
 
 const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
   member,
   isOpen,
   onClose,
+  groupId,
+  token,
+  onGroupUpdated,
 }) => {
   const [tasks, setTasks] = useState([
     {
@@ -52,6 +67,7 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
   const [showChangeRoleModal, setShowChangeRoleModal] = useState(false);
   const [showBanMemberModal, setShowBanMemberModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   if (!member) return null;
 
@@ -346,12 +362,19 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
         memberName={member.name}
         memberAvatar={member.avatar}
         currentRole={member.role}
-        onConfirmRole={(newRole) => {
-          console.log("New role:", newRole);
-
-          // TODO: gọi API đổi role
-
-          setShowChangeRoleModal(false);
+        onConfirmRole={async (newRole) => {
+          if (!token) return;
+          setActionLoading(true);
+          try {
+            await changeMemberRole(token, groupId, Number(member.id), newRole as "LEADER" | "MEMBER");
+            onGroupUpdated();
+            onClose();
+          } catch (err) {
+            console.error("Change role error:", err);
+          } finally {
+            setActionLoading(false);
+            setShowChangeRoleModal(false);
+          }
         }}
       />
       <RemoveMemberModal
@@ -359,12 +382,19 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
         onClose={() => setShowRemoveModal(false)}
         memberName={member.name}
         memberAvatar={member.avatar}
-        onConfirmRemove={() => {
-          console.log("Remove:", member.id);
-
-          // TODO: gọi API remove member
-
-          setShowRemoveModal(false);
+        onConfirmRemove={async () => {
+          if (!token) return;
+          setActionLoading(true);
+          try {
+            await removeMember(token, groupId, Number(member.id));
+            onGroupUpdated();
+            onClose();
+          } catch (err) {
+            console.error("Remove member error:", err);
+          } finally {
+            setActionLoading(false);
+            setShowRemoveModal(false);
+          }
         }}
       />
       <BanMemberModal
@@ -372,12 +402,19 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
         onClose={() => setShowBanMemberModal(false)}
         memberName={member.name}
         memberAvatar={member.avatar}
-        onConfirmBan={() => {
-          console.log("Ban:", member.id);
-
-          // TODO: API ban member
-
-          setShowBanMemberModal(false);
+        onConfirmBan={async () => {
+          if (!token) return;
+          setActionLoading(true);
+          try {
+            await removeMember(token, groupId, Number(member.id));
+            onGroupUpdated();
+            onClose();
+          } catch (err) {
+            console.error("Ban member error:", err);
+          } finally {
+            setActionLoading(false);
+            setShowBanMemberModal(false);
+          }
         }}
       />
     </div>
@@ -387,56 +424,34 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
 // ==========================================
 // 3. MAIN GROUP DASHBOARD COMPONENT
 // ==========================================
-export const GroupDashboard: React.FC = () => {
+export const GroupDashboard: React.FC<GroupDashboardProps> = ({
+  groupId,
+  groupData,
+  onGroupUpdated,
+}) => {
   const navigate = useNavigate();
+  const { token } = useAuthStore();
 
-  // --- Sample Members Data ---
-  const [members] = useState<Member[]>([
-    {
-      id: "m1",
-      name: "Sarah Chen",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-      level: "ADVANCED",
-      email: "sarah.chen@university.edu",
-      lessons: 42,
-      streak: 12,
-      score: 850,
-      role: "MEMBER",
-    },
-    {
-      id: "m2",
-      name: "Alex Thompson",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-      level: "FLUENT",
-      email: "alex.t@university.edu",
-      lessons: 65,
-      streak: 24,
-      score: 1200,
-      role: "MEMBER",
-    },
-    {
-      id: "m3",
-      name: "Marco Rossi",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-      level: "ADVANCED",
-      email: "marco.rossi@university.edu",
-      lessons: 28,
-      streak: 5,
-      score: 620,
-      role: "MEMBER"
-    },
-  ]);
+  // Chuyển đổi groupData.members sang định dạng Member (UI)
+  const members: Member[] = (groupData.members ?? []).map((m: GroupMember) => ({
+    id: String(m.userId),
+    name: m.user?.name ?? `User #${m.userId}`,
+    avatar: m.user?.avatar ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(m.user?.name ?? "U")}&background=random`,
+    email: m.user?.email ?? "",
+    level: "INTERMEDIATE" as const,
+    lessons: 0,
+    streak: 0,
+    score: 0,
+    role: m.role as RoleType,
+  }));
+
 
   const [inputMessage, setInputMessage] = useState("");
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
 
-  const inviteCode = "LP-B2-99";
-  const { messages, sendMessage, currentUserId } = useGroupChat(inviteCode);
+  const { messages, sendMessage, currentUserId } = useGroupChat(String(groupId));
 
   // --- Handlers ---
   const handleSendMessage = () => {
@@ -447,7 +462,7 @@ export const GroupDashboard: React.FC = () => {
   };
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(inviteCode);
+    navigator.clipboard.writeText(groupData.code);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
   };
@@ -495,11 +510,11 @@ export const GroupDashboard: React.FC = () => {
           </div>
           <div className="flex flex-col gap-0.5">
             <h2 className="!text-gray-900 !text-xl !font-semibold !leading-tight">
-              Advanced C1 Masterminds
+              {groupData.name}
             </h2>
             <div className="flex items-center gap-3">
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs font-mono font-medium rounded">
-                #{inviteCode}
+                #{groupData.code}
               </span>
               <div className="flex items-center gap-1.5 text-gray-600 text-xs font-medium">
                 <svg
@@ -509,7 +524,7 @@ export const GroupDashboard: React.FC = () => {
                 >
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                 </svg>
-                <span>{members.length} / 10 Members</span>
+                <span>{members.length} / 5 Members</span>
               </div>
             </div>
           </div>
@@ -519,7 +534,7 @@ export const GroupDashboard: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() =>
-              navigate("/study-groups/workspace-leader/edit-group")
+              navigate(`/study-groups/${groupId}/edit`)
             }
             className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-gray-700 font-medium text-sm rounded-xl transition-all flex items-center gap-2 shadow-sm"
           >
@@ -669,7 +684,7 @@ export const GroupDashboard: React.FC = () => {
           {/* Bento Quick Actions */}
           <div className="grid grid-cols-2 gap-3">
             <button 
-            onClick={() => navigate("/study-groups/workspace-leader/task-assignment")} 
+            onClick={() => navigate(`/study-groups/${groupId}/tasks`)} 
             className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
@@ -695,7 +710,7 @@ export const GroupDashboard: React.FC = () => {
             </button>
 
             <button 
-            onClick={() => navigate("/study-groups/workspace-leader/repository")} 
+            onClick={() => navigate(`/study-groups/${groupId}/repository`)} 
             className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
@@ -743,7 +758,7 @@ export const GroupDashboard: React.FC = () => {
                 </h3>
               </div>
               <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[11px] font-mono font-semibold rounded-full">
-                12/15 Seats
+                {members.length}/5 Seats
               </span>
             </div>
 
@@ -824,6 +839,9 @@ export const GroupDashboard: React.FC = () => {
         member={selectedMember}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
+        groupId={groupId}
+        token={token ?? ""}
+        onGroupUpdated={onGroupUpdated}
       />
     </div>
   );

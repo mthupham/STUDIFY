@@ -19,8 +19,7 @@ import ResultPractice from "./features/learning/lesson/ResultPractice";
 import StudyGroupHub from "./features/virtual-study-room/StudyGroup";
 import JoinGroup from "./features/virtual-study-room/JoinGroup.tsx";
 import NewGroup from "./features/virtual-study-room/CreateNewGroup.tsx";
-import MemberWorkspace from "./features/virtual-study-room/Workspace_Member";
-import LeaderWorkspace from "./features/virtual-study-room/Workspace_Leader";
+import WorkspaceRouter from "./features/virtual-study-room/WorkspaceRouter";
 import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo.tsx";
 import RepositoryUpload from "./features/virtual-study-room/RepositoryUpload.tsx";
 import TaskAssignmentDashboard from "./features/virtual-study-room/TaskAssignment.tsx";
@@ -191,29 +190,18 @@ function App() {
         />
 
         <Route
-          path="/study-groups/workspace-member"
+          path="/study-groups/:groupId/workspace"
           element={
             <OnboardingGuard>
               <MainLayout>
-                <MemberWorkspace />
+                <WorkspaceRouter />
               </MainLayout>
             </OnboardingGuard>
           }
         />
 
         <Route
-          path="/study-groups/workspace-leader"
-          element={
-            <OnboardingGuard>
-              <MainLayout>
-                <LeaderWorkspace />
-              </MainLayout>
-            </OnboardingGuard>
-          }
-        />
-
-        <Route
-          path="/study-groups/workspace-leader/edit-group"
+          path="/study-groups/:groupId/edit"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -224,7 +212,7 @@ function App() {
         />
 
         <Route
-          path="/study-groups/workspace-leader/repository"
+          path="/study-groups/:groupId/repository"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -234,7 +222,7 @@ function App() {
           }
         />
         <Route
-          path="/study-groups/workspace-leader/task-assignment"
+          path="/study-groups/:groupId/tasks"
           element={
             <OnboardingGuard>
               <MainLayout>
