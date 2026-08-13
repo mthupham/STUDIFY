@@ -105,46 +105,71 @@ export class RoadmapService {
 
       const vocabLessons = levelData.vocabulary_lessons || [];
       const grammarLessons = levelData.grammar_lessons || [];
-      const allLessons = [
-        ...vocabLessons.map((v: any) => ({ id: v.topic_id, label: v.topic_name, type: 'vocabulary' })),
-        ...grammarLessons.map((g: any) => ({ id: g.grammar_id, label: g.grammar_title, type: 'grammar' })),
-      ];
+      const numLessons = Math.min(vocabLessons.length, grammarLessons.length);
 
       // Tìm bài đầu tiên CHƯA hoàn thành trong level này — đó sẽ là "active"
-      const firstUncompletedIndex = allLessons.findIndex((l) => !completedMap.has(l.id));
+      let firstUncompletedIndex = -1;
+      for (let i = 0; i < numLessons; i++) {
+        const isVocabCompleted = completedMap.has(vocabLessons[i].topic_id);
+        const isGrammarCompleted = completedMap.has(grammarLessons[i].grammar_id);
+        if (!isVocabCompleted || !isGrammarCompleted) {
+          firstUncompletedIndex = i;
+          break;
+        }
+      }
+
       const isLevelBelowAssigned = levelIndex < assignedIndex;   
       const isCurrentLevel = levelIndex === assignedIndex;        
 
-      const nodes = allLessons.map((lesson, index) => {
-        const position = Math.round(5 + (index / Math.max(allLessons.length - 1, 1)) * 90);
-        const row = index % 2 === 0 ? 'top' : 'bottom';
+      const nodes: any[] = [];
+      for (let i = 0; i < numLessons; i++) {
+        const vocab = vocabLessons[i];
+        const grammar = grammarLessons[i];
+
+        const isVocabCompleted = completedMap.has(vocab.topic_id);
+        const isGrammarCompleted = completedMap.has(grammar.grammar_id);
+        const isCompleted = isVocabCompleted && isGrammarCompleted;
+
+        const position = Math.round(5 + (i / Math.max(numLessons - 1, 1)) * 90);
+        const row = i % 2 === 0 ? 'top' : 'bottom';
 
         let status = 'locked';
-        if (completedMap.has(lesson.id)) {
+        if (isCompleted) {
           status = 'completed';
         } else if (isLevelBelowAssigned) {
           status = 'available';
-        } else if (isCurrentLevel && index === firstUncompletedIndex) {
-          status = 'active';
+        } else if (isCurrentLevel) {
+          if (i === firstUncompletedIndex) {
+            status = 'active';
+          } else if (i < firstUncompletedIndex) {
+            status = 'completed';
+          } else if (firstUncompletedIndex !== -1 && i > firstUncompletedIndex) {
+            status = 'locked';
+          }
         }
 
-        return {
-          id: lesson.id,
-          type: lesson.type,
-          label: lesson.label,
+        nodes.push({
+          id: `${level}_L${i + 1}`,
+          level,
+          lessonIndex: i + 1,
+          type: 'lesson',
+          label: `Lesson ${i + 1}`,
           position,
           row,
           status,
           order: globalOrder++,
-        };
-      });
+        });
+      }
 
       return { id: `view${level}`, label: level, level, nodes };
     });
 
     // 4. Tính metrics dựa trên số lesson thực sự đã hoàn thành (toàn bộ, không chỉ level hiện tại)
     const totalLessons = views.reduce((sum, v) => sum + v.nodes.length, 0);
-    const completedLessonsCount = completedMap.size;
+    const completedLessonsCount = views.reduce(
+      (sum, v) => sum + v.nodes.filter((node) => node.status === 'completed').length,
+      0,
+    );
     const streak = this.calculateStreak(progressRecords);
 
     return {

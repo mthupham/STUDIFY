@@ -303,9 +303,9 @@ export default function RoadmapPage() {
                       >
                         <button
                           type="button"
-                         onClick={() => {
+                          onClick={() => {
                             if (!isClickable) return;
-                            navigate(`/lessons/${node.id}`);   
+                            navigate(`/lesson/${node.level}/${node.lessonIndex}`);
                           }}
                           onMouseEnter={() => isClickable && setHoveredNode(node.id)}
                           onMouseLeave={() => setHoveredNode(null)}
@@ -336,10 +336,10 @@ export default function RoadmapPage() {
                           {node.status !== 'locked' && (
                             <div style={styles.nodeLabel}>{node.label}</div>
                           )}
-                          <div style={styles.nodeMeta}>
+                           <div style={styles.nodeMeta}>
                             {node.status === 'active' ? 'In progress' 
                               : node.status === 'completed' ? 'Completed' 
-                              : node.status === 'available' ? (node.type === 'vocabulary' ? 'Vocabulary' : 'Grammar')
+                              : node.status === 'available' ? (node.type === 'vocabulary' ? 'Vocabulary' : node.type === 'grammar' ? 'Grammar' : 'Lesson')
                               : 'Locked'}
                           </div>
                         </div>

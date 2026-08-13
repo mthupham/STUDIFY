@@ -28,6 +28,9 @@ import TaskAssignmentDashboard from "./features/virtual-study-room/TaskAssignmen
 import Pomodoro from "./features/pomodoro/PomodoroTimer";
 import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidget";
 
+import FlashcardLibrary from "./features/flashcard/flashcard-decks";
+import DeckDetailView from "./features/flashcard/flashcard-detail-view.tsx";
+
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
   const user = useAuthStore((state) => state.user);
@@ -47,6 +50,7 @@ function App() {
     <BrowserRouter>
       <FloatingPomodoroWidget />
       <Routes>
+
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />
@@ -102,7 +106,36 @@ function App() {
                 <LessonDetail />
               </MainLayout>
             </OnboardingGuard>
-            
+          }
+        />
+        <Route
+          path="/lesson/:level/:lessonIndex"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <LessonDetail />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/lessons/practice/reading/:lessonId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <PracticeQuestions />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/lessons/practice/writing/:lessonId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <PracticeQuestions />
+              </MainLayout>
+            </OnboardingGuard>
           }
         />
         <Route
@@ -220,10 +253,33 @@ function App() {
             </OnboardingGuard>
           }
         />
+
+        <Route
+          path="/flashcard"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <FlashcardLibrary />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/flashcard/:deckId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <DeckDetailView />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default App;

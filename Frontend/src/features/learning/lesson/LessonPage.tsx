@@ -152,9 +152,8 @@ export default function LessonPage() {
 };
 
   const handleTheoryReview = () => {
-    const firstLessonId = sections[0]?.lessons[0]?.id;
-    if (firstLessonId) {
-      navigate(`/lessons/theory/${firstLessonId}`);
+    if (level) {
+      navigate(`/lesson/${level}/1`);
       return;
     }
     navigate("/lessons");
