@@ -13,6 +13,7 @@ import { GroupMember } from './group_member.model';
 
 @Table({
   tableName: 'StudyGroups',
+  timestamps: true,
 })
 export class StudyGroup extends Model<StudyGroup> {
   @Column({
@@ -60,4 +61,7 @@ export class StudyGroup extends Model<StudyGroup> {
 
   @HasMany(() => GroupMember)
   declare members: GroupMember[];
+
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
