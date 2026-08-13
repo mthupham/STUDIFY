@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
-export type RoleType = "MEMBER" | "MODERATOR" | "LEADER";
+export type RoleType = "MEMBER" | "LEADER";
 
 interface ChangeRoleModalProps {
   isOpen: boolean;
@@ -70,21 +70,14 @@ export const ChangeRoleModal: React.FC<ChangeRoleModalProps> = ({
     {
       id: "MEMBER" as RoleType,
       title: "Member",
-      description: "Can join discussions, view materials, and complete assigned tasks",
+      description: "Can join discussions, view materials, and complete assigned tasks.",
       icon: <UserIcon />,
       badgeColor: "bg-gray-100 text-gray-700",
     },
     {
-      id: "MODERATOR" as RoleType,
-      title: "Moderator",
-      description: "Has the authority to assign tasks, manage materials, and approve group messages.",
-      icon: <ShieldIcon />,
-      badgeColor: "bg-sky-100 text-sky-800",
-    },
-    {
       id: "LEADER" as RoleType,
-      title: "Switch Group Leader",
-      description: "Has full control to manage group members, content, permissions, and transfer ownership.",
+      title: "Transfer Group Leader",
+      description: "Has full control to manage group members, content, permissions, and ownership.",
       icon: <CrownIcon />,
       badgeColor: "bg-amber-100 text-amber-800",
     },

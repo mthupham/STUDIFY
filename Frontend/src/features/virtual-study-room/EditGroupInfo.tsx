@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getGroupDetails, updateGroup } from "./services/groupService";
+import { useAuthStore } from "../auth/store/useAuthStore";
 
 // ==========================================
 // 1. SVG ICON COMPONENTS (Làm sạch các Icon)
@@ -388,17 +390,29 @@ const ALL_ICONS: IconOption[] = [
 // ==========================================
 
 export const EditGroupSettings: React.FC = () => {
-  // State quản lý dữ liệu form
   const navigate = useNavigate();
-  const [groupName, setGroupName] = useState("Advanced C1 Debate Club");
-  const [description, setDescription] = useState(
-    "A high-level discussion group focusing on complex socioeconomic issues, academic literature, and persuasive speaking techniques. Members are expected to have a solid C1 proficiency level.",
-  );
+  const { groupId } = useParams<{ groupId: string }>();
+  const { token } = useAuthStore();
+  const numericGroupId = Number(groupId);
+
+  const [groupName, setGroupName] = useState("");
+  const [description, setDescription] = useState("");
   const [selectedIconIndex, setSelectedIconIndex] = useState(0);
   const [notification, setNotification] = useState<{
     type: "success" | "error";
     message: string;
   } | null>(null);
+
+  // Pre-fill form với data hiện tại từ API
+  useEffect(() => {
+    if (!token || !numericGroupId) return;
+    getGroupDetails(token, numericGroupId)
+      .then((detail) => {
+        setGroupName(detail.group.name);
+        setDescription(detail.group.description ?? "");
+      })
+      .catch(console.error);
+  }, [token, numericGroupId]);
 
   const [showIconModal, setShowIconModal] = useState(false);
 
@@ -422,12 +436,15 @@ export const EditGroupSettings: React.FC = () => {
   };
   // Xử lý submit
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!token || !numericGroupId) return;
 
     try {
-      // gọi API save ở đây sau này
-      // await updateGroupInfo()
+      await updateGroup(token, numericGroupId, {
+        name: groupName,
+        description: description || null,
+      });
 
       setNotification({
         type: "success",
@@ -436,9 +453,9 @@ export const EditGroupSettings: React.FC = () => {
 
       setTimeout(() => {
         setNotification(null);
-        navigate("/study-groups/workspace-leader");
-      }, 3000);
-    } catch (error) {
+        navigate(`/study-groups/${numericGroupId}/workspace`);
+      }, 1500);
+    } catch {
       setNotification({
         type: "error",
         message: "Failed to save group settings. Please try again.",
@@ -539,7 +556,7 @@ export const EditGroupSettings: React.FC = () => {
       <header className="sticky top-0 z-10 px-4 py-5 sm:px-8 flex items-center gap-4">
         <button
           type="button"
-          onClick={() => navigate("/study-groups/workspace-leader")}
+          onClick={() => navigate(`/study-groups/${numericGroupId}/workspace`)}
           className="text-gray-700 hover:text-sky-700 transition-colors"
           aria-label="Go back"
         >
@@ -722,7 +739,7 @@ export const EditGroupSettings: React.FC = () => {
                 Save Changes
               </button>
               <button
-                onClick={() => navigate("/study-groups/workspace-leader")}
+                onClick={() => navigate(`/study-groups/${numericGroupId}/workspace`)}
                 type="button"
                 className="w-full py-3.5 px-4 bg-slate-50 hover:bg-slate-100 border border-slate-300 text-gray-700 font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2"
               >
