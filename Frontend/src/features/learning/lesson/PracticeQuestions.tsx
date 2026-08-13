@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
+import {
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+const API_BASE =
+  import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 type QuestionView = "multiple-choice" | "written";
 
 interface QuestionItem {
@@ -14,7 +19,8 @@ interface QuestionItem {
 export const PracticeQuestions: React.FC = () => {
   const navigate = useNavigate();
   const { lessonId } = useParams<{ lessonId: string }>();
-
+const [searchParams] = useSearchParams();
+const skill = searchParams.get("skill") ?? "reading";
   const [questions, setQuestions] = useState<QuestionItem[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -52,8 +58,8 @@ const getAccessToken = () => {
 
       const token = getAccessToken();
 
-      const response = await fetch(
-        `http://localhost:3000/learning/lessons/${lessonId}/questions`,
+     const response = await fetch(
+  `${API_BASE}/learning/lessons/${lessonId}/questions?skill=${skill}`,
         {
           headers: {
             ...(token
@@ -94,7 +100,7 @@ setQuestions(questionList);
   };
 
   void fetchQuestions();
-}, [lessonId]);
+}, [lessonId,skill]);
 
  const currentQuestion = useMemo(
   () => questions[currentQuestionIndex],
