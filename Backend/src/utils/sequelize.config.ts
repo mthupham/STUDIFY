@@ -59,6 +59,6 @@ export const sequelizeConfig = (
   Flashcard,
   ],
   autoLoadModels: true,
-  synchronize: false,
+  synchronize: true,
   logging: false,
 });

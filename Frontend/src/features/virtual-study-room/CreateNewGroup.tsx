@@ -438,7 +438,7 @@ export default function CreateStudyGroupPage() {
         selectedIconId,
       );
 
-      const createdGroup = response.data.data.group;
+      const createdGroup = response.data.group;
       const codeFromBackend = createdGroup.code;
 
       if (codeFromBackend) {
@@ -446,7 +446,7 @@ export default function CreateStudyGroupPage() {
       }
 
       setMessage(
-        response.data.message ||
+        response.message ||
           `Group "${createdGroup.name}" created successfully!`,
       );
       setMessageType("success");
