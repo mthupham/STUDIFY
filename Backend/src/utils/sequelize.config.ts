@@ -17,6 +17,7 @@ import { UserProgress } from '../models/user_progress.model';
 import { PlacementTestResult } from '@/models/placement_test_result.model';
 import { PlacementTestQuestion } from '@/models/placement_test_question.model';
 import { Message } from '@/models/message.model';
+import { Notification } from '../models/notification.model';
 
 export const sequelizeConfig = (configService: ConfigService): SequelizeModuleOptions => ({
   dialect: 'postgres',
@@ -29,7 +30,7 @@ export const sequelizeConfig = (configService: ConfigService): SequelizeModuleOp
     User, Level, VocabularyLesson, VocabularyItem,
     GrammarLesson, GrammarExample, QuestionBank, Question, Roadmap,
     PlacementTest, PlacementQuestion, RequiredLevelTest, RequiredQuestion,
-    UserProgress, PlacementTestQuestion, PlacementTestResult, Message
+    UserProgress, PlacementTestQuestion, PlacementTestResult, Message, Notification
   ],  
   sync: { force: false, alter: true },
   autoLoadModels: true,
