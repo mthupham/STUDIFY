@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { UserProgress } from '../../../models/user_progress.model';
 import { UserService } from '../../../modules/user/user.service';
+import { NotificationService } from '../../../modules/notification/notification.service';
 const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
 @Injectable()
@@ -13,10 +14,8 @@ private questionBankData: any[] = [];
   constructor(
   @InjectModel(UserProgress)
   private readonly progressModel: typeof UserProgress,
-
-
-
   private readonly userService: UserService,
+  private readonly notificationService: NotificationService,
 ) {}
 
   onModuleInit() {
@@ -432,29 +431,47 @@ return {
       await record.update({ isCompleted: true, completedAt: new Date() });
     }
 
-    // Kiểm tra xem đã hoàn thành HẾT lesson trong level của bài này chưa -> tự động lên cấp
     const level = lessonId.split('_')[0]; // vd "A1_T1" -> "A1"
     const allLessonIds = this.getAllLessonIdsInLevel(level);
+
+    let leveledUp = false;
+    let newLevel: string | null = null;
 
     if (allLessonIds.length > 0) {
       const completedInLevel = await this.progressModel.count({
         where: { userId, lessonId: allLessonIds, isCompleted: true },
       });
 
-      let leveledUp = false;
-      let newLevel: string | null = null;
-
       if (completedInLevel === allLessonIds.length) {
         const currentLevel = await this.userService.getCurrentLevel(userId);
         const currentIndex = LEVELS.indexOf(currentLevel);
-        // Chỉ lên cấp nếu level vừa hoàn thành CHÍNH LÀ level hiện tại của user
-        // (tránh trường hợp hoàn thành lại 1 level cũ đã qua rồi vô tình đẩy cấp)
         if (currentLevel === level && currentIndex >= 0 && currentIndex < LEVELS.length - 1) {
           newLevel = LEVELS[currentIndex + 1];
           await this.userService.setCurrentLevel(userId, newLevel);
           leveledUp = true;
         }
       }
+      
+      // ==========================================
+      // ĐOẠN CODE THÊM MỚI: TẠO THÔNG BÁO UNLOCK
+      // ==========================================
+      const currentIndexInLevel = allLessonIds.indexOf(lessonId);
+      // Kiểm tra nếu bài hiện tại không phải bài cuối cùng của level
+      if (currentIndexInLevel >= 0 && currentIndexInLevel < allLessonIds.length - 1) {
+        const nextLessonId = allLessonIds[currentIndexInLevel + 1];
+        
+        // Lấy tên của bài học tiếp theo để hiển thị ra thông báo cho đẹp
+        const nextLessonInfo = this.findLessonById(nextLessonId);
+        const nextLessonTitle = nextLessonInfo?.lesson?.topic_name || nextLessonInfo?.lesson?.grammar_title || nextLessonId;
+
+        // Gọi hàm tạo record vào bảng Notifications (hàm này tuỳ thuộc vào NotificationService của bạn)
+        await this.notificationService.createLessonUnlockedNotification(
+          userId,
+          nextLessonId,
+          nextLessonTitle
+        );
+      }
+      // ==========================================
 
       return {
         success: true,
