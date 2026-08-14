@@ -21,6 +21,7 @@ import { StudyGroup } from '../models/study_group.model';
 import { GroupMember } from '../models/group_member.model';
 import { Deck } from '../models/deck.model';
 import { Flashcard } from '../models/flashcard.model';
+import { Notification } from '../models/notification.model';
 
 export const sequelizeConfig = (
   configService: ConfigService,
@@ -57,6 +58,7 @@ export const sequelizeConfig = (
     GroupMember,
      Deck,
   Flashcard,
+    Notification
   ],
   autoLoadModels: true,
   synchronize: true,

@@ -10,10 +10,11 @@ import { ProgressModule } from './modules/progress/progress.module';
 import { sequelizeConfig } from './utils/sequelize.config';
 import { PlacementTestModule } from './features/placement-test/placement-test.module';
 import { RoadmapModule } from './features/learning/roadmap/roadmap.module';
-import { LessonModule } from './features/learning/lesson/lesson.module'; // thêm dòng này
+import { LessonModule } from './features/learning/lesson/lesson.module'; 
 import { ChatModule } from './modules/chat/chat.module';
 import { VirtualStudyRoomModule } from './features/virtual-study-room/virtual-study-room.module';
 import { FlashcardModule } from './features/flashcard/flashcard.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   controllers: [AppController],
@@ -44,6 +45,7 @@ import { FlashcardModule } from './features/flashcard/flashcard.module';
     LessonModule, 
     VirtualStudyRoomModule,
     FlashcardModule,
+    NotificationModule,
   ],
 })
 export class AppModule {}
