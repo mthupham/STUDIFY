@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export interface FileItem {
   id: string;
@@ -48,24 +50,87 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({
   const [fromDate, setFromDate] = useState<string>("");
   const [toDate, setToDate] = useState<string>("");
 
+  // Close modal on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
-  const handleDownloadSingle = (file: FileItem) => {
-    if (file.url) {
-      window.open(file.url, "_blank");
-    } else {
-      alert(`Download URL not available for ${file.name}`);
+  const getGroupIdFromUrl = (urlStr: string): string | null => {
+    try {
+      const match = urlStr.match(/\/groups\/([^/]+)\/files\//);
+      return match ? match[1] : null;
+    } catch {
+      return null;
     }
   };
 
+  const getFileNameFromUrl = (urlStr: string): string | null => {
+    try {
+      const parsed = new URL(urlStr);
+      const parts = parsed.pathname.split("/files/");
+      if (parts.length > 1) {
+        return decodeURIComponent(parts[1]);
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  const downloadFile = (file: FileItem) => {
+    if (!file.url) {
+      alert(`Download URL not available for ${file.name}`);
+      return;
+    }
+
+    // Handle standard web links directly
+    if (file.category === "link" || file.type === "link") {
+      window.open(file.url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    const groupId = getGroupIdFromUrl(file.url);
+    const fileName = getFileNameFromUrl(file.url);
+
+    if (!groupId || !fileName) {
+      window.open(file.url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    const downloadUrl = `${API_URL}/api/files/download-file/${groupId}/${encodeURIComponent(fileName)}`;
+    
+    // Use dynamic anchor to prevent window popup blocking issues where possible
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const handleDownloadSingle = (file: FileItem) => {
+    downloadFile(file);
+  };
+
   const handleDownloadAll = () => {
-    const downloadableFiles = filteredFiles.filter((f) => f.url);
+    const downloadableFiles = filteredFiles.filter((f) => f.url && f.category !== "link");
     if (downloadableFiles.length === 0) {
       alert("No downloadable file URLs available.");
       return;
     }
-    downloadableFiles.forEach((f) => {
-      if (f.url) window.open(f.url, "_blank");
+
+    // Sequentially trigger downloads with a small delay to avoid browser popup throttling
+    downloadableFiles.forEach((file, index) => {
+      setTimeout(() => {
+        downloadFile(file);
+      }, index * 300);
     });
   };
 
@@ -88,7 +153,6 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({
       }
       if (toDate) {
         const to = new Date(toDate).getTime();
-        // End of the day offset
         if (fileDate > to + 86400000) return false;
       }
     }
@@ -146,13 +210,18 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div 
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+      >
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-slate-200">
           <h2 className="text-xl font-bold text-gray-900">Shared Files</h2>
           <button
             onClick={onClose}
+            aria-label="Close modal"
             className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-100 rounded-lg transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -181,9 +250,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({
         {/* Filter Bar */}
         <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
-            <label className="text-sm font-medium text-gray-700">
-              Advanced Filter:
-            </label>
+            <label className="text-sm font-medium text-gray-700">Advanced Filter:</label>
             <select
               value={filterType}
               onChange={(e) => {
@@ -259,7 +326,9 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({
                       <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-sky-700 transition-colors">
                         {file.name}
                       </h3>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                      <div className="flex items-center gap-2 mt-1 text-xs text-gray-500 flex-wrap">
+                        {file.size && <span className="font-medium text-slate-600">{file.size}</span>}
+                        {file.size && (file.sender || file.uploadedDate) && <span>•</span>}
                         {file.sender && (
                           <span className="flex items-center gap-1 truncate">
                             <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

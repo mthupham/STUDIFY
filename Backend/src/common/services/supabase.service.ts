@@ -135,6 +135,42 @@ export class SupabaseService {
   }
 
   /**
+   * Download a file as a buffer (server-side, no CORS issues)
+   */
+  async downloadFile(
+    bucketName: string,
+    path: string,
+  ): Promise<{
+    success: boolean;
+    data?: Buffer;
+    contentType?: string;
+    error?: string;
+  }> {
+    try {
+      const { data, error } = await this.supabase.storage
+        .from(bucketName)
+        .download(path);
+
+      if (error) return { success: false, error: error.message };
+
+      // Convert Blob to Buffer
+      const arrayBuffer = await data.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      return {
+        success: true,
+        data: buffer,
+        contentType: data.type || 'application/octet-stream',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Download failed',
+      };
+    }
+  }
+
+  /**
    * Delete file
    */
   async deleteFile(

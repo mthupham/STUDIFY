@@ -9,7 +9,9 @@ import {
   Param,
   Get,
   Req,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { SupabaseService } from '../../common/services/supabase.service';
@@ -128,6 +130,60 @@ export class FileUploadController {
       success: true,
       downloadUrl: result.url,
     };
+  }
+
+  /**
+   * Proxy download: fetch file from Supabase server-side and stream to client
+   * GET /api/files/download-file/:groupId/:fileName
+   */
+  @Get('download-file/:groupId/:fileName')
+  @HttpCode(HttpStatus.OK)
+  async proxyDownload(
+    @Param('groupId') groupId: string,
+    @Param('fileName') fileName: string,
+    @Res() res: Response,
+  ) {
+    const decodedFileName = decodeURIComponent(fileName);
+    const path = `groups/${groupId}/files/${decodedFileName}`;
+
+    const result = await this.supabaseService.downloadFile(this.bucketName, path);
+
+    if (!result.success || !result.data) {
+      throw new BadRequestException(
+        result.error || 'Failed to download file',
+      );
+    }
+
+    // Clean original name (strip timestamp prefix like "1723680000-")
+    const cleanFileName = decodedFileName.replace(/^\d+-/, '');
+
+    const ext = cleanFileName.split('.').pop()?.toLowerCase() || '';
+    const mimeMap: Record<string, string> = {
+      pdf: 'application/pdf',
+      doc: 'application/msword',
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      xls: 'application/vnd.ms-excel',
+      xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      txt: 'text/plain',
+      zip: 'application/zip',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      gif: 'image/gif',
+      webp: 'image/webp',
+      mp4: 'video/mp4',
+    };
+
+    const contentType = result.contentType || mimeMap[ext] || 'application/octet-stream';
+
+    res.setHeader('Content-Type', contentType);
+    // Explicitly set Attachment with clean filename
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${encodeURIComponent(cleanFileName)}"`,
+    );
+    res.setHeader('Content-Length', result.data.length);
+    res.send(result.data);
   }
 
   /**
