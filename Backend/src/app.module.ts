@@ -14,6 +14,7 @@ import { LessonModule } from './features/learning/lesson/lesson.module'; // thê
 import { ChatModule } from './modules/chat/chat.module';
 import { VirtualStudyRoomModule } from './features/virtual-study-room/virtual-study-room.module';
 import { FlashcardModule } from './features/flashcard/flashcard.module';
+import { FileUploadModule } from './modules/file-upload/file-upload.module';
 
 @Module({
   controllers: [AppController],
@@ -44,6 +45,7 @@ import { FlashcardModule } from './features/flashcard/flashcard.module';
     LessonModule, 
     VirtualStudyRoomModule,
     FlashcardModule,
+    FileUploadModule,
   ],
 })
 export class AppModule {}
