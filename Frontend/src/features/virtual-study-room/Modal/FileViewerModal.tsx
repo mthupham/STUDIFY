@@ -175,6 +175,72 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({
             <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
           </svg>
         );
+      case "sheet":
+      case "xls":
+      case "xlsx":
+        return (
+          <svg className="w-6 h-6 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
+          </svg>
+        );
+      case "slides":
+      case "ppt":
+      case "pptx":
+        return (
+          <svg className="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
+          </svg>
+        );
+      case "audio":
+      case "mp3":
+      case "wav":
+      case "ogg":
+      case "m4a":
+      case "aac":
+        return (
+          <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 .895-2 3-2 3 .895 3 2zm12 0c0 1.105-1.343 2-3 2s-3-.895-3-2 .895-2 3-2 3 .895 3 2zM9 10l12-3" />
+          </svg>
+        );
+      case "archive":
+      case "zip":
+      case "rar":
+      case "7z":
+      case "tar":
+      case "gz":
+        return (
+          <svg className="w-6 h-6 text-yellow-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+          </svg>
+        );
+      case "text":
+      case "txt":
+      case "csv":
+      case "md":
+      case "rtf":
+        return (
+          <svg className="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        );
+      case "code":
+      case "json":
+      case "xml":
+      case "js":
+      case "html":
+      case "css":
+      case "py":
+      case "java":
+      case "c":
+      case "cpp":
+      case "rb":
+      case "php":
+      case "sh":
+        return (
+          <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+        );
       case "folder":
         return (
           <svg className="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20">

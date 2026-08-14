@@ -196,7 +196,7 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
             </div>
             <div className="flex flex-col gap-0.5">
               <span className="font-semibold text-gray-900">Files</span>
-              <span className="text-xs text-gray-500">Documents, PDFs, etc.</span>
+              <span className="text-xs text-gray-500">PDFs, docs, videos, audio & more</span>
             </div>
           </button>
 

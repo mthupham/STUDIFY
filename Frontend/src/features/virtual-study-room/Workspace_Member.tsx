@@ -23,17 +23,46 @@ function mapApiFileToFileItem(file: {
   let type = ext;
   let category: FileItem["category"] = "file";
 
-  if (mime.startsWith("image/") || ["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) {
+  if (
+    mime.startsWith("image/") ||
+    ["jpg", "jpeg", "png", "gif", "webp", "svg", "bmp", "ico"].includes(ext)
+  ) {
     type = "image";
     category = "photo";
-  } else if (mime.startsWith("video/") || ["mp4", "webm", "mov"].includes(ext)) {
+  } else if (
+    mime.startsWith("video/") ||
+    ["mp4", "webm", "mov", "avi", "mkv"].includes(ext)
+  ) {
     type = "video";
     category = "video";
+  } else if (
+    mime.startsWith("audio/") ||
+    ["mp3", "wav", "ogg", "m4a", "aac"].includes(ext)
+  ) {
+    type = "audio";
+    category = "file";
   } else if (ext === "pdf") {
     type = "pdf";
     category = "file";
   } else if (["doc", "docx"].includes(ext)) {
     type = "doc";
+    category = "file";
+  } else if (["xls", "xlsx"].includes(ext)) {
+    type = "sheet";
+    category = "file";
+  } else if (["ppt", "pptx"].includes(ext)) {
+    type = "slides";
+    category = "file";
+  } else if (["txt", "csv", "md", "rtf"].includes(ext)) {
+    type = "text";
+    category = "file";
+  } else if (["zip", "rar", "7z", "tar", "gz"].includes(ext)) {
+    type = "archive";
+    category = "file";
+  } else if (
+    ["json", "xml", "js", "html", "css", "py", "java", "c", "cpp", "rb", "php", "sh"].includes(ext)
+  ) {
+    type = "code";
     category = "file";
   }
 
