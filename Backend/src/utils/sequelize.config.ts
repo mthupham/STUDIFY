@@ -19,7 +19,8 @@ import { PlacementTestQuestion } from '@/models/placement_test_question.model';
 import { Message } from '@/models/message.model';
 import { StudyGroup } from '../models/study_group.model';
 import { GroupMember } from '../models/group_member.model';
-
+import { GroupTask } from '../models/group_task.model';
+import { GroupSchedule } from '../models/group_schedule.model';
 export const sequelizeConfig = (
   configService: ConfigService,
 ): SequelizeModuleOptions => ({
@@ -53,6 +54,8 @@ export const sequelizeConfig = (
     Message,
     StudyGroup,
     GroupMember,
+    GroupTask,
+    GroupSchedule,
   ],
   sync: { force: false, alter: true },
   autoLoadModels: true,

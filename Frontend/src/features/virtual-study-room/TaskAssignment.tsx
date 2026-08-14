@@ -1,75 +1,64 @@
-import React, { useState, useMemo } from "react";
-import { TaskModal, MEMBER_OPTIONS } from "./Modal/TaskModal";
-import type { Assignment, TaskStatus, CategoryType } from "./Modal/TaskModal";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useMemo } from "react";
+import { TaskModal } from "./Modal/TaskModal";
+import type { Assignment, TaskStatus, CategoryType, Member } from "./Modal/TaskModal";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  getApiErrorMessage,
+  studyGroupApi,
+  type GroupTaskDto,
+  type TaskPayload,
+} from "./services/studyGroupApi";
+import ScheduleManager from "./components/ScheduleManager";
 
 // ==========================================
 // INITIAL MOCK DATA
 // ==========================================
 
-const INITIAL_ASSIGNMENTS: Assignment[] = [
-  {
-    id: "1",
-    title: "Essay: Global Economic Trends",
-    description: "Analyze 3 key lexical chains",
-    category: "essay",
-    member: MEMBER_OPTIONS[0],
-    startDate: "2023-10-20",
-    dueDate: "2023-10-24",
-    dueStatusText: "Tomorrow",
-    dueStatusColorClass: "text-red-700 font-medium",
-    status: "In Progress",
-  },
-  {
-    id: "2",
-    title: "Phonetics Drill: Nuance & Tone",
-    description: "Focus on rising intonation in questions",
-    category: "phonetics",
-    member: MEMBER_OPTIONS[1],
-    startDate: "2023-10-22",
-    dueDate: "2023-10-26",
-    dueStatusText: "In 3 days",
-    dueStatusColorClass: "text-gray-700",
-    status: "Not Started",
-  },
-  {
-    id: "3",
-    title: "Vocabulary: Advanced Synonyms",
-    description: "Mastering 50 Academic Word List items",
-    category: "vocabulary",
-    member: MEMBER_OPTIONS[2],
-    startDate: "2023-10-15",
-    dueDate: "2023-10-22",
-    dueStatusText: "Completed",
-    dueStatusColorClass: "text-emerald-800 font-bold",
-    status: "Completed",
-    isHighlighted: true,
-  },
-  {
-    id: "4",
-    title: "Grammar: Inversion Structures",
-    description: "Advanced sentence transformation",
-    category: "grammar",
-    member: MEMBER_OPTIONS[3],
-    startDate: "2023-10-21",
-    dueDate: "2023-10-28",
-    dueStatusText: "Next Week",
-    dueStatusColorClass: "text-gray-700",
-    status: "In Progress",
-  },
-  {
-    id: "5",
-    title: "Idioms: Colloquial Expressions",
-    description: "Review unit 4 and 5 idiomatic structures",
-    category: "vocabulary",
-    member: MEMBER_OPTIONS[1],
-    startDate: "2023-10-23",
-    dueDate: "2023-10-30",
-    dueStatusText: "In 7 days",
-    dueStatusColorClass: "text-gray-700",
-    status: "Not Started",
-  },
-];
+const STATUS_FROM_API: Record<GroupTaskDto["status"], TaskStatus> = {
+  NOT_STARTED: "Not Started",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+};
+
+const CATEGORY_FROM_API: Record<GroupTaskDto["category"], CategoryType> = {
+  ESSAY: "essay",
+  PHONETICS: "phonetics",
+  VOCABULARY: "vocabulary",
+  GRAMMAR: "grammar",
+};
+
+function deadlinePresentation(dueAt: string, status: GroupTaskDto["status"]) {
+  if (status === "COMPLETED") {
+    return { text: "Completed", color: "text-emerald-800 font-bold" };
+  }
+  const days = Math.ceil((new Date(dueAt).getTime() - Date.now()) / 86_400_000);
+  if (days < 0) return { text: "Overdue", color: "text-red-700 font-bold" };
+  if (days === 0) return { text: "Due today", color: "text-red-700 font-medium" };
+  if (days === 1) return { text: "Tomorrow", color: "text-amber-700 font-medium" };
+  return { text: `In ${days} days`, color: "text-gray-700" };
+}
+
+function toAssignment(task: GroupTaskDto, members: Member[]): Assignment {
+  const due = deadlinePresentation(task.dueAt, task.status);
+  const member = members.find((item) => item.userId === task.assignedTo) ?? {
+    userId: task.assignedTo,
+    name: `User #${task.assignedTo}`,
+    initials: "U",
+  };
+  return {
+    id: String(task.id),
+    title: task.title,
+    description: task.description ?? "",
+    category: CATEGORY_FROM_API[task.category],
+    member,
+    startDate: task.startAt?.slice(0, 10),
+    dueDate: task.dueAt.slice(0, 10),
+    dueStatusText: due.text,
+    dueStatusColorClass: due.color,
+    status: STATUS_FROM_API[task.status],
+    isDisabled: task.isHidden,
+  };
+}
 
 // ==========================================
 // SVG ICONS
@@ -387,8 +376,13 @@ const StatusBadge: React.FC<{ status: TaskStatus }> = ({ status }) => {
 // ==========================================
 
 export const TaskAssignmentDashboard: React.FC = () => {
-  const [assignments, setAssignments] =
-    useState<Assignment[]>(INITIAL_ASSIGNMENTS);
+  const { groupId = "1" } = useParams();
+  const numericGroupId = Number(groupId);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [groupName, setGroupName] = useState("Study Group");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -402,12 +396,83 @@ export const TaskAssignmentDashboard: React.FC = () => {
 
   const ITEMS_PER_PAGE = 4;
 
+  const loadData = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const [memberDtos, taskDtos, groupDetail] = await Promise.all([
+        studyGroupApi.getMembers(numericGroupId),
+        studyGroupApi.getTasks(numericGroupId),
+        studyGroupApi.getGroup(numericGroupId),
+      ]);
+      const mappedMembers: Member[] = memberDtos.map((member) => ({
+        userId: member.userId,
+        name: member.name,
+        avatarUrl: member.avatar ?? undefined,
+        initials: member.name.slice(0, 2).toUpperCase(),
+      }));
+      setMembers(mappedMembers);
+      setAssignments(taskDtos.map((task) => toAssignment(task, mappedMembers)));
+      setGroupName(groupDetail.group.name);
+    } catch (requestError) {
+      setError(getApiErrorMessage(requestError, "Unable to load task assignments."));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (Number.isInteger(numericGroupId) && numericGroupId > 0) {
+      void loadData();
+    } else {
+      setError("Invalid study group ID.");
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [numericGroupId]);
+
+  const toPayload = (task: Partial<Assignment>): TaskPayload => ({
+    title: task.title?.trim() || "Untitled Task",
+    description: task.description?.trim() || undefined,
+    category: (task.category || "essay").toUpperCase() as TaskPayload["category"],
+    assignedTo: task.member?.userId ?? 0,
+    startAt: task.startDate ? `${task.startDate}T00:00:00.000Z` : undefined,
+    dueAt: `${task.dueDate}T23:59:59.000Z`,
+  });
+
   // Tính số lượng Active Tasks (Task không bị ẩn và chưa hoàn thành)
   const activeTasksCount = useMemo(() => {
     return assignments.filter(
       (item) => !item.isDisabled && item.status !== "Completed",
     ).length;
   }, [assignments]);
+
+  const completionPercent = assignments.length
+    ? Math.round(
+        (assignments.filter((item) => item.status === "Completed").length /
+          assignments.length) *
+          100,
+      )
+    : 0;
+
+  const upcomingTask = useMemo(
+    () =>
+      assignments
+        .filter((item) => item.status !== "Completed" && !item.isDisabled)
+        .sort(
+          (a, b) =>
+            new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
+        )[0],
+    [assignments],
+  );
+  const upcomingDays = upcomingTask
+    ? Math.max(
+        0,
+        Math.ceil(
+          (new Date(upcomingTask.dueDate).getTime() - Date.now()) / 86_400_000,
+        ),
+      )
+    : 0;
 
   // Phân trang giữ nguyên toàn bộ tasks (bao gồm cả task bị Hide)
   const totalPages = Math.ceil(assignments.length / ITEMS_PER_PAGE) || 1;
@@ -427,50 +492,64 @@ export const TaskAssignmentDashboard: React.FC = () => {
   };
 
   // Thêm mới Task
-  const handleCreateTask = (newTaskData: Partial<Assignment>) => {
-    const newTask: Assignment = {
-      id: Date.now().toString(),
-      title: newTaskData.title || "Untitled Task",
-      category: newTaskData.category || "essay",
-      description: newTaskData.description || "",
-      member: newTaskData.member || MEMBER_OPTIONS[0],
-      startDate: newTaskData.startDate,
-      dueDate: newTaskData.dueDate || "No Date",
-      dueStatusText: newTaskData.dueStatusText || "Upcoming",
-      dueStatusColorClass: newTaskData.dueStatusColorClass || "text-gray-700",
-      status: newTaskData.status || "Not Started",
-    };
-
-    setAssignments((prev) => [newTask, ...prev]);
-    setCurrentPage(1);
+  const handleCreateTask = async (newTaskData: Partial<Assignment>) => {
+    try {
+      await studyGroupApi.createTask(numericGroupId, toPayload(newTaskData));
+      setCurrentPage(1);
+      await loadData();
+    } catch (requestError) {
+      setError(getApiErrorMessage(requestError, "Unable to create the task."));
+    }
   };
 
   // Chỉnh sửa Task
-  const handleUpdateTask = (updatedData: Partial<Assignment>) => {
+  const handleUpdateTask = async (updatedData: Partial<Assignment>) => {
     if (!editingTask) return;
-    setAssignments((prev) =>
-      prev.map((task) =>
-        task.id === editingTask.id ? { ...task, ...updatedData } : task,
-      ),
-    );
+    try {
+      await studyGroupApi.updateTask(
+        numericGroupId,
+        Number(editingTask.id),
+        toPayload(updatedData),
+      );
+      setEditingTask(null);
+      await loadData();
+    } catch (requestError) {
+      setError(getApiErrorMessage(requestError, "Unable to update the task."));
+    }
   };
 
   // Xóa Task hoàn toàn
-  const handleDeleteTask = (id: string, e: React.MouseEvent) => {
+  const handleDeleteTask = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setAssignments((prev) => prev.filter((task) => task.id !== id));
-    setActiveMenuId(null);
+    try {
+      await studyGroupApi.deleteTask(numericGroupId, Number(id));
+      setAssignments((prev) => prev.filter((task) => task.id !== id));
+      setActiveMenuId(null);
+    } catch (requestError) {
+      setError(getApiErrorMessage(requestError, "Unable to delete the task."));
+    }
   };
 
   // YÊU CẦU 4: Ẩn/Hiện Task (Toggle Hide state mà không xóa khỏi bảng)
-  const handleToggleHideTask = (id: string, e: React.MouseEvent) => {
+  const handleToggleHideTask = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setAssignments((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, isDisabled: !task.isDisabled } : task,
-      ),
-    );
-    setActiveMenuId(null);
+    const task = assignments.find((item) => item.id === id);
+    if (!task) return;
+    try {
+      await studyGroupApi.setTaskVisibility(
+        numericGroupId,
+        Number(id),
+        !task.isDisabled,
+      );
+      setAssignments((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, isDisabled: !item.isDisabled } : item,
+        ),
+      );
+      setActiveMenuId(null);
+    } catch (requestError) {
+      setError(getApiErrorMessage(requestError, "Unable to change task visibility."));
+    }
   };
 
   return (
@@ -478,7 +557,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
       {/* Top Navigation */}
       <div>
         <button
-          onClick={() => navigate("/study-groups/workspace-leader/")}
+          onClick={() => navigate(`/study-groups/${groupId}/workspace-leader`)}
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-sky-700 hover:bg-slate-100 px-3 py-1.5 rounded-lg transition-colors -ml-3"
         >
           <ArrowLeftIcon className="w-4 h-4" />
@@ -494,7 +573,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
           <p className="text-lg font-normal leading-7 text-gray-700">
             Manage weekly deliverables for the{" "}
             <span className="text-sky-700 font-medium">
-              C1 Oxford Proficiency
+              {groupName}
             </span>{" "}
             group.
           </p>
@@ -509,6 +588,17 @@ export const TaskAssignmentDashboard: React.FC = () => {
           <span>Assign New Task</span>
         </button>
       </header>
+
+      {loading && (
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-gray-500">
+          Loading task assignments...
+        </div>
+      )}
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       {/* ---------------- SECTION 2: BENTO STATS GRID ---------------- */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -535,7 +625,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
           </span>
           <div className="pt-2">
             <span className="text-5xl font-bold text-amber-800 leading-tight">
-              05
+              00
             </span>
           </div>
         </div>
@@ -547,10 +637,13 @@ export const TaskAssignmentDashboard: React.FC = () => {
           <div className="pt-2 flex flex-col gap-2">
             <div className="flex justify-between items-center text-sm">
               <span className="font-semibold text-gray-900">Progress</span>
-              <span className="font-bold text-gray-900">78%</span>
+              <span className="font-bold text-gray-900">{completionPercent}%</span>
             </div>
             <div className="w-full h-2 bg-indigo-100 rounded-full overflow-hidden">
-              <div className="w-[78%] h-full bg-sky-700 rounded-full" />
+              <div
+                className="h-full bg-sky-700 rounded-full transition-all"
+                style={{ width: `${completionPercent}%` }}
+              />
             </div>
           </div>
         </div>
@@ -561,12 +654,12 @@ export const TaskAssignmentDashboard: React.FC = () => {
           </span>
           <div className="pt-2 flex flex-col gap-1">
             <p className="text-base font-normal leading-6">
-              Idiomatic Expressions
-              <br />
-              Quiz
+              {upcomingTask?.title || "No upcoming tasks"}
             </p>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-5xl font-bold leading-none">02</span>
+              <span className="text-5xl font-bold leading-none">
+                {String(upcomingDays).padStart(2, "0")}
+              </span>
               <span className="text-2xl font-semibold opacity-80">days</span>
             </div>
           </div>
@@ -818,12 +911,15 @@ export const TaskAssignmentDashboard: React.FC = () => {
         </footer>
       </section>
 
+      <ScheduleManager groupId={numericGroupId} />
+
       {/* ---------------- SECTION 4: MODALS ---------------- */}
       <TaskModal
         isOpen={isAssignModalOpen}
         onClose={() => setIsAssignModalOpen(false)}
         onSubmit={handleCreateTask}
         title="Assign New Task"
+        members={members}
       />
 
       <TaskModal
@@ -832,6 +928,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
         onSubmit={handleUpdateTask}
         initialData={editingTask}
         title="Task Details & Edit"
+        members={members}
       />
     </main>
   );

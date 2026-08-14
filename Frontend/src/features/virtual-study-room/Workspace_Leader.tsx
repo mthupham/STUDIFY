@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import ChangeRoleModal from "./Modal/ChangeRoleModal";
 import type { RoleType } from "./Modal/ChangeRoleModal";
 import BanMemberModal from "./Modal/BanMemberModal";
 import RemoveMemberModal from "./Modal/RemoveMemberModal";
 import { useGroupChat } from "./hooks/useGroupChat";
+import { studyGroupApi } from "./services/studyGroupApi";
 
 // ==========================================
 // 1. TYPES & INTERFACES
@@ -389,9 +390,10 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
 // ==========================================
 export const GroupDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { groupId = "1" } = useParams();
 
   // --- Sample Members Data ---
-  const [members] = useState<Member[]>([
+  const [members, setMembers] = useState<Member[]>([
     {
       id: "m1",
       name: "Sarah Chen",
@@ -434,9 +436,31 @@ export const GroupDashboard: React.FC = () => {
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [groupName, setGroupName] = useState("Study Group");
 
-  const inviteCode = "LP-B2-99";
-  const { messages, sendMessage, currentUserId } = useGroupChat(inviteCode);
+  const [inviteCode, setInviteCode] = useState("");
+  const { messages, sendMessage, currentUserId } = useGroupChat(groupId);
+
+  useEffect(() => {
+    Promise.all([
+      studyGroupApi.getGroup(Number(groupId)),
+      studyGroupApi.getMembers(Number(groupId)),
+    ]).then(([detail, groupMembers]) => {
+      setGroupName(detail.group.name);
+      setInviteCode(detail.group.code);
+      setMembers(groupMembers.map((member) => ({
+        id: String(member.userId),
+        name: member.name,
+        avatar: member.avatar || `https://placehold.co/80x80?text=${encodeURIComponent(member.name.slice(0, 2))}`,
+        level: "INTERMEDIATE",
+        email: member.email,
+        lessons: 0,
+        streak: 0,
+        score: 0,
+        role: member.role,
+      })));
+    }).catch(() => undefined);
+  }, [groupId]);
 
   // --- Handlers ---
   const handleSendMessage = () => {
@@ -495,7 +519,7 @@ export const GroupDashboard: React.FC = () => {
           </div>
           <div className="flex flex-col gap-0.5">
             <h2 className="!text-gray-900 !text-xl !font-semibold !leading-tight">
-              Advanced C1 Masterminds
+              {groupName}
             </h2>
             <div className="flex items-center gap-3">
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs font-mono font-medium rounded">
@@ -519,7 +543,7 @@ export const GroupDashboard: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() =>
-              navigate("/study-groups/workspace-leader/edit-group")
+              navigate(`/study-groups/${groupId}/workspace-leader/edit-group`)
             }
             className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-gray-700 font-medium text-sm rounded-xl transition-all flex items-center gap-2 shadow-sm"
           >
@@ -669,7 +693,7 @@ export const GroupDashboard: React.FC = () => {
           {/* Bento Quick Actions */}
           <div className="grid grid-cols-2 gap-3">
             <button 
-            onClick={() => navigate("/study-groups/workspace-leader/task-assignment")} 
+            onClick={() => navigate(`/study-groups/${groupId}/workspace-leader/task-assignment`)}
             className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
@@ -695,7 +719,7 @@ export const GroupDashboard: React.FC = () => {
             </button>
 
             <button 
-            onClick={() => navigate("/study-groups/workspace-leader/repository")} 
+            onClick={() => navigate(`/study-groups/${groupId}/workspace-leader/repository`)}
             className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+const API_BASE = import.meta.env.VITE_API_URL ?? ' https://4885-27-74-254-72.ngrok-free.app';
 const TEMP_GROUP_ID = 'LP-B2-99';
 
 export interface GroupChatSender {

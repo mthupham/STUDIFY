@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGroupChat } from "./hooks/useGroupChat";
+import { useParams } from "react-router-dom";
+import MemberAssignmentWidgets from "./components/MemberAssignmentWidgets";
+import { studyGroupApi } from "./services/studyGroupApi";
 
 // --- Types ---
 interface FileItem {
@@ -29,13 +32,25 @@ interface Message {
 }
 
 export const BusinessEnglishHub: React.FC = () => {
+  const { groupId = "1" } = useParams();
+  const numericGroupId = Number(groupId);
   // --- States ---
   const [inputMessage, setInputMessage] = useState("");
   const [copiedCode, setCopiedCode] = useState(false);
   const [showAllMembers, setShowAllMembers] = useState(false);
+  const [groupName, setGroupName] = useState("Study Group");
+  const [inviteCode, setInviteCode] = useState("");
+  const [membersCount, setMembersCount] = useState(0);
 
-  const inviteCode = "LP-B2-99";
-  const { messages, sendMessage, currentUserId } = useGroupChat(inviteCode);
+  const { messages, sendMessage, currentUserId } = useGroupChat(groupId);
+
+  useEffect(() => {
+    studyGroupApi.getGroup(numericGroupId).then(({ group }) => {
+      setGroupName(group.name);
+      setInviteCode(group.code);
+      setMembersCount(group.membersCount);
+    }).catch(() => undefined);
+  }, [numericGroupId]);
 
   // --- Handlers ---
   const handleSendMessage = () => {
@@ -64,7 +79,7 @@ export const BusinessEnglishHub: React.FC = () => {
           </div>
           <div className="flex flex-col gap-0.5">
             <h2 className="text-gray-900 text-xl font-semibold leading-tight">
-              B2 Business English Hub
+              {groupName}
             </h2>
             <div className="flex items-center gap-3">
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs font-mono font-medium rounded">
@@ -78,7 +93,7 @@ export const BusinessEnglishHub: React.FC = () => {
                 >
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                 </svg>
-                <span>8 / 10 Members</span>
+                <span>{membersCount} Members</span>
               </div>
             </div>
           </div>
@@ -230,6 +245,7 @@ export const BusinessEnglishHub: React.FC = () => {
 
         {/* ---------------- RIGHT SIDEBAR ---------------- */}
         <aside className="w-80 bg-slate-50 border-l border-slate-200 flex flex-col shrink-0 overflow-y-auto gap-6 p-6">
+          <MemberAssignmentWidgets groupId={numericGroupId} />
           {/* Invite Code Section */}
           <div className="border-slate-200 flex flex-col gap-3">
             <h3 className="text-gray-500 text-xs font-semibold uppercase tracking-wider">

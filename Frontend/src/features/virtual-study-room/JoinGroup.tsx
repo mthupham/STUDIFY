@@ -68,8 +68,14 @@ export default function JoinGroupPage() {
     );
     setMessageType("success");
 
+    const joinedGroup = response.data?.data?.group;
+
     setTimeout(() => {
-      navigate("/study-groups");
+      navigate(
+        joinedGroup?.id
+          ? `/study-groups/${joinedGroup.id}/workspace-member`
+          : "/study-groups",
+      );
     }, 1000);
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

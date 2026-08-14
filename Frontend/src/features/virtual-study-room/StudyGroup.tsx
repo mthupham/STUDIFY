@@ -1,5 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  getApiErrorMessage,
+  studyGroupApi,
+  type StudyGroupSummary,
+} from "./services/studyGroupApi";
 
 // ==========================================
 // DỮ LIỆU MẪU (MOCK DATA)
@@ -79,6 +84,32 @@ const UPCOMING_MEETUPS = [
 // ==========================================
 
 export default function StudyGroupHub() {
+  const [groups, setGroups] = useState<StudyGroupSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    studyGroupApi
+      .getMyGroups()
+      .then((items) => {
+        if (!cancelled) setGroups(items);
+      })
+      .catch((requestError) => {
+        if (!cancelled) {
+          setError(getApiErrorMessage(requestError, "Unable to load your study groups."));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="max-w-6xl mx-auto p-6 md:p-8 space-y-8 font-['Inter'] text-gray-900">
       {/* 1. HEADER SECTION */}
@@ -88,7 +119,22 @@ export default function StudyGroupHub() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cột trái: Danh sách nhóm học */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {GROUPS_DATA.map((group) => (
+          {loading && (
+            <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-8 text-sm text-gray-500">
+              Loading your study groups...
+            </div>
+          )}
+          {error && (
+            <div className="sm:col-span-2 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+          {!loading && !error && groups.length === 0 && (
+            <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-8 text-sm text-gray-500">
+              You have not joined a study group yet.
+            </div>
+          )}
+          {groups.map((group) => (
             <GroupCard key={group.id} group={group} />
           ))}
 
@@ -172,14 +218,19 @@ function HeaderSection() {
 /**
  * Card hiển thị thông tin chi tiết từng nhóm học
  */
-function GroupCard({ group }: { group: (typeof GROUPS_DATA)[0] }) {
+function GroupCard({ group }: { group: StudyGroupSummary }) {
     const navigate = useNavigate();
-  const extraMembers = group.membersCount - group.avatars.length;
 
   return (
     <button
   type="button"
-  onClick={() => navigate(`/study-groups/workspace-member`)}
+  onClick={() =>
+    navigate(
+      group.role === "LEADER"
+        ? `/study-groups/${group.id}/workspace-leader`
+        : `/study-groups/${group.id}/workspace-member`,
+    )
+  }
   className="
     w-full
     text-left
@@ -204,7 +255,7 @@ function GroupCard({ group }: { group: (typeof GROUPS_DATA)[0] }) {
         {/* Header card: Icon + Badge cấp độ */}
         <div className="flex justify-between items-start">
           <div
-            className={`w-14 h-14 ${group.iconBg} rounded-2xl flex items-center justify-center`}
+            className="w-14 h-14 bg-blue-100 text-sky-700 rounded-2xl flex items-center justify-center"
           >
             {/* Book/Group Icon Placeholder */}
             <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24">
@@ -212,16 +263,20 @@ function GroupCard({ group }: { group: (typeof GROUPS_DATA)[0] }) {
             </svg>
           </div>
           <span
-            className={`px-3 py-1 rounded-full text-xs font-bold ${group.levelColor}`}
+            className={`px-3 py-1 rounded-full text-xs font-bold ${
+              group.role === "LEADER"
+                ? "bg-blue-100 text-sky-700"
+                : "bg-emerald-100 text-emerald-700"
+            }`}
           >
-            {group.level}
+            {group.role}
           </span>
         </div>
 
         {/* Tiêu đề & Mô tả */}
-        <h3 className="text-lg font-bold text-gray-900 mt-4">{group.title}</h3>
+        <h3 className="text-lg font-bold text-gray-900 mt-4">{group.name}</h3>
         <p className="text-sm font-normal text-gray-600 mt-1 line-clamp-2 leading-relaxed">
-          {group.description}
+          Group code: <span className="font-mono font-semibold">{group.code}</span>
         </p>
       </div>
 
@@ -229,25 +284,15 @@ function GroupCard({ group }: { group: (typeof GROUPS_DATA)[0] }) {
       <div className="flex items-center justify-between pt-2 border-t border-slate-200/40">
         {/* Thành viên (Avatar Stack) */}
         <div className="flex items-center -space-x-2">
-          {group.avatars.map((imgUrl, idx) => (
-            <img
-              key={idx}
-              src={imgUrl}
-              alt="Member Avatar"
-              className="w-8 h-8 rounded-full border-2 border-slate-50 object-cover"
-            />
-          ))}
-          {extraMembers > 0 && (
-            <div className="w-8 h-8 rounded-full border-2 border-slate-50 bg-slate-200 flex items-center justify-center text-[10px] font-bold text-gray-800">
-              +{extraMembers}
-            </div>
-          )}
+          <div className="w-8 h-8 rounded-full border-2 border-slate-50 bg-slate-200 flex items-center justify-center text-[10px] font-bold text-gray-800">
+            {group.membersCount}
+          </div>
         </div>
 
         {/* Trạng thái nhóm */}
         <div className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
-          <StatusIcon type={group.statusType} />
-          <span>{group.status}</span>
+          <StatusIcon type="active" />
+          <span>{group.membersCount} member{group.membersCount === 1 ? "" : "s"}</span>
         </div>
       </div>
     </button>
