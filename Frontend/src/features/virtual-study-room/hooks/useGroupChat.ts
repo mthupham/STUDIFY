@@ -36,6 +36,7 @@ export function useGroupChat(groupId = TEMP_GROUP_ID) {
       .get<GroupChatMessage[]>(`${API_BASE}/chat/group/${groupId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true',
         },
       })
       
@@ -54,7 +55,11 @@ export function useGroupChat(groupId = TEMP_GROUP_ID) {
   }, [groupId, token]);
 
   useEffect(() => {
-    const socket = io(`${API_BASE}/chat`);
+    const socket = io(`${API_BASE}/chat`, {
+      // Start with WebSocket so ngrok does not intercept Socket.IO's HTTP
+      // polling handshake with its free-tier browser warning page.
+      transports: ['websocket', 'polling'],
+    });
     socketRef.current = socket;
 
     socket.on('connect', () => {
