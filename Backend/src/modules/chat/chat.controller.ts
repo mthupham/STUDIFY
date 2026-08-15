@@ -48,3 +48,4 @@ export class ChatController {
     return this.chatService.remove(+id);
   }
 }
+

@@ -36,6 +36,9 @@ import VoiceLearningDashboard from "./features/ai-speaking/AISpeakingDashboard.t
 import ChatTestLobby from "./features/virtual-study-room/ChatTestLobby.tsx";
 
 
+import GoogleSucessPage from "./features/auth/components/GoogleSucessPage.tsx";
+
+
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
   const user = useAuthStore((state) => state.user);
@@ -66,6 +69,7 @@ function App() {
           }
         />
 
+        <Route path="/auth/google/success" element={<GoogleSucessPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />
