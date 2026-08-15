@@ -24,6 +24,8 @@ import { Flashcard } from '../models/flashcard.model';
 import { Notification } from '../models/notification.model';
 import { GroupTask } from '../models/group_task.model';
 import { GroupSchedule } from '../models/group_schedule.model';
+import { RepositoryFile } from '../models/repository_file.model';
+
 export const sequelizeConfig = (
   configService: ConfigService,
 ): SequelizeModuleOptions => ({
@@ -62,6 +64,7 @@ export const sequelizeConfig = (
     Notification,
     GroupTask,
     GroupSchedule,
+    RepositoryFile,
   ],
   autoLoadModels: true,
   synchronize: true,

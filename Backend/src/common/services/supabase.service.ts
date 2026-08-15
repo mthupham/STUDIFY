@@ -10,11 +10,23 @@ export class SupabaseService {
     const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
     const supabaseKey = this.configService.get<string>('SUPABASE_KEY');
 
+    console.log('SUPABASE_KEY exists:', !!supabaseKey);
+    console.log(
+      'SUPABASE_KEY type:',
+      supabaseKey?.startsWith('sb_secret_')
+        ? 'SECRET'
+        : supabaseKey?.startsWith('sb_publishable_')
+          ? 'PUBLISHABLE'
+          : 'UNKNOWN',
+    );
+
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('Supabase credentials not configured');
     }
 
     this.supabase = createClient(supabaseUrl, supabaseKey);
+    console.log('Supabase URL:', supabaseUrl);
+    console.log('Supabase key prefix:', supabaseKey.substring(0, 15));
   }
 
   /**
@@ -76,16 +88,17 @@ export class SupabaseService {
     error?: string;
   }> {
     try {
-      const uploadedFiles: Array<{ name: string; path: string; url: string }> = [];
+      const uploadedFiles: Array<{ name: string; path: string; url: string }> =
+        [];
 
       for (const file of files) {
         const result = await this.uploadFile(file, bucketName, path);
-        
+
         if (!result.success) {
           // Immediately return the error so the controller can throw it
-          return { 
-            success: false, 
-            error: result.error || `Failed to upload: ${file.originalname}` 
+          return {
+            success: false,
+            error: result.error || `Failed to upload: ${file.originalname}`,
           };
         }
 
@@ -129,7 +142,10 @@ export class SupabaseService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Download URL generation failed',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Download URL generation failed',
       };
     }
   }
@@ -178,11 +194,40 @@ export class SupabaseService {
     path: string,
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const { error } = await this.supabase.storage
+      // Delete from Supabase Storage
+      const { error: storageError } = await this.supabase.storage
         .from(bucketName)
         .remove([path]);
 
-      if (error) return { success: false, error: error.message };
+      if (storageError) {
+        return {
+          success: false,
+          error: storageError.message,
+        };
+      }
+
+      // Extract original stored filename
+      const storedFileName = path.split('/').pop();
+
+      if (storedFileName) {
+        // Storage filename: 1786775305270-feature1_updated (1).txt
+        // Metadata filename: feature1_updated (1).txt
+        const originalFileName = storedFileName.replace(/^\d+-/, '');
+
+        const { error: metadataError } = await this.supabase
+          .from('file_metadata')
+          .delete()
+          .eq('file_name', originalFileName);
+
+        if (metadataError) {
+          console.error('Delete File Metadata Error:', metadataError);
+
+          return {
+            success: false,
+            error: metadataError.message,
+          };
+        }
+      }
 
       return { success: true };
     } catch (error) {
@@ -202,17 +247,20 @@ export class SupabaseService {
     uploadedBy: string,
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const { error } = await this.supabase
-        .from('file_metadata')
-        .upsert(
-          {
-            file_name: fileName,
-            group_id: groupId,
-            uploaded_by: uploadedBy,
-            uploaded_at: new Date().toISOString(),
-          },
-          { onConflict: 'file_name' },
-        );
+      console.log('Saving metadata:', {
+        fileName,
+        groupId,
+        uploadedBy,
+      });
+      const { error } = await this.supabase.from('file_metadata').upsert(
+        {
+          file_name: fileName,
+          group_id: groupId,
+          uploaded_by: uploadedBy,
+          uploaded_at: new Date().toISOString(),
+        },
+        { onConflict: 'file_name' },
+      );
 
       if (error) throw error;
       return { success: true };
@@ -220,7 +268,8 @@ export class SupabaseService {
       console.error('Save File Metadata Error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to save metadata',
+        error:
+          error instanceof Error ? error.message : 'Failed to save metadata',
       };
     }
   }
@@ -237,7 +286,10 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      const metadataMap: Record<string, { uploadedBy: string; uploadedAt: string }> = {};
+      const metadataMap: Record<
+        string,
+        { uploadedBy: string; uploadedAt: string }
+      > = {};
       (data || []).forEach((item) => {
         metadataMap[item.file_name] = {
           uploadedBy: item.uploaded_by,
@@ -259,7 +311,10 @@ export class SupabaseService {
     try {
       const { data, error } = await this.supabase.storage
         .from(bucketName)
-        .list(path, { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
+        .list(path, {
+          limit: 100,
+          sortBy: { column: 'created_at', order: 'desc' },
+        });
 
       if (error) throw error;
 

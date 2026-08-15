@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ChangeRoleModal from "./Modal/ChangeRoleModal";
 import type { RoleType } from "./Modal/ChangeRoleModal";
@@ -9,6 +9,7 @@ import { useAuthStore } from "../auth/store/useAuthStore";
 import { changeMemberRole, removeMember } from "./services/groupService";
 import type { StudyGroup, GroupMember } from "./services/groupService";
 import { studyGroupApi } from "./services/studyGroupApi";
+import { ALL_ICONS } from "./components/groupIcons";
 
 // ==========================================
 // 1. TYPES & INTERFACES
@@ -27,7 +28,7 @@ interface Member {
 
 interface GroupDashboardProps {
   groupId: number;
-  groupData: StudyGroup;
+  groupData: StudyGroup & { image?: string; icon?: string };
   onGroupUpdated: () => void;
 }
 
@@ -107,7 +108,6 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
     transform
     transition-transform
     duration-500
-    ease-[cubic-bezier(0.22,1,0.36,1)]
     ease-out
     ${isOpen ? "translate-x-0" : "translate-x-full"}
   `}
@@ -443,6 +443,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { token } = useAuthStore();
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [members, setMembers] = useState<Member[]>(() =>
     (groupData.members ?? []).map((m: GroupMember) => ({
@@ -450,7 +451,9 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
       name: m.user?.name ?? `User #${m.userId}`,
       avatar:
         m.user?.avatar ??
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(m.user?.name ?? "U")}&background=random`,
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(
+          m.user?.name ?? "U",
+        )}&background=random`,
       email: m.user?.email ?? "",
       level: "INTERMEDIATE" as const,
       lessons: 0,
@@ -464,39 +467,103 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
-  const [groupName, setGroupName] = useState("Study Group");
+
+  // State khởi tạo từ groupData
+  const [groupName, setGroupName] = useState(groupData?.name || "Study Group");
+  const [groupAvatar, setGroupAvatar] = useState<string>(
+    groupData?.icon || groupData?.image || "",
+  );
   const [inviteCode, setInviteCode] = useState(groupData.code ?? "");
 
   const { messages, sendMessage, currentUserId } = useGroupChat(
     String(groupId),
   );
 
+  // Sync dữ liệu và kết nối API
   useEffect(() => {
+    let isMounted = true;
+
     Promise.all([
       studyGroupApi.getGroup(Number(groupId)),
       studyGroupApi.getMembers(Number(groupId)),
     ])
       .then(([detail, groupMembers]) => {
-        setGroupName(detail.group.name);
-        setInviteCode(detail.group.code);
-        setMembers(
-          groupMembers.map((member) => ({
-            id: String(member.userId),
-            name: member.name,
-            avatar:
-              member.avatar ||
-              `https://placehold.co/80x80?text=${encodeURIComponent(member.name.slice(0, 2))}`,
-            level: "INTERMEDIATE",
-            email: member.email,
-            lessons: 0,
-            streak: 0,
-            score: 0,
-            role: member.role,
-          })),
-        );
+        if (!isMounted) return;
+
+        if (detail?.group) {
+          setGroupName(detail.group.name || groupData?.name || "Study Group");
+          setGroupAvatar(detail.group.icon || groupData?.icon || "");
+          setInviteCode(detail.group.code || groupData?.code || "");
+        }
+        if (groupMembers) {
+          setMembers(
+            groupMembers.map((member) => ({
+              id: String(member.userId),
+              name: member.name,
+              avatar:
+                member.avatar ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                  member.name,
+                )}&background=random`,
+              level: "INTERMEDIATE",
+              email: member.email,
+              lessons: 0,
+              streak: 0,
+              score: 0,
+              role: member.role,
+            })),
+          );
+        }
       })
-      .catch(() => undefined);
-  }, [groupId]);
+      .catch((err) => {
+        if (isMounted) console.error("Error loading group details:", err);
+      });
+
+    return () => {
+      isMounted = false;
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, [groupId, groupData]);
+
+  // --- Hàm render Icon linh hoạt (Hiển thị URL ảnh hoặc Icon SVG) ---
+  const renderGroupHeaderIcon = () => {
+    if (!groupAvatar) {
+      return (
+        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+        </svg>
+      );
+    }
+
+    // Kiểm tra xem groupAvatar có phải là URL ảnh (http/https/data) hay không
+    const isUrl =
+      groupAvatar.startsWith("http://") ||
+      groupAvatar.startsWith("https://") ||
+      groupAvatar.startsWith("data:");
+
+    if (isUrl) {
+      return (
+        <img
+          src={groupAvatar}
+          alt={groupName}
+          className="w-full h-full object-cover"
+        />
+      );
+    }
+
+    // Trường hợp groupAvatar là Icon ID từ ALL_ICONS (vd: "chat", "book", "globe")
+    const matchedIcon = ALL_ICONS.find((item) => item.id === groupAvatar);
+    if (matchedIcon) {
+      return matchedIcon.icon("w-6 h-6");
+    }
+
+    // Fallback Icon mặc định nếu không khớp ID nào
+    return (
+      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+      </svg>
+    );
+  };
 
   // --- Handlers ---
   const handleSendMessage = () => {
@@ -509,7 +576,8 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
   const handleCopyCode = () => {
     navigator.clipboard.writeText(inviteCode || groupData.code);
     setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => setCopiedCode(false), 2000);
   };
 
   const handleSelectMember = (member: Member) => {
@@ -546,10 +614,9 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
       {/* ---------------- GROUP HEADER ---------------- */}
       <header className="w-full px-8 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-blue-600 rounded-xl flex justify-center items-center text-white shadow-md shadow-blue-500/20">
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-            </svg>
+          {/* Hiển thị Icon / Avatar linh hoạt */}
+          <div className="w-12 h-12 bg-blue-600 rounded-xl flex justify-center items-center text-white shadow-md shadow-blue-500/20 overflow-hidden shrink-0">
+            {renderGroupHeaderIcon()}
           </div>
           <div className="flex flex-col gap-0.5">
             <h2 className="!text-gray-900 !text-xl !font-semibold !leading-tight">
@@ -567,7 +634,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
                 >
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                 </svg>
-                <span>{members.length} / 5 Members</span>
+                <span>{members.length} Members</span>
               </div>
             </div>
           </div>
@@ -615,7 +682,12 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
             {messages.map((msg) => (
               <div key={msg.id} className="flex items-start gap-3.5 group">
                 <img
-                  src={msg.sender?.avatar || "https://via.placeholder.com/40"}
+                  src={
+                    msg.sender?.avatar ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      msg.sender?.name || "U",
+                    )}&background=random`
+                  }
                   alt={msg.sender?.name || "Member avatar"}
                   className="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-100 shadow-sm"
                 />
@@ -761,9 +833,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
 
             <button
               onClick={() =>
-                navigate(
-                  `/study-groups/${groupId}/workspace-leader/repository`,
-                )
+                navigate(`/study-groups/${groupId}/workspace-leader/repository`)
               }
               className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group"
             >
@@ -813,7 +883,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
                 </h3>
               </div>
               <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[11px] font-mono font-semibold rounded-full">
-                {members.length}/5 Seats
+                {members.length} Members
               </span>
             </div>
 

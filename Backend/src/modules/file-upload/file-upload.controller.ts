@@ -10,10 +10,12 @@ import {
   Get,
   Req,
   Res,
+  Delete,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { SupabaseService } from '../../common/services/supabase.service';
 import { memoryStorage } from 'multer';
 import type { Request } from 'express';
@@ -34,11 +36,26 @@ export class FileUploadController {
    * POST /api/files/upload/:groupId
    */
   @Post('upload/:groupId')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    },
+  })
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       storage: memoryStorage(),
-      limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit moved here
+      limits: { fileSize: 2 * 1024 * 1024 },
       fileFilter: (req, file, cb) => {
         const allowedMimes = [
           // Images
@@ -98,17 +115,57 @@ export class FileUploadController {
 
         const allowedExtensions = [
           // Images
-          '.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.ico',
+          '.jpg',
+          '.jpeg',
+          '.png',
+          '.gif',
+          '.webp',
+          '.svg',
+          '.bmp',
+          '.ico',
           // Documents
-          '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.csv', '.md', '.rtf',
+          '.pdf',
+          '.doc',
+          '.docx',
+          '.xls',
+          '.xlsx',
+          '.ppt',
+          '.pptx',
+          '.txt',
+          '.csv',
+          '.md',
+          '.rtf',
           // Video
-          '.mp4', '.webm', '.mov', '.avi', '.mkv',
+          '.mp4',
+          '.webm',
+          '.mov',
+          '.avi',
+          '.mkv',
           // Audio
-          '.mp3', '.wav', '.ogg', '.m4a', '.aac',
+          '.mp3',
+          '.wav',
+          '.ogg',
+          '.m4a',
+          '.aac',
           // Archives
-          '.zip', '.rar', '.7z', '.tar', '.gz',
+          '.zip',
+          '.rar',
+          '.7z',
+          '.tar',
+          '.gz',
           // Code & Data
-          '.json', '.xml', '.js', '.html', '.css', '.py', '.java', '.c', '.cpp', '.rb', '.php', '.sh',
+          '.json',
+          '.xml',
+          '.js',
+          '.html',
+          '.css',
+          '.py',
+          '.java',
+          '.c',
+          '.cpp',
+          '.rb',
+          '.php',
+          '.sh',
         ];
 
         // Some browsers report inconsistent MIME types for Office files
@@ -152,11 +209,7 @@ export class FileUploadController {
     // Save uploader metadata for each uploaded file
     const uploadedFiles = result.files ?? [];
     for (const file of uploadedFiles) {
-      await this.supabaseService.saveFileMetadata(
-        file.name,
-        groupId,
-        username,
-      );
+      await this.supabaseService.saveFileMetadata(file.name, groupId, username);
     }
 
     return {
@@ -182,7 +235,10 @@ export class FileUploadController {
     @Param('fileName') fileName: string,
   ) {
     const path = `groups/${groupId}/files/${fileName}`;
-    const result = await this.supabaseService.getDownloadUrl(this.bucketName, path);
+    const result = await this.supabaseService.getDownloadUrl(
+      this.bucketName,
+      path,
+    );
 
     if (!result.success) {
       throw new BadRequestException(
@@ -210,12 +266,13 @@ export class FileUploadController {
     const decodedFileName = decodeURIComponent(fileName);
     const path = `groups/${groupId}/files/${decodedFileName}`;
 
-    const result = await this.supabaseService.downloadFile(this.bucketName, path);
+    const result = await this.supabaseService.downloadFile(
+      this.bucketName,
+      path,
+    );
 
     if (!result.success || !result.data) {
-      throw new BadRequestException(
-        result.error || 'Failed to download file',
-      );
+      throw new BadRequestException(result.error || 'Failed to download file');
     }
 
     // Clean original name (strip timestamp prefix like "1723680000-")
@@ -277,7 +334,8 @@ export class FileUploadController {
       sh: 'text/x-sh',
     };
 
-    const contentType = result.contentType || mimeMap[ext] || 'application/octet-stream';
+    const contentType =
+      result.contentType || mimeMap[ext] || 'application/octet-stream';
 
     res.setHeader('Content-Type', contentType);
     // Explicitly set Attachment with clean filename
@@ -309,22 +367,26 @@ export class FileUploadController {
     };
   }
 
-  /**
-   * List all files in the root of 'Uploads' bucket
-   * GET /api/files/list
-   */
-  @Get('list')
+  @Delete(':groupId/:fileName')
   @HttpCode(HttpStatus.OK)
-  async listAllFiles() {
-    const result = await this.supabaseService.listFiles(this.bucketName, '');
+  async deleteFile(
+    @Param('groupId') groupId: string,
+    @Param('fileName') fileName: string,
+  ) {
+    const decodedFileName = decodeURIComponent(fileName);
+
+    const path = `groups/${groupId}/files/${decodedFileName}`;
+
+    const result = await this.supabaseService.deleteFile(this.bucketName, path);
 
     if (!result.success) {
-      return { success: false, files: [] };
+      throw new BadRequestException(result.error || 'Failed to delete file');
     }
 
     return {
       success: true,
-      files: result.files,
+      message: 'File deleted successfully',
+      fileName: decodedFileName,
     };
   }
 }
