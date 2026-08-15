@@ -59,6 +59,9 @@ export function useGroupChat(groupId = TEMP_GROUP_ID) {
       // Start with WebSocket so ngrok does not intercept Socket.IO's HTTP
       // polling handshake with its free-tier browser warning page.
       transports: ['websocket', 'polling'],
+      auth: {
+        token,
+      },
     });
     socketRef.current = socket;
 
