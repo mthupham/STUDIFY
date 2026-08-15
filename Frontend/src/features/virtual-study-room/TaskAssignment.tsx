@@ -25,6 +25,12 @@ const STATUS_FROM_API: Record<GroupTaskDto["status"], TaskStatus> = {
   COMPLETED: "Completed",
 };
 
+const STATUS_TO_API: Record<TaskStatus, GroupTaskDto["status"]> = {
+  "Not Started": "NOT_STARTED",
+  "In Progress": "IN_PROGRESS",
+  Completed: "COMPLETED",
+};
+
 const CATEGORY_FROM_API: Record<GroupTaskDto["category"], CategoryType> = {
   ESSAY: "essay",
   PHONETICS: "phonetics",
@@ -407,14 +413,28 @@ export const TaskAssignmentDashboard: React.FC = () => {
     setLoading(true);
     setError("");
     try {
+      const loadResource = async <T,>(
+        label: string,
+        request: Promise<T>,
+      ): Promise<T> => {
+        try {
+          return await request;
+        } catch (requestError) {
+          throw new Error(
+            getApiErrorMessage(requestError, `Unable to load ${label}.`),
+          );
+        }
+      };
+
       const [memberDtos, taskDtos, groupDetail] = await Promise.all([
-        studyGroupApi.getMembers(numericGroupId),
-        studyGroupApi.getTasks(numericGroupId),
-        studyGroupApi.getGroup(numericGroupId),
+        loadResource("group members", studyGroupApi.getMembers(numericGroupId)),
+        loadResource("task assignments", studyGroupApi.getTasks(numericGroupId)),
+        loadResource("study group details", studyGroupApi.getGroup(numericGroupId)),
       ]);
       const mappedMembers: Member[] = memberDtos.map((member) => ({
         userId: member.userId,
         name: member.name,
+        role: member.role,
         avatarUrl: member.avatar ?? undefined,
         initials: member.name.slice(0, 2).toUpperCase(),
       }));
@@ -423,7 +443,9 @@ export const TaskAssignmentDashboard: React.FC = () => {
       setGroupName(groupDetail.group.name);
     } catch (requestError) {
       setError(
-        getApiErrorMessage(requestError, "Unable to load task assignments."),
+        requestError instanceof Error
+          ? requestError.message
+          : "Unable to load task assignments.",
       );
     } finally {
       setLoading(false);
@@ -520,7 +542,10 @@ export const TaskAssignmentDashboard: React.FC = () => {
       await studyGroupApi.updateTask(
         numericGroupId,
         Number(editingTask.id),
-        toPayload(updatedData),
+        {
+          ...toPayload(updatedData),
+          status: STATUS_TO_API[updatedData.status ?? editingTask.status],
+        },
       );
       setEditingTask(null);
       await loadData();
@@ -595,7 +620,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
           className="px-5 py-3 bg-sky-700 hover:bg-sky-800 text-white text-base font-medium rounded-xl flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
         >
           <PlusIcon className="w-5 h-5 text-white" />
-          <span>Assign New Task</span>
+          <span>Create New Task</span>
         </button>
       </header>
 
@@ -710,7 +735,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
                   Task Title
                 </th>
                 <th scope="col" className="px-6 py-4">
-                  Assigned Member
+                  Task Owner
                 </th>
                 <th scope="col" className="px-6 py-4">
                   Due Date
@@ -930,7 +955,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
         isOpen={isAssignModalOpen}
         onClose={() => setIsAssignModalOpen(false)}
         onSubmit={handleCreateTask}
-        title="Assign New Task"
+        title="Create New Task"
         members={members}
       />
 
