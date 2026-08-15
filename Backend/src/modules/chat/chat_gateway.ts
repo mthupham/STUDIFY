@@ -1,11 +1,13 @@
 import {
+  OnGatewayInit,
   ConnectedSocket,
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { JwtService } from '@nestjs/jwt';
+import { Namespace, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 
 @WebSocketGateway({
@@ -15,11 +17,37 @@ import { ChatService } from './chat.service';
   },
 })
 
-export class ChatGateway {
+export class ChatGateway implements OnGatewayInit {
     @WebSocketServer()
     server;
 
-    constructor(private readonly chatService: ChatService) {}
+    constructor(
+      private readonly chatService: ChatService,
+      private readonly jwtService: JwtService,
+    ) {}
+
+    afterInit(server: Namespace) {
+      server.use(async (client, next) => {
+        const handshakeToken = client.handshake.auth?.token;
+        const authorization = client.handshake.headers.authorization;
+        const bearerToken = authorization?.startsWith('Bearer ')
+          ? authorization.slice(7)
+          : undefined;
+        const token = handshakeToken || bearerToken;
+
+        if (!token || typeof token !== 'string') {
+          next(new Error('Unauthorized'));
+          return;
+        }
+
+        try {
+          client.data.user = await this.jwtService.verifyAsync(token);
+          next();
+        } catch {
+          next(new Error('Unauthorized'));
+        }
+      });
+    }
 
     @SubscribeMessage('joinGroup')
     handleJoinGroup(
