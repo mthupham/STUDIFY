@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import ChangeRoleModal from "./Modal/ChangeRoleModal";
 import type { RoleType } from "./Modal/ChangeRoleModal";
 import BanMemberModal from "./Modal/BanMemberModal";
@@ -8,6 +8,7 @@ import { useGroupChat } from "./hooks/useGroupChat";
 import { useAuthStore } from "../auth/store/useAuthStore";
 import { changeMemberRole, removeMember } from "./services/groupService";
 import type { StudyGroup, GroupMember } from "./services/groupService";
+import { studyGroupApi } from "./services/studyGroupApi";
 
 // ==========================================
 // 1. TYPES & INTERFACES
@@ -450,8 +451,31 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [groupName, setGroupName] = useState("Study Group");
 
-  const { messages, sendMessage, currentUserId } = useGroupChat(String(groupId));
+  const [inviteCode, setInviteCode] = useState("");
+  const { messages, sendMessage, currentUserId } = useGroupChat(groupId);
+
+  useEffect(() => {
+    Promise.all([
+      studyGroupApi.getGroup(Number(groupId)),
+      studyGroupApi.getMembers(Number(groupId)),
+    ]).then(([detail, groupMembers]) => {
+      setGroupName(detail.group.name);
+      setInviteCode(detail.group.code);
+      setMembers(groupMembers.map((member) => ({
+        id: String(member.userId),
+        name: member.name,
+        avatar: member.avatar || `https://placehold.co/80x80?text=${encodeURIComponent(member.name.slice(0, 2))}`,
+        level: "INTERMEDIATE",
+        email: member.email,
+        lessons: 0,
+        streak: 0,
+        score: 0,
+        role: member.role,
+      })));
+    }).catch(() => undefined);
+  }, [groupId]);
 
   // --- Handlers ---
   const handleSendMessage = () => {
@@ -510,7 +534,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
           </div>
           <div className="flex flex-col gap-0.5">
             <h2 className="!text-gray-900 !text-xl !font-semibold !leading-tight">
-              {groupData.name}
+              {groupName}
             </h2>
             <div className="flex items-center gap-3">
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs font-mono font-medium rounded">
@@ -534,7 +558,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() =>
-              navigate(`/study-groups/${groupId}/edit`)
+              navigate(`/study-groups/${groupId}/workspace-leader/edit-group`)
             }
             className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-gray-700 font-medium text-sm rounded-xl transition-all flex items-center gap-2 shadow-sm"
           >
@@ -684,7 +708,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
           {/* Bento Quick Actions */}
           <div className="grid grid-cols-2 gap-3">
             <button 
-            onClick={() => navigate(`/study-groups/${groupId}/tasks`)} 
+            onClick={() => navigate(`/study-groups/${groupId}/workspace-leader/task-assignment`)}
             className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
@@ -710,7 +734,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
             </button>
 
             <button 
-            onClick={() => navigate(`/study-groups/${groupId}/repository`)} 
+            onClick={() => navigate(`/study-groups/${groupId}/workspace-leader/repository`)}
             className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
               <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg

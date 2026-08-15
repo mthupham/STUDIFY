@@ -190,7 +190,7 @@ function App() {
         />
 
         <Route
-          path="/study-groups/:groupId/workspace"
+          path="/study-groups/:groupId/workspace-member"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -201,7 +201,18 @@ function App() {
         />
 
         <Route
-          path="/study-groups/:groupId/edit"
+          path="/study-groups/:groupId/workspace-leader"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <LeaderWorkspace />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/study-groups/:groupId/workspace-leader/edit-group"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -212,7 +223,7 @@ function App() {
         />
 
         <Route
-          path="/study-groups/:groupId/repository"
+          path="/study-groups/:groupId/workspace-leader/repository"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -222,7 +233,7 @@ function App() {
           }
         />
         <Route
-          path="/study-groups/:groupId/tasks"
+          path="/study-groups/:groupId/workspace-leader/task-assignment"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -230,6 +241,18 @@ function App() {
               </MainLayout>
             </OnboardingGuard>
           }
+        />
+        <Route
+          path="/study-groups/workspace-member"
+          element={<Navigate to="/study-groups/1/workspace-member" replace />}
+        />
+        <Route
+          path="/study-groups/workspace-leader"
+          element={<Navigate to="/study-groups/1/workspace-leader" replace />}
+        />
+        <Route
+          path="/study-groups/workspace-leader/task-assignment"
+          element={<Navigate to="/study-groups/1/workspace-leader/task-assignment" replace />}
         />
         <Route
           path="/dashboard/pomodoro"

@@ -1,6 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
+  Param,
+  ParseIntPipe,
   Post,
   Req,
   UseGuards,
@@ -108,5 +111,43 @@ export class GroupController {
   @ApiOperation({ summary: 'Delete a study group (creator only)' })
   async deleteGroup(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.groupService.deleteGroup(id, req.user.id);
+  }
+
+  @Get('me')
+  @ApiOperation({
+    summary: 'Get study groups of current user',
+  })
+  async getMyGroups(@Req() req: any) {
+    return this.groupService.getMyGroups(
+      req.user.id,
+    );
+  }
+
+  @Get(':groupId')
+  @ApiOperation({
+    summary: 'Get details of a study group',
+  })
+  async getGroupDetail(
+    @Param('groupId', ParseIntPipe) groupId: number,
+    @Req() req: any,
+  ) {
+    return this.groupService.getGroupDetail(
+      groupId,
+      req.user.id,
+    );
+  }
+
+  @Get(':groupId/members')
+  @ApiOperation({
+    summary: 'Get members of a study group',
+  })
+  async getMembers(
+    @Param('groupId', ParseIntPipe) groupId: number,
+    @Req() req: any,
+  ) {
+    return this.groupService.getMembers(
+      groupId,
+      req.user.id,
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, Post, Req, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Req, UseGuards, Body} from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { JwtGuard } from '../../../modules/auth/guards/jwt.guard';
 import { SubmitAnswerDto } from './dto/submit-answer.dto';
@@ -26,10 +26,17 @@ export class LessonController {
   
 
   // GET /learning/lessons/A1_T1/questions
+  // @Get(':id/questions')
+  // async getLessonQuestions(@Param('id') id: string) {
+  //   return await this.lessonService.getLessonQuestions(id);
+  // }
   @Get(':id/questions')
-  async getLessonQuestions(@Param('id') id: string) {
-    return await this.lessonService.getLessonQuestions(id);
-  }
+async getLessonQuestions(
+  @Param('id') id: string,
+  @Query('skill') skill: 'reading' | 'writing' = 'reading',
+) {
+  return await this.lessonService.getLessonQuestions(id, skill);
+}
   // GET /learning/lessons/A1_T1
   @Get(':id')
   async getLessonDetail(@Param('id') id: string, @Req() req: any) {

@@ -22,6 +22,9 @@ export class GroupRepository {
 
     @InjectModel(GroupMember)
     private readonly groupMemberModel: typeof GroupMember,
+
+    @InjectModel(User)
+    private readonly userModel: typeof User,
   ) {}
 
   async findGroupByCode(code: string): Promise<StudyGroup | null> {

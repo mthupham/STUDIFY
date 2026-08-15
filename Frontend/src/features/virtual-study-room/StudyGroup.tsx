@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  getApiErrorMessage,
+  studyGroupApi,
+  type StudyGroupSummary,
+} from "./services/studyGroupApi";
 import { getMyGroups } from "./services/groupService";
 import type { StudyGroup } from "./services/groupService";
 import { useAuthStore } from "../auth/store/useAuthStore";
@@ -28,35 +33,31 @@ const UPCOMING_MEETUPS = [
 // ==========================================
 
 export default function StudyGroupHub() {
-  const { token } = useAuthStore();
-
-  const [groups, setGroups] = useState<StudyGroup[]>([]);
+  const [groups, setGroups] = useState<StudyGroupSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchGroups = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+    let cancelled = false;
 
-      try {
-        setLoading(true);
-        setError("");
+    studyGroupApi
+      .getMyGroups()
+      .then((items) => {
+        if (!cancelled) setGroups(items);
+      })
+      .catch((requestError) => {
+        if (!cancelled) {
+          setError(getApiErrorMessage(requestError, "Unable to load your study groups."));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-        const data = await getMyGroups(token);
-        setGroups(data);
-      } catch (error) {
-        console.error("Failed to fetch study groups:", error);
-        setError("Failed to load your study groups.");
-      } finally {
-        setLoading(false);
-      }
+    return () => {
+      cancelled = true;
     };
-
-    fetchGroups();
-  }, [token]);
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto p-6 md:p-8 space-y-8 font-['Inter'] text-gray-900">
@@ -169,30 +170,34 @@ function GroupCard({ group }: { group: StudyGroup }) {
 
   return (
     <button
-      type="button"
-      onClick={() =>
-        navigate(`/study-groups/${group.id}/workspace`)
-      }
-      className="
-        w-full
-        text-left
-        p-6
-        bg-slate-50
-        border
-        border-slate-200/80
-        rounded-2xl
-        shadow-sm
-        hover:shadow-md
-        hover:border-sky-300
-        hover:-translate-y-1
-        transition-all
-        flex
-        flex-col
-        justify-between
-        gap-4
-        cursor-pointer
-      "
-    >
+  type="button"
+  onClick={() =>
+    navigate(
+      group.role === "LEADER"
+        ? `/study-groups/${group.id}/workspace-leader`
+        : `/study-groups/${group.id}/workspace-member`,
+    )
+  }
+  className="
+    w-full
+    text-left
+    p-6
+    bg-slate-50
+    border
+    border-slate-200/80
+    rounded-2xl
+    shadow-sm
+    hover:shadow-md
+    hover:border-sky-300
+    hover:-translate-y-1
+    transition-all
+    flex
+    flex-col
+    justify-between
+    gap-4
+    cursor-pointer
+  "
+>
       <div>
         <div className="flex justify-between items-start">
           <div className="w-14 h-14 bg-blue-100 text-sky-700 rounded-2xl flex items-center justify-center">
@@ -203,9 +208,14 @@ function GroupCard({ group }: { group: StudyGroup }) {
               <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
             </svg>
           </div>
-
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-700">
-            Study Group
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-bold ${
+              group.role === "LEADER"
+                ? "bg-blue-100 text-sky-700"
+                : "bg-emerald-100 text-emerald-700"
+            }`}
+          >
+            {group.role}
           </span>
         </div>
 
@@ -221,9 +231,19 @@ function GroupCard({ group }: { group: StudyGroup }) {
         </p>
       </div>
 
-      <div className="pt-2 border-t border-slate-200/40">
-        <div className="text-xs text-gray-500">
-          Created by user #{group.createdBy}
+      {/* Footer card: Danh sách thành viên + Trạng thái */}
+      <div className="flex items-center justify-between pt-2 border-t border-slate-200/40">
+        {/* Thành viên (Avatar Stack) */}
+        <div className="flex items-center -space-x-2">
+          <div className="w-8 h-8 rounded-full border-2 border-slate-50 bg-slate-200 flex items-center justify-center text-[10px] font-bold text-gray-800">
+            {group.membersCount}
+          </div>
+        </div>
+
+        {/* Trạng thái nhóm */}
+        <div className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
+          <StatusIcon type="active" />
+          <span>{group.membersCount} member{group.membersCount === 1 ? "" : "s"}</span>
         </div>
       </div>
     </button>

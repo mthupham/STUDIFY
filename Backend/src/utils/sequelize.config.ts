@@ -22,7 +22,8 @@ import { GroupMember } from '../models/group_member.model';
 import { Deck } from '../models/deck.model';
 import { Flashcard } from '../models/flashcard.model';
 import { Notification } from '../models/notification.model';
-
+import { GroupTask } from '../models/group_task.model';
+import { GroupSchedule } from '../models/group_schedule.model';
 export const sequelizeConfig = (
   configService: ConfigService,
 ): SequelizeModuleOptions => ({
@@ -59,6 +60,8 @@ export const sequelizeConfig = (
      Deck,
   Flashcard,
     Notification
+    GroupTask,
+    GroupSchedule,
   ],
   autoLoadModels: true,
   synchronize: true,

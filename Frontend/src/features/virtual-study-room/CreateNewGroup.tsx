@@ -452,7 +452,11 @@ export default function CreateStudyGroupPage() {
       setMessageType("success");
 
       setTimeout(() => {
-        navigate("/study-groups");
+        navigate(
+          createdGroup?.id
+            ? `/study-groups/${createdGroup.id}/workspace-leader`
+            : "/study-groups",
+        );
       }, 1500);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {

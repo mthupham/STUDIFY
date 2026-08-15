@@ -25,8 +25,9 @@ interface SkillSection {
 }
 
 function buildSections(apiLessons: ApiLesson[]): SkillSection[] {
+  // const vocab = apiLessons.filter((l) => l.type === "VOCABULARY");
+  // const grammar = apiLessons.filter((l) => l.type === "GRAMMAR");
   const vocab = apiLessons.filter((l) => l.type === "VOCABULARY");
-  const grammar = apiLessons.filter((l) => l.type === "GRAMMAR");
 
   // Trong mỗi nhóm: bài đầu tiên CHƯA hoàn thành sẽ là "ongoing" (mở khóa),
   // các bài chưa hoàn thành sau đó vẫn "locked" cho tới khi bài trước xong.
@@ -58,27 +59,29 @@ function buildSections(apiLessons: ApiLesson[]): SkillSection[] {
     });
   };
 
-  const vocabProps = toLessonProps(vocab);
-  const grammarProps = toLessonProps(grammar);
+  // const vocabProps = toLessonProps(vocab);
+  // const grammarProps = toLessonProps(grammar);
+  const readingProps = toLessonProps(vocab);
+const writingProps = toLessonProps(vocab);
   const countDone = (list: LessonProps[]) =>
     list.filter((l) => l.status === "completed").length;
 
   return [
-    {
-      id: "vocabulary",
-      title: "Reading skill",
-      completedText: `${countDone(vocabProps)}/${vocabProps.length} completed`,
-      icon: "book",
-      lessons: vocabProps,
-    },
-    {
-      id: "grammar",
-      title: "Writing skill",
-      completedText: `${countDone(grammarProps)}/${grammarProps.length} completed`,
-      icon: "pen",
-      lessons: grammarProps,
-    },
-  ];
+  {
+    id: "reading",
+    title: "Reading skill",
+    completedText: `${countDone(readingProps)}/${readingProps.length} completed`,
+    icon: "book",
+    lessons: readingProps,
+  },
+  {
+    id: "writing",
+    title: "Writing skill",
+    completedText: `${countDone(writingProps)}/${writingProps.length} completed`,
+    icon: "pen",
+    lessons: writingProps,
+  },
+];
 }
 
 export default function LessonPage() {
@@ -137,10 +140,16 @@ export default function LessonPage() {
     };
   }, [token]);
 
-  const handleLessonClick = (lessonId?: string) => {
-    if (!lessonId) return;
-    navigate(`/lessons/practice/${lessonId}`);
-  };
+  const handleLessonClick = (
+  lessonId?: string,
+  skill?: string,
+) => {
+  if (!lessonId) return;
+
+  navigate(
+    `/lessons/practice/${lessonId}?skill=${skill ?? "reading"}`,
+  );
+};
 
   const handleTheoryReview = () => {
     if (level) {
@@ -247,7 +256,8 @@ export default function LessonPage() {
                         )}
                         <LessonCard
                           {...lesson}
-                          onClick={() => handleLessonClick(lesson.id)}
+                          // onClick={() => handleLessonClick(lesson.id)}
+                          onClick={() => handleLessonClick(lesson.id, section.id)}
                         />
                       </div>
                     ))}
