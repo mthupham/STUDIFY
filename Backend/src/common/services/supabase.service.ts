@@ -10,23 +10,11 @@ export class SupabaseService {
     const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
     const supabaseKey = this.configService.get<string>('SUPABASE_KEY');
 
-    console.log('SUPABASE_KEY exists:', !!supabaseKey);
-    console.log(
-      'SUPABASE_KEY type:',
-      supabaseKey?.startsWith('sb_secret_')
-        ? 'SECRET'
-        : supabaseKey?.startsWith('sb_publishable_')
-          ? 'PUBLISHABLE'
-          : 'UNKNOWN',
-    );
-
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('Supabase credentials not configured');
     }
 
     this.supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('Supabase URL:', supabaseUrl);
-    console.log('Supabase key prefix:', supabaseKey.substring(0, 15));
   }
 
   /**

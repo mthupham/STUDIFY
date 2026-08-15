@@ -16,6 +16,7 @@ import { VirtualStudyRoomModule } from './features/virtual-study-room/virtual-st
 import { FlashcardModule } from './features/flashcard/flashcard.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
+import { SpeakingModule } from './features/ai-speaking/speaking/speaking.module'
 
 @Module({
   controllers: [AppController],
@@ -48,6 +49,7 @@ import { FileUploadModule } from './modules/file-upload/file-upload.module';
     FlashcardModule,
     NotificationModule,
     FileUploadModule,
+    SpeakingModule,
   ],
 })
 export class AppModule {}
