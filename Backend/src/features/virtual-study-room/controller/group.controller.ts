@@ -28,32 +28,34 @@ import { ChangeRoleDto } from '../dto/change-role.dto';
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
-  // ─── UC1: Create Group ──────────────────────────────────────────────────────
-
+  // Create group
   @Post()
   @ApiOperation({ summary: 'Create a new study group' })
   async createGroup(@Body() dto: CreateGroupDto, @Req() req: any) {
     return this.groupService.createGroup(dto, req.user.id);
   }
 
-  // ─── UC2: Join Group via Code ───────────────────────────────────────────────
-
+  // Join group
   @Post('join')
   @ApiOperation({ summary: 'Join a study group using group code' })
   async joinGroup(@Body() dto: JoinGroupDto, @Req() req: any) {
     return this.groupService.joinGroup(dto, req.user.id);
   }
 
-  // ─── List my groups ─────────────────────────────────────────────────────────
-
-  @Get('my-groups')
-  @ApiOperation({ summary: 'Get all study groups of the authenticated user' })
+  // GET MY GROUPS
+  @Get('me')
+  @ApiOperation({
+    summary: 'Get study groups of current user',
+  })
   async getMyGroups(@Req() req: any) {
-    return this.groupService.getUserGroups(req.user.id);
+    const result = await this.groupService.getUserGroups(req.user.id);
+
+    return {
+      items: result.data,
+    };
   }
 
-  // ─── F3.2: Get Group Details (must be member) ───────────────────────────────
-
+  // GET GROUP DETAILS
   @Get(':id')
   @ApiOperation({
     summary: 'Get study group details with members list and current user role',
@@ -65,8 +67,7 @@ export class GroupController {
     return this.groupService.getGroupDetails(id, req.user.id);
   }
 
-  // ─── F3.2: Update Group Info (Leader only) ──────────────────────────────────
-
+  // Update group
   @Patch(':id')
   @ApiOperation({ summary: 'Update group info (Leader only)' })
   async updateGroupInfo(
@@ -77,8 +78,7 @@ export class GroupController {
     return this.groupService.updateGroupInfo(id, dto, req.user.id);
   }
 
-  // ─── F3.2: Change Member Role (Leader only) ─────────────────────────────────
-
+  // Change member role
   @Patch(':id/members/:userId/role')
   @ApiOperation({ summary: 'Change a member role (Leader only)' })
   async changeMemberRole(
@@ -90,8 +90,7 @@ export class GroupController {
     return this.groupService.changeMemberRole(id, userId, dto, req.user.id);
   }
 
-  // ─── F3.2: Remove Member (Leader only) ─────────────────────────────────────
-
+  // Remove member
   @Delete(':id/members/:userId')
   @ApiOperation({ summary: 'Remove a member from the group (Leader only)' })
   async removeMember(
@@ -102,33 +101,14 @@ export class GroupController {
     return this.groupService.removeMember(id, userId, req.user.id);
   }
 
-  // ─── Delete Group ───────────────────────────────────────────────────────────
-
+  // Delete group
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a study group (creator only)' })
   async deleteGroup(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.groupService.deleteGroup(id, req.user.id);
   }
 
-  @Get('me')
-  @ApiOperation({
-    summary: 'Get study groups of current user',
-  })
-
-  @Get(':groupId')
-  @ApiOperation({
-    summary: 'Get details of a study group',
-  })
-  async getGroupDetail(
-    @Param('groupId', ParseIntPipe) groupId: number,
-    @Req() req: any,
-  ) {
-    return this.groupService.getGroupDetail(
-      groupId,
-      req.user.id,
-    );
-  }
-
+  // Get members
   @Get(':groupId/members')
   @ApiOperation({
     summary: 'Get members of a study group',
@@ -137,9 +117,6 @@ export class GroupController {
     @Param('groupId', ParseIntPipe) groupId: number,
     @Req() req: any,
   ) {
-    return this.groupService.getMembers(
-      groupId,
-      req.user.id,
-    );
+    return this.groupService.getMembers(groupId, req.user.id);
   }
 }

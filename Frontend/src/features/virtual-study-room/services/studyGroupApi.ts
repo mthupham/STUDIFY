@@ -18,6 +18,9 @@ export interface StudyGroupSummary {
   role: GroupRole;
   joinedAt: string;
   membersCount: number;
+  description: string | null;
+  icon: string;
+  members?: GroupMemberDto[];
 }
 
 export interface StudyGroupDetailResponse {
@@ -91,7 +94,8 @@ export const studyGroupApi = {
       `${API_BASE}/groups/me`,
       { headers: authHeaders() },
     );
-    return data.items;
+
+    return data.items ?? [];
   },
 
   async getGroup(groupId: number) {
@@ -135,7 +139,11 @@ export const studyGroupApi = {
     return data;
   },
 
-  async updateTask(groupId: number, taskId: number, payload: Partial<TaskPayload>) {
+  async updateTask(
+    groupId: number,
+    taskId: number,
+    payload: Partial<TaskPayload>,
+  ) {
     const { data } = await axios.patch<GroupTaskDto>(
       `${API_BASE}/groups/${groupId}/tasks/${taskId}`,
       payload,
@@ -144,7 +152,11 @@ export const studyGroupApi = {
     return data;
   },
 
-  async updateTaskStatus(groupId: number, taskId: number, status: ApiTaskStatus) {
+  async updateTaskStatus(
+    groupId: number,
+    taskId: number,
+    status: ApiTaskStatus,
+  ) {
     const { data } = await axios.patch<GroupTaskDto>(
       `${API_BASE}/groups/${groupId}/tasks/${taskId}/status`,
       { status },
@@ -193,7 +205,11 @@ export const studyGroupApi = {
     return data;
   },
 
-  async updateSchedule(groupId: number, scheduleId: number, payload: Partial<SchedulePayload>) {
+  async updateSchedule(
+    groupId: number,
+    scheduleId: number,
+    payload: Partial<SchedulePayload>,
+  ) {
     const { data } = await axios.patch<GroupScheduleDto>(
       `${API_BASE}/groups/${groupId}/schedules/${scheduleId}`,
       payload,
@@ -203,9 +219,12 @@ export const studyGroupApi = {
   },
 
   async deleteSchedule(groupId: number, scheduleId: number) {
-    await axios.delete(`${API_BASE}/groups/${groupId}/schedules/${scheduleId}`, {
-      headers: authHeaders(),
-    });
+    await axios.delete(
+      `${API_BASE}/groups/${groupId}/schedules/${scheduleId}`,
+      {
+        headers: authHeaders(),
+      },
+    );
   },
 };
 

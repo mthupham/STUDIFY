@@ -137,6 +137,17 @@ export class GroupRepository {
           [Op.in]: groupIds,
         },
       },
+      include: [
+        {
+          model: GroupMember,
+          include: [
+            {
+              model: User,
+              attributes: ['id', 'name', 'email', 'avatar'],
+            },
+          ],
+        },
+      ],
       order: [['createdAt', 'DESC']],
     });
   }

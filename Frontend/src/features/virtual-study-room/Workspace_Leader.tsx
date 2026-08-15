@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ChangeRoleModal from "./Modal/ChangeRoleModal";
 import type { RoleType } from "./Modal/ChangeRoleModal";
 import BanMemberModal from "./Modal/BanMemberModal";
@@ -105,7 +105,6 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
     font-['Inter',sans-serif]
     z-10
     transform
-    transition-transform
     transition-transform
     duration-500
     ease-[cubic-bezier(0.22,1,0.36,1)]
@@ -217,8 +216,7 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
               <h4 className="text-sm font-semibold text-gray-900">
                 Assigned Tasks
               </h4>
-              <button 
-              className="text-xs font-semibold text-sky-700 hover:underline">
+              <button className="text-xs font-semibold text-sky-700 hover:underline">
                 View All
               </button>
             </div>
@@ -258,12 +256,18 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
                     </div>
                     <div>
                       <h5
-                        className={`text-xs font-semibold text-gray-900 ${task.completed ? "line-through text-gray-500" : ""}`}
+                        className={`text-xs font-semibold text-gray-900 ${
+                          task.completed ? "line-through text-gray-500" : ""
+                        }`}
                       >
                         {task.title}
                       </h5>
                       <span
-                        className={`text-[11px] ${task.completed ? "text-emerald-700 font-medium" : "text-gray-500"}`}
+                        className={`text-[11px] ${
+                          task.completed
+                            ? "text-emerald-700 font-medium"
+                            : "text-gray-500"
+                        }`}
                       >
                         {task.subtitle}
                       </span>
@@ -333,24 +337,26 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
         </div>
 
         {/* Footer Actions */}
-
         <footer className="p-5 bg-slate-100 border-t border-slate-300 flex flex-col gap-2.5 shrink-0">
           <button
+            disabled={actionLoading}
             onClick={() => setShowChangeRoleModal(true)}
-            className="w-full py-2 px-3 bg-white hover:bg-slate-50 border border-slate-300 text-gray-800 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
+            className="w-full py-2 px-3 bg-white hover:bg-slate-50 disabled:opacity-50 border border-slate-300 text-gray-800 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
           >
             Change Role
           </button>
           <div className="grid grid-cols-2 gap-2">
             <button
+              disabled={actionLoading}
               onClick={() => setShowRemoveModal(true)}
-              className="py-2 px-3 bg-white hover:bg-red-50 border border-red-200 text-red-700 font-semibold text-xs rounded-lg transition"
+              className="py-2 px-3 bg-white hover:bg-red-50 disabled:opacity-50 border border-red-200 text-red-700 font-semibold text-xs rounded-lg transition"
             >
               Remove
             </button>
             <button
+              disabled={actionLoading}
               onClick={() => setShowBanMemberModal(true)}
-              className="py-2 px-3 bg-red-700 hover:bg-red-800 text-white font-semibold text-xs rounded-lg transition shadow-sm"
+              className="py-2 px-3 bg-red-700 hover:bg-red-800 disabled:opacity-50 text-white font-semibold text-xs rounded-lg transition shadow-sm"
             >
               Ban Member
             </button>
@@ -367,7 +373,12 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
           if (!token) return;
           setActionLoading(true);
           try {
-            await changeMemberRole(token, groupId, Number(member.id), newRole as "LEADER" | "MEMBER");
+            await changeMemberRole(
+              token,
+              groupId,
+              Number(member.id),
+              newRole as "LEADER" | "MEMBER",
+            );
             onGroupUpdated();
             onClose();
           } catch (err) {
@@ -433,48 +444,58 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
   const navigate = useNavigate();
   const { token } = useAuthStore();
 
-  // Chuyển đổi groupData.members sang định dạng Member (UI)
-  const members: Member[] = (groupData.members ?? []).map((m: GroupMember) => ({
-    id: String(m.userId),
-    name: m.user?.name ?? `User #${m.userId}`,
-    avatar: m.user?.avatar ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(m.user?.name ?? "U")}&background=random`,
-    email: m.user?.email ?? "",
-    level: "INTERMEDIATE" as const,
-    lessons: 0,
-    streak: 0,
-    score: 0,
-    role: m.role as RoleType,
-  }));
-
+  const [members, setMembers] = useState<Member[]>(() =>
+    (groupData.members ?? []).map((m: GroupMember) => ({
+      id: String(m.userId),
+      name: m.user?.name ?? `User #${m.userId}`,
+      avatar:
+        m.user?.avatar ??
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(m.user?.name ?? "U")}&background=random`,
+      email: m.user?.email ?? "",
+      level: "INTERMEDIATE" as const,
+      lessons: 0,
+      streak: 0,
+      score: 0,
+      role: m.role as RoleType,
+    })),
+  );
 
   const [inputMessage, setInputMessage] = useState("");
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const [groupName, setGroupName] = useState("Study Group");
+  const [inviteCode, setInviteCode] = useState(groupData.code ?? "");
 
-  const [inviteCode, setInviteCode] = useState("");
-  const { messages, sendMessage, currentUserId } = useGroupChat(groupId);
+  const { messages, sendMessage, currentUserId } = useGroupChat(
+    String(groupId),
+  );
 
   useEffect(() => {
     Promise.all([
       studyGroupApi.getGroup(Number(groupId)),
       studyGroupApi.getMembers(Number(groupId)),
-    ]).then(([detail, groupMembers]) => {
-      setGroupName(detail.group.name);
-      setInviteCode(detail.group.code);
-      setMembers(groupMembers.map((member) => ({
-        id: String(member.userId),
-        name: member.name,
-        avatar: member.avatar || `https://placehold.co/80x80?text=${encodeURIComponent(member.name.slice(0, 2))}`,
-        level: "INTERMEDIATE",
-        email: member.email,
-        lessons: 0,
-        streak: 0,
-        score: 0,
-        role: member.role,
-      })));
-    }).catch(() => undefined);
+    ])
+      .then(([detail, groupMembers]) => {
+        setGroupName(detail.group.name);
+        setInviteCode(detail.group.code);
+        setMembers(
+          groupMembers.map((member) => ({
+            id: String(member.userId),
+            name: member.name,
+            avatar:
+              member.avatar ||
+              `https://placehold.co/80x80?text=${encodeURIComponent(member.name.slice(0, 2))}`,
+            level: "INTERMEDIATE",
+            email: member.email,
+            lessons: 0,
+            streak: 0,
+            score: 0,
+            role: member.role,
+          })),
+        );
+      })
+      .catch(() => undefined);
   }, [groupId]);
 
   // --- Handlers ---
@@ -486,18 +507,16 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
   };
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(groupData.code);
+    navigator.clipboard.writeText(inviteCode || groupData.code);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  // Mở Drawer khi bấm chọn thành viên
   const handleSelectMember = (member: Member) => {
     setSelectedMember(member);
     setIsDrawerOpen(true);
   };
 
-  // Đóng Drawer
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
     setSelectedMember(null);
@@ -538,7 +557,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
             </h2>
             <div className="flex items-center gap-3">
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs font-mono font-medium rounded">
-                #{groupData.code}
+                #{inviteCode || groupData.code}
               </span>
               <div className="flex items-center gap-1.5 text-gray-600 text-xs font-medium">
                 <svg
@@ -603,7 +622,9 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
                 <div className="flex flex-col gap-1 max-w-[80%]">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-sm text-gray-900">
-                      {msg.sender?.id === currentUserId ? "You" : msg.sender?.name || "Unknown"}
+                      {msg.sender?.id === currentUserId
+                        ? "You"
+                        : msg.sender?.name || "Unknown"}
                     </span>
                     <span className="text-gray-400 text-xs">
                       {new Date(msg.createdAt).toLocaleTimeString([], {
@@ -707,9 +728,14 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
         <aside className="w-80 bg-slate-50 border-l border-slate-200 flex flex-col shrink-0 overflow-y-auto gap-6 p-6">
           {/* Bento Quick Actions */}
           <div className="grid grid-cols-2 gap-3">
-            <button 
-            onClick={() => navigate(`/study-groups/${groupId}/workspace-leader/task-assignment`)}
-            className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
+            <button
+              onClick={() =>
+                navigate(
+                  `/study-groups/${groupId}/workspace-leader/task-assignment`,
+                )
+              }
+              className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group"
+            >
               <div className="w-9 h-9 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
                   className="w-5 h-5"
@@ -733,9 +759,14 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
               </div>
             </button>
 
-            <button 
-            onClick={() => navigate(`/study-groups/${groupId}/workspace-leader/repository`)}
-            className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
+            <button
+              onClick={() =>
+                navigate(
+                  `/study-groups/${groupId}/workspace-leader/repository`,
+                )
+              }
+              className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group"
+            >
               <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
                   className="w-5 h-5"

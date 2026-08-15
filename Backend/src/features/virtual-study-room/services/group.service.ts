@@ -153,7 +153,14 @@ export class GroupService {
     );
 
     return {
-      items: members,
+      items: members.map((m) => ({
+        userId: m.userId,
+        name: m.user?.name ?? `User #${m.userId}`,
+        email: m.user?.email ?? '',
+        avatar: m.user?.avatar ?? null,
+        role: m.role,
+        joinedAt: m.joinedAt,
+      })),
     };
   }
 
@@ -257,9 +264,31 @@ export class GroupService {
 
   async getUserGroups(userId: number) {
     const groups = await this.groupRepository.findGroupsByUserId(userId);
+    const mappedGroups = groups.map((group) => {
+      const userMembership = group.members?.find((m) => m.userId === userId);
+      return {
+        id: group.id,
+        name: group.name,
+        description: group.description,
+        icon: group.icon,
+        code: group.code,
+        createdBy: group.createdBy,
+        role: userMembership ? userMembership.role : 'MEMBER',
+        joinedAt: userMembership ? userMembership.joinedAt : null,
+        membersCount: group.members ? group.members.length : 0,
+        members: (group.members ?? []).map((m) => ({
+          userId: m.userId,
+          name: m.user?.name ?? `User #${m.userId}`,
+          email: m.user?.email ?? '',
+          avatar: m.user?.avatar ?? null,
+          role: m.role,
+          joinedAt: m.joinedAt,
+        })),
+      };
+    });
     return {
       status: 'success',
-      data: groups,
+      data: mappedGroups,
     };
   }
 
