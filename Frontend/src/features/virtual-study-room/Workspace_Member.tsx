@@ -1,19 +1,26 @@
-import React, { useEffect, useState, useEffect, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useGroupChat } from "./hooks/useGroupChat";
 import MemberAssignmentWidgets from "./components/MemberAssignmentWidgets";
 import { studyGroupApi } from "./services/studyGroupApi";
 import type { StudyGroup } from "./services/groupService";
+import { FileViewerModal, type FileItem } from "./Modal/FileViewerModal";
+import { FileUploadModal } from "./Modal/FileUploadModal";
+import { CreatePollModal } from "./Modal/CreatePollModal";
 
 interface BusinessEnglishHubProps {
   groupId: number;
   groupData: StudyGroup;
 }
-import { FileViewerModal, type FileItem } from "./Modal/FileViewerModal";
-import { FileUploadModal } from "./Modal/FileUploadModal";
-import { CreatePollModal } from "./Modal/CreatePollModal";
 
-const GROUP_ID = "b2-business-english-hub";
+interface DisplayMember {
+  id: string;
+  name: string;
+  avatar: string;
+  role?: string;
+  email?: string;
+}
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 function mapApiFileToFileItem(file: {
@@ -86,30 +93,12 @@ function mapApiFileToFileItem(file: {
   };
 }
 
-interface Member {
-  id: string;
-  name: string;
-  avatar: string;
-  status: "online" | "typing" | "offline";
-  lastSeen?: string;
-}
-
-interface Message {
-  id: string;
-  sender: string;
-  senderColor?: string;
-  avatar: string;
-  time: string;
-  text?: string;
-  isSelf?: boolean;
-  file?: FileItem;
-}
-
 export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
   groupId,
   groupData,
 }) => {
   const numericGroupId = groupId;
+  const stringGroupId = String(groupId);
 
   // --- States ---
   const [inputMessage, setInputMessage] = useState("");
@@ -120,10 +109,15 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
   const [showCreatePoll, setShowCreatePoll] = useState(false);
   const [sharedFiles, setSharedFiles] = useState<FileItem[]>([]);
 
+  const [groupName, setGroupName] = useState(groupData.name);
+  const [inviteCode, setInviteCode] = useState(groupData.code);
+  const [membersCount, setMembersCount] = useState(0);
+  const [members, setMembers] = useState<DisplayMember[]>([]);
+
   const fetchSharedFiles = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/api/files/list/${GROUP_ID}`
+        `${API_URL}/api/files/list/${stringGroupId}`
       );
       if (response.data?.success && Array.isArray(response.data.files)) {
         setSharedFiles(response.data.files.map(mapApiFileToFileItem));
@@ -133,7 +127,7 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
     } catch {
       setSharedFiles([]);
     }
-  }, []);
+  }, [stringGroupId]);
 
   useEffect(() => {
     fetchSharedFiles();
@@ -145,27 +139,29 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
     }
   }, [showFileViewer, fetchSharedFiles]);
 
-  const groupMembers = [
-    { id: "1", name: "Maria Dupont", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" },
-    { id: "2", name: "James Lee", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" },
-    { id: "3", name: "Sara Kim", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&auto=format&fit=crop&q=80" },
-    { id: "4", name: "John Smith", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" },
-  ];
-  const [groupName, setGroupName] = useState(groupData.name);
-  const [inviteCode, setInviteCode] = useState(groupData.code);
-  const [membersCount, setMembersCount] = useState(0);
+  const { messages, sendMessage, currentUserId } = useGroupChat(stringGroupId);
 
-  const { messages, sendMessage, currentUserId } = useGroupChat(
-    String(groupId),
-  );
-
+  // Fetch real group detail and members from backend
   useEffect(() => {
-    studyGroupApi
-      .getGroup(numericGroupId)
-      .then(({ group }) => {
+    Promise.all([
+      studyGroupApi.getGroup(numericGroupId),
+      studyGroupApi.getMembers(numericGroupId),
+    ])
+      .then(([{ group }, fetchedMembers]) => {
         setGroupName(group.name);
         setInviteCode(group.code);
-        setMembersCount(group.membersCount);
+        setMembersCount(group.membersCount || fetchedMembers.length);
+        setMembers(
+          fetchedMembers.map((m) => ({
+            id: String(m.userId),
+            name: m.name,
+            avatar:
+              m.avatar ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=random`,
+            role: m.role,
+            email: m.email,
+          }))
+        );
       })
       .catch(() => undefined);
   }, [numericGroupId]);
@@ -193,7 +189,6 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
 
   const handleCreatePoll = (question: string, options: string[]) => {
     console.log("Creating poll:", { question, options });
-    // Handle poll creation and send to backend
     sendMessage(`[POLL] ${question}`);
   };
 
@@ -229,23 +224,6 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
             </div>
           </div>
         </div>
-
-        <button className="px-4 py-2 bg-sky-700 hover:bg-sky-800 text-white font-medium text-sm rounded-xl transition-all flex items-center gap-2 shadow-sm">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-            />
-          </svg>
-          Invite
-        </button>
       </header>
 
       {/* ---------------- MAIN CONTAINER ---------------- */}
@@ -314,7 +292,7 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
                     handleSendMessage();
                   }
                 }}
-                placeholder="Message B2 Business English Hub..."
+                placeholder={`Message ${groupName}...`}
                 rows={2}
                 className="w-full bg-transparent p-2 text-gray-800 placeholder-gray-400 text-sm focus:outline-none resize-none"
               />
@@ -402,6 +380,7 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
         {/* ---------------- RIGHT SIDEBAR ---------------- */}
         <aside className="w-80 bg-slate-50 border-l border-slate-200 flex flex-col shrink-0 overflow-y-auto gap-6 p-6">
           <MemberAssignmentWidgets groupId={numericGroupId} />
+
           {/* Invite Code Section */}
           <div className="border-slate-200 flex flex-col gap-3">
             <h3 className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
@@ -494,89 +473,56 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
             </button>
           </div>
 
-          {/* Members List */}
-          <div className="p-6 flex flex-col gap-4">
+          {/* Members List (Real Data from API) */}
+          <div className="flex flex-col gap-4">
             <h3 className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
-              MEMBERS (8)
+              MEMBERS ({members.length})
             </h3>
 
             <div className="flex flex-col gap-3">
-              {/* Member Item 1 */}
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <img
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80"
-                    alt="Maria Dupont"
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-50" />
+              {(showAllMembers ? members : members.slice(0, 4)).map((member) => (
+                <div key={member.id} className="flex items-center gap-3">
+                  <div className="relative shrink-0">
+                    <img
+                      src={member.avatar}
+                      alt={member.name}
+                      className="w-8 h-8 rounded-full object-cover border border-slate-100 shadow-sm"
+                    />
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-50" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-gray-900 text-sm font-semibold truncate">
+                      {member.name}
+                    </p>
+                    <p className="text-gray-500 text-xs truncate">
+                      {member.role || "Member"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-gray-900 text-sm font-semibold">
-                    Maria Dupont
-                  </p>
-                  <p className="text-emerald-700 text-xs font-medium">Online</p>
-                </div>
-              </div>
-
-              {/* Member Item 2 */}
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
-                    alt="James Lee"
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-50" />
-                </div>
-                <div>
-                  <p className="text-gray-900 text-sm font-semibold">
-                    James Lee
-                  </p>
-                  <p className="text-emerald-700 text-xs font-medium animate-pulse">
-                    Typing...
-                  </p>
-                </div>
-              </div>
-
-              {/* Member Item 3 */}
-              <div className="flex items-center gap-3 opacity-70">
-                <div className="relative">
-                  <img
-                    src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&auto=format&fit=crop&q=80"
-                    alt="Sara Kim"
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-slate-300 rounded-full border-2 border-slate-50" />
-                </div>
-                <div>
-                  <p className="text-gray-900 text-sm font-semibold">
-                    Sara Kim
-                  </p>
-                  <p className="text-gray-500 text-xs">Last seen 2h ago</p>
-                </div>
-              </div>
+              ))}
             </div>
 
-            <button
-              onClick={() => setShowAllMembers(!showAllMembers)}
-              className="text-sky-700 hover:text-sky-800 text-xs font-bold flex items-center gap-1.5 pt-1"
-            >
-              <span>{showAllMembers ? "Show less" : "Show 5 more"}</span>
-              <svg
-                className={`w-3 h-3 transition-transform ${showAllMembers ? "rotate-180" : ""}`}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                viewBox="0 0 24 24"
+            {members.length > 4 && (
+              <button
+                onClick={() => setShowAllMembers(!showAllMembers)}
+                className="text-sky-700 hover:text-sky-800 text-xs font-bold flex items-center gap-1.5 pt-1"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
+                <span>{showAllMembers ? "Show less" : `Show ${members.length - 4} more`}</span>
+                <svg
+                  className={`w-3 h-3 transition-transform ${showAllMembers ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+            )}
           </div>
         </aside>
       </div>
@@ -586,7 +532,7 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
         isOpen={showFileUpload}
         onClose={() => setShowFileUpload(false)}
         onUpload={handleFileUpload}
-        groupId={GROUP_ID}
+        groupId={stringGroupId}
       />
 
       {/* Create Poll Modal */}
@@ -601,7 +547,7 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
         isOpen={showFileViewer}
         onClose={() => setShowFileViewer(false)}
         files={sharedFiles}
-        members={groupMembers}
+        members={members}
       />
     </div>
   );
