@@ -32,6 +32,10 @@ import DeckDetailView from "./features/flashcard/flashcard-detail-view.tsx";
 
 import VoiceLearningDashboard from "./features/ai-speaking/AISpeakingDashboard.tsx";
 
+//test chat
+import ChatTestLobby from "./features/virtual-study-room/ChatTestLobby.tsx";
+
+
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
   const user = useAuthStore((state) => state.user);
@@ -51,6 +55,16 @@ function App() {
     <BrowserRouter>
       <FloatingPomodoroWidget />
       <Routes>
+
+        //chat test
+        <Route
+          path="/chat-test-lobby"
+          element={
+            <MainLayout>
+              <ChatTestLobby />
+            </MainLayout>
+          }
+        />
 
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
