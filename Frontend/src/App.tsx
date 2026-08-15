@@ -31,6 +31,9 @@ import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidg
 import FlashcardLibrary from "./features/flashcard/flashcard-decks";
 import DeckDetailView from "./features/flashcard/flashcard-detail-view.tsx";
 
+import GoogleSucessPage from "./features/auth/components/GoogleSucessPage.tsx";
+
+
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {
   const user = useAuthStore((state) => state.user);
@@ -51,6 +54,7 @@ function App() {
       <FloatingPomodoroWidget />
       <Routes>
 
+        <Route path="/auth/google/success" element={<GoogleSucessPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />
