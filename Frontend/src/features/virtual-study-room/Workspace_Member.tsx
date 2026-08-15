@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import { useGroupChat } from "./hooks/useGroupChat";
 import MemberAssignmentWidgets from "./components/MemberAssignmentWidgets";
 import { studyGroupApi } from "./services/studyGroupApi";
@@ -8,13 +9,81 @@ interface BusinessEnglishHubProps {
   groupId: number;
   groupData: StudyGroup;
 }
+import { FileViewerModal, type FileItem } from "./Modal/FileViewerModal";
+import { FileUploadModal } from "./Modal/FileUploadModal";
+import { CreatePollModal } from "./Modal/CreatePollModal";
 
-// --- Types ---
-interface FileItem {
+const GROUP_ID = "b2-business-english-hub";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+function mapApiFileToFileItem(file: {
   id: string;
   name: string;
   size: string;
-  type: "pdf" | "doc" | "folder";
+  createdAt: string;
+  url: string;
+  mimetype?: string;
+  uploadedBy?: string;
+}): FileItem {
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  const mime = file.mimetype ?? "";
+
+  let type = ext;
+  let category: FileItem["category"] = "file";
+
+  if (
+    mime.startsWith("image/") ||
+    ["jpg", "jpeg", "png", "gif", "webp", "svg", "bmp", "ico"].includes(ext)
+  ) {
+    type = "image";
+    category = "photo";
+  } else if (
+    mime.startsWith("video/") ||
+    ["mp4", "webm", "mov", "avi", "mkv"].includes(ext)
+  ) {
+    type = "video";
+    category = "video";
+  } else if (
+    mime.startsWith("audio/") ||
+    ["mp3", "wav", "ogg", "m4a", "aac"].includes(ext)
+  ) {
+    type = "audio";
+    category = "file";
+  } else if (ext === "pdf") {
+    type = "pdf";
+    category = "file";
+  } else if (["doc", "docx"].includes(ext)) {
+    type = "doc";
+    category = "file";
+  } else if (["xls", "xlsx"].includes(ext)) {
+    type = "sheet";
+    category = "file";
+  } else if (["ppt", "pptx"].includes(ext)) {
+    type = "slides";
+    category = "file";
+  } else if (["txt", "csv", "md", "rtf"].includes(ext)) {
+    type = "text";
+    category = "file";
+  } else if (["zip", "rar", "7z", "tar", "gz"].includes(ext)) {
+    type = "archive";
+    category = "file";
+  } else if (
+    ["json", "xml", "js", "html", "css", "py", "java", "c", "cpp", "rb", "php", "sh"].includes(ext)
+  ) {
+    type = "code";
+    category = "file";
+  }
+
+  return {
+    id: file.id,
+    name: file.name.replace(/^\d+-/, ""),
+    size: file.size,
+    type,
+    category,
+    sender: file.uploadedBy || "",
+    uploadedDate: file.createdAt,
+    url: file.url,
+  };
 }
 
 interface Member {
@@ -46,6 +115,42 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
   const [inputMessage, setInputMessage] = useState("");
   const [copiedCode, setCopiedCode] = useState(false);
   const [showAllMembers, setShowAllMembers] = useState(false);
+  const [showFileViewer, setShowFileViewer] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
+  const [showCreatePoll, setShowCreatePoll] = useState(false);
+  const [sharedFiles, setSharedFiles] = useState<FileItem[]>([]);
+
+  const fetchSharedFiles = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/files/list/${GROUP_ID}`
+      );
+      if (response.data?.success && Array.isArray(response.data.files)) {
+        setSharedFiles(response.data.files.map(mapApiFileToFileItem));
+      } else {
+        setSharedFiles([]);
+      }
+    } catch {
+      setSharedFiles([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSharedFiles();
+  }, [fetchSharedFiles]);
+
+  useEffect(() => {
+    if (showFileViewer) {
+      fetchSharedFiles();
+    }
+  }, [showFileViewer, fetchSharedFiles]);
+
+  const groupMembers = [
+    { id: "1", name: "Maria Dupont", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" },
+    { id: "2", name: "James Lee", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" },
+    { id: "3", name: "Sara Kim", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&auto=format&fit=crop&q=80" },
+    { id: "4", name: "John Smith", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" },
+  ];
   const [groupName, setGroupName] = useState(groupData.name);
   const [inviteCode, setInviteCode] = useState(groupData.code);
   const [membersCount, setMembersCount] = useState(0);
@@ -80,6 +185,16 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
     setTimeout(() => {
       setCopiedCode(false);
     }, 2000);
+  };
+
+  const handleFileUpload = (_files: File[], _type: "image" | "file" | "folder") => {
+    fetchSharedFiles();
+  };
+
+  const handleCreatePoll = (question: string, options: string[]) => {
+    console.log("Creating poll:", { question, options });
+    // Handle poll creation and send to backend
+    sendMessage(`[POLL] ${question}`);
   };
 
   return (
@@ -205,7 +320,30 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
               />
               <div className="flex justify-between items-center px-2 pt-1">
                 <div className="flex items-center gap-1">
-                  <button className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors">
+                  <button 
+                    onClick={() => setShowCreatePoll(true)}
+                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors"
+                    title="Create Poll"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                  </button>
+                  <button 
+                    onClick={() => setShowFileUpload(true)}
+                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors"
+                    title="Upload Files"
+                  >
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -312,72 +450,46 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
               <h3 className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
                 SHARED RESOURCES
               </h3>
-              <span className="text-xs text-gray-400">3 Files</span>
+              <span className="text-xs text-gray-400">
+                {sharedFiles.length} {sharedFiles.length === 1 ? "File" : "Files"}
+              </span>
             </div>
 
             <div className="flex flex-col gap-2">
-              <div className="p-2 rounded-lg hover:bg-slate-200/50 flex items-center gap-3 cursor-pointer transition-colors">
-                <div className="text-red-600">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
+              {sharedFiles.length === 0 ? (
+                <p className="text-gray-400 text-xs py-2">No files shared yet</p>
+              ) : (
+                sharedFiles.slice(0, 5).map((file) => (
+                  <div
+                    key={file.id}
+                    onClick={() => file.url && window.open(file.url, "_blank")}
+                    className="p-2 rounded-lg hover:bg-slate-200/50 flex items-center gap-3 cursor-pointer transition-colors"
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-                    />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-gray-900 text-sm font-semibold truncate">
-                    Business Vocabulary.pdf
-                  </p>
-                  <p className="text-gray-500 text-xs">2.4 MB</p>
-                </div>
-              </div>
-
-              <div className="p-2 rounded-lg hover:bg-slate-200/50 flex items-center gap-3 cursor-pointer transition-colors">
-                <div className="text-sky-700">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-                    />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-gray-900 text-sm font-semibold truncate">
-                    Weekly Case Study.docx
-                  </p>
-                  <p className="text-gray-500 text-xs">1.1 MB</p>
-                </div>
-              </div>
-
-              <div className="p-2 rounded-lg hover:bg-slate-200/50 flex items-center gap-3 cursor-pointer transition-colors">
-                <div className="text-amber-600">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-gray-900 text-sm font-semibold truncate">
-                    Reference Images
-                  </p>
-                  <p className="text-gray-500 text-xs">12 items</p>
-                </div>
-              </div>
+                    <div className="text-sky-700">
+                      <svg
+                        className="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-gray-900 text-sm font-semibold truncate">
+                        {file.name}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
 
-            <button className="w-full py-2 border border-sky-700/20 text-sky-700 hover:bg-sky-50 font-medium text-sm rounded-lg transition-colors">
+            <button 
+              onClick={() => setShowFileViewer(true)}
+              className="w-full py-2 border border-sky-700/20 text-sky-700 hover:bg-sky-50 font-medium text-sm rounded-lg transition-colors">
               View All Files
             </button>
           </div>
@@ -468,6 +580,29 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
           </div>
         </aside>
       </div>
+
+      {/* File Upload Modal */}
+      <FileUploadModal
+        isOpen={showFileUpload}
+        onClose={() => setShowFileUpload(false)}
+        onUpload={handleFileUpload}
+        groupId={GROUP_ID}
+      />
+
+      {/* Create Poll Modal */}
+      <CreatePollModal
+        isOpen={showCreatePoll}
+        onClose={() => setShowCreatePoll(false)}
+        onCreatePoll={handleCreatePoll}
+      />
+
+      {/* File Viewer Modal */}
+      <FileViewerModal
+        isOpen={showFileViewer}
+        onClose={() => setShowFileViewer(false)}
+        files={sharedFiles}
+        members={groupMembers}
+      />
     </div>
   );
 };

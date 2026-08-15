@@ -160,21 +160,65 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ITEMS_PER_PAGE = 4;
 
 const ALLOWED_MIME_TYPES = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'audio/mpeg',
-  'audio/wav',
-  'audio/x-wav',
+  // Images
   'image/png',
   'image/jpeg',
   'image/gif',
-  'image/webp'
+  'image/webp',
+  'image/svg+xml',
+  'image/bmp',
+  // Documents
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'text/plain',
+  'text/csv',
+  'text/markdown',
+  // Video
+  'video/mp4',
+  'video/webm',
+  'video/quicktime',
+  // Audio
+  'audio/mpeg',
+  'audio/wav',
+  'audio/x-wav',
+  'audio/ogg',
+  'audio/mp4',
+  'audio/aac',
+  // Archives
+  'application/zip',
+  'application/x-rar-compressed',
+  'application/x-7z-compressed',
+  // Code & Data
+  'application/json',
+  'application/xml',
+  'application/javascript',
+  'text/html',
+  'text/css',
+  'text/javascript',
+  'text/x-python',
+  'text/x-java-source',
+  'text/x-c',
+  'text/x-c++',
+  'text/x-ruby',
+  'text/x-php',
+  'text/x-sh'
 ];
 
-const ALLOWED_EXTENSIONS = ['.pdf', '.doc', '.docx', '.mp3', '.wav', '.png', '.jpg', '.jpeg', '.gif', '.webp'];
+const ALLOWED_EXTENSIONS = [
+  '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.csv', '.md', '.rtf',
+  '.mp3', '.wav', '.ogg', '.m4a', '.aac',
+  '.mp4', '.webm', '.mov', '.avi', '.mkv',
+  '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.bmp', '.ico',
+  '.zip', '.rar', '.7z', '.tar', '.gz',
+  '.json', '.xml', '.js', '.html', '.css', '.py', '.java', '.c', '.cpp', '.rb', '.php', '.sh'
+];
 
-const ACCEPT_ATTRIBUTE = ".pdf,.doc,.docx,.mp3,.wav,.png,.jpg,.jpeg,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,audio/*,image/*";
+const ACCEPT_ATTRIBUTE = ".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.md,.rtf,.mp3,.wav,.ogg,.m4a,.aac,.mp4,.webm,.mov,.avi,.mkv,.png,.jpg,.jpeg,.gif,.webp,.svg,.bmp,.ico,.zip,.rar,.7z,.tar,.gz,.json,.xml,.js,.html,.css,.py,.java,.c,.cpp,.rb,.php,.sh,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,audio/*,video/*,image/*";
 
 const getFileMetadata = (file: File): FileMetadata => {
   const fileName = file.name || '';
@@ -187,10 +231,39 @@ const getFileMetadata = (file: File): FileMetadata => {
   const isWord = ['.doc', '.docx'].includes(extension) || 
                  mimeType === 'application/msword' || 
                  mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-  const isAudio = ['.mp3', '.wav'].includes(extension) || mimeType.startsWith('audio/');
-  const isImage = ['.png', '.jpg', '.jpeg', '.gif', '.webp'].includes(extension) || mimeType.startsWith('image/');
+  const isSheet = ['.xls', '.xlsx'].includes(extension) || 
+                  mimeType === 'application/vnd.ms-excel' || 
+                  mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  const isSlides = ['.ppt', '.pptx'].includes(extension) || 
+                   mimeType === 'application/vnd.ms-powerpoint' || 
+                   mimeType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+  const isText = ['.txt', '.csv', '.md', '.rtf'].includes(extension) || 
+                 mimeType === 'text/plain' || 
+                 mimeType === 'text/csv' || 
+                 mimeType === 'text/markdown';
+  const isVideo = ['.mp4', '.webm', '.mov', '.avi', '.mkv'].includes(extension) || mimeType.startsWith('video/');
+  const isAudio = ['.mp3', '.wav', '.ogg', '.m4a', '.aac'].includes(extension) || mimeType.startsWith('audio/');
+  const isImage = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.bmp', '.ico'].includes(extension) || mimeType.startsWith('image/');
+  const isArchive = ['.zip', '.rar', '.7z', '.tar', '.gz'].includes(extension) || 
+                    mimeType === 'application/zip' || 
+                    mimeType === 'application/x-rar-compressed' || 
+                    mimeType === 'application/x-7z-compressed';
+  const isCode = ['.json', '.xml', '.js', '.html', '.css', '.py', '.java', '.c', '.cpp', '.rb', '.php', '.sh'].includes(extension) || 
+                 mimeType === 'application/json' || 
+                 mimeType === 'application/xml' || 
+                 mimeType === 'application/javascript' || 
+                 mimeType === 'text/html' || 
+                 mimeType === 'text/css' || 
+                 mimeType === 'text/javascript' || 
+                 mimeType === 'text/x-python' || 
+                 mimeType === 'text/x-java-source' || 
+                 mimeType === 'text/x-c' || 
+                 mimeType === 'text/x-c++' || 
+                 mimeType === 'text/x-ruby' || 
+                 mimeType === 'text/x-php' || 
+                 mimeType === 'text/x-sh';
 
-  const isValidType = isPdf || isWord || isAudio || isImage || 
+  const isValidType = isPdf || isWord || isSheet || isSlides || isText || isVideo || isAudio || isImage || isArchive || isCode || 
                       ALLOWED_MIME_TYPES.includes(mimeType) || 
                       ALLOWED_EXTENSIONS.includes(extension);
 
@@ -210,6 +283,30 @@ const getFileMetadata = (file: File): FileMetadata => {
       isValidType
     };
   }
+  if (isSheet) {
+    return {
+      typeLabel: 'Spreadsheet',
+      icon: FileTextIcon,
+      iconBg: 'bg-emerald-50 text-emerald-600',
+      isValidType
+    };
+  }
+  if (isSlides) {
+    return {
+      typeLabel: 'Presentation',
+      icon: FileTextIcon,
+      iconBg: 'bg-orange-50 text-orange-600',
+      isValidType
+    };
+  }
+  if (isVideo) {
+    return {
+      typeLabel: 'Video File',
+      icon: HardDriveIcon,
+      iconBg: 'bg-rose-50 text-rose-600',
+      isValidType
+    };
+  }
   if (isAudio) {
     return {
       typeLabel: 'Audio File',
@@ -223,6 +320,30 @@ const getFileMetadata = (file: File): FileMetadata => {
       typeLabel: 'Image',
       icon: ImageIcon,
       iconBg: 'bg-green-50 text-green-600',
+      isValidType
+    };
+  }
+  if (isArchive) {
+    return {
+      typeLabel: 'Archive',
+      icon: HardDriveIcon,
+      iconBg: 'bg-yellow-50 text-yellow-700',
+      isValidType
+    };
+  }
+  if (isCode) {
+    return {
+      typeLabel: 'Code File',
+      icon: FileTextIcon,
+      iconBg: 'bg-indigo-50 text-indigo-600',
+      isValidType
+    };
+  }
+  if (isText) {
+    return {
+      typeLabel: 'Text Document',
+      icon: FileTextIcon,
+      iconBg: 'bg-slate-50 text-slate-600',
       isValidType
     };
   }
@@ -349,7 +470,7 @@ export default function RepositoryUpload() {
         status: 'error',
         progress: 0,
         fileName: file.name,
-        errorMessage: 'Unsupported file format. Please upload PDF, DOC, DOCX, MP3, WAV, PNG, JPG, GIF, or WEBP.'
+        errorMessage: 'Unsupported file format. Please upload PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, CSV, MP3, WAV, MP4, images, archives, or code files.'
       });
       return;
     }
@@ -598,7 +719,7 @@ export default function RepositoryUpload() {
           </div>
           <h3 className="text-lg font-semibold text-gray-900">Drop files to upload</h3>
           <p className="text-sm text-gray-500 mt-1">
-            Support for PDF, DOCX, MP3, and images up to 50MB
+            Support for PDF, DOC, DOCX, XLS, PPT, MP3, MP4, images, archives, and more up to 50MB
           </p>
           <button 
             type="button"
