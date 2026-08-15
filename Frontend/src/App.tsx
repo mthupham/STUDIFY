@@ -205,7 +205,7 @@ function App() {
           element={
             <OnboardingGuard>
               <MainLayout>
-                <LeaderWorkspace />
+                <WorkspaceRouter />
               </MainLayout>
             </OnboardingGuard>
           }

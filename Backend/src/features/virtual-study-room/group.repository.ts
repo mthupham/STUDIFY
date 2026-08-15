@@ -80,6 +80,44 @@ export class GroupRepository {
     });
   }
 
+  async findMembershipsByUser(userId: number): Promise<GroupMember[]> {
+    return this.groupMemberModel.findAll({
+      where: {
+        userId,
+      },
+      order: [['joinedAt', 'DESC']],
+    });
+  }
+
+  async findGroupsByIds(groupIds: number[]): Promise<StudyGroup[]> {
+    if (groupIds.length === 0) {
+      return [];
+    }
+
+    return this.studyGroupModel.findAll({
+      where: {
+        id: {
+          [Op.in]: groupIds,
+        },
+      },
+    });
+  }
+
+  async findMembersByGroup(groupId: number): Promise<GroupMember[]> {
+    return this.groupMemberModel.findAll({
+      where: {
+        groupId,
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name', 'email', 'avatar'],
+        },
+      ],
+      order: [['joinedAt', 'ASC']],
+    });
+  }
+
   async findGroupsByUserId(userId: number): Promise<StudyGroup[]> {
     const memberships = await this.groupMemberModel.findAll({
       where: {
@@ -87,9 +125,7 @@ export class GroupRepository {
       },
     });
 
-    const groupIds = memberships.map(
-      (member) => member.groupId,
-    );
+    const groupIds = memberships.map((member) => member.groupId);
 
     if (groupIds.length === 0) {
       return [];
@@ -140,7 +176,11 @@ export class GroupRepository {
     });
   }
 
-  async updateMemberRole(groupId: number, userId: number, role: string): Promise<[number]> {
+  async updateMemberRole(
+    groupId: number,
+    userId: number,
+    role: string,
+  ): Promise<[number]> {
     return this.groupMemberModel.update(
       { role },
       { where: { groupId, userId } },
@@ -155,7 +195,11 @@ export class GroupRepository {
 
   async updateGroup(
     groupId: number,
-    updateData: Partial<{ name: string; description: string | null; icon: string }>,
+    updateData: Partial<{
+      name: string;
+      description: string | null;
+      icon: string;
+    }>,
   ): Promise<StudyGroup> {
     await this.studyGroupModel.update(updateData, {
       where: { id: groupId },

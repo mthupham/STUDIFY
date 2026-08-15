@@ -57,9 +57,9 @@ export const sequelizeConfig = (
     Message,
     StudyGroup,
     GroupMember,
-     Deck,
-  Flashcard,
-    Notification
+    Deck,
+    Flashcard,
+    Notification,
     GroupTask,
     GroupSchedule,
   ],

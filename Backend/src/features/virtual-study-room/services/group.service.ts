@@ -3,7 +3,6 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  ForbiddenException,
 } from '@nestjs/common';
 import { GroupMemberRole } from '../../../models/group_member.model';
 import { GroupRepository } from '../group.repository';
@@ -12,7 +11,6 @@ import { JoinGroupDto } from '../dto/join-group.dto';
 import { UpdateGroupDto } from '../dto/update-group.dto';
 import { ChangeRoleDto } from '../dto/change-role.dto';
 import { generateGroupCode } from '../utilities/group-code.util';
-import { GroupMemberRole } from '../../../models/group_member.model';
 
 const MAX_MEMBERS = 5;
 

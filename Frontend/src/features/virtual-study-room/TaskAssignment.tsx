@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { TaskModal } from "./Modal/TaskModal";
-import type { Assignment, TaskStatus, CategoryType, Member } from "./Modal/TaskModal";
+import type {
+  Assignment,
+  TaskStatus,
+  CategoryType,
+  Member,
+} from "./Modal/TaskModal";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getApiErrorMessage,
@@ -33,8 +38,10 @@ function deadlinePresentation(dueAt: string, status: GroupTaskDto["status"]) {
   }
   const days = Math.ceil((new Date(dueAt).getTime() - Date.now()) / 86_400_000);
   if (days < 0) return { text: "Overdue", color: "text-red-700 font-bold" };
-  if (days === 0) return { text: "Due today", color: "text-red-700 font-medium" };
-  if (days === 1) return { text: "Tomorrow", color: "text-amber-700 font-medium" };
+  if (days === 0)
+    return { text: "Due today", color: "text-red-700 font-medium" };
+  if (days === 1)
+    return { text: "Tomorrow", color: "text-amber-700 font-medium" };
   return { text: `In ${days} days`, color: "text-gray-700" };
 }
 
@@ -376,7 +383,7 @@ const StatusBadge: React.FC<{ status: TaskStatus }> = ({ status }) => {
 // ==========================================
 
 export const TaskAssignmentDashboard: React.FC = () => {
-  const { groupId = "1" } = useParams();
+  const { groupId } = useParams<{ groupId: string }>();
   const numericGroupId = Number(groupId);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
@@ -386,7 +393,6 @@ export const TaskAssignmentDashboard: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { groupId } = useParams<{ groupId: string }>();
 
   // States quản lý Modal
   const [isAssignModalOpen, setIsAssignModalOpen] = useState<boolean>(false);
@@ -416,7 +422,9 @@ export const TaskAssignmentDashboard: React.FC = () => {
       setAssignments(taskDtos.map((task) => toAssignment(task, mappedMembers)));
       setGroupName(groupDetail.group.name);
     } catch (requestError) {
-      setError(getApiErrorMessage(requestError, "Unable to load task assignments."));
+      setError(
+        getApiErrorMessage(requestError, "Unable to load task assignments."),
+      );
     } finally {
       setLoading(false);
     }
@@ -435,7 +443,9 @@ export const TaskAssignmentDashboard: React.FC = () => {
   const toPayload = (task: Partial<Assignment>): TaskPayload => ({
     title: task.title?.trim() || "Untitled Task",
     description: task.description?.trim() || undefined,
-    category: (task.category || "essay").toUpperCase() as TaskPayload["category"],
+    category: (
+      task.category || "essay"
+    ).toUpperCase() as TaskPayload["category"],
     assignedTo: task.member?.userId ?? 0,
     startAt: task.startDate ? `${task.startDate}T00:00:00.000Z` : undefined,
     dueAt: `${task.dueDate}T23:59:59.000Z`,
@@ -549,7 +559,9 @@ export const TaskAssignmentDashboard: React.FC = () => {
       );
       setActiveMenuId(null);
     } catch (requestError) {
-      setError(getApiErrorMessage(requestError, "Unable to change task visibility."));
+      setError(
+        getApiErrorMessage(requestError, "Unable to change task visibility."),
+      );
     }
   };
 
@@ -573,10 +585,7 @@ export const TaskAssignmentDashboard: React.FC = () => {
           </h1>
           <p className="text-lg font-normal leading-7 text-gray-700">
             Manage weekly deliverables for the{" "}
-            <span className="text-sky-700 font-medium">
-              {groupName}
-            </span>{" "}
-            group.
+            <span className="text-sky-700 font-medium">{groupName}</span> group.
           </p>
         </div>
 
@@ -638,7 +647,9 @@ export const TaskAssignmentDashboard: React.FC = () => {
           <div className="pt-2 flex flex-col gap-2">
             <div className="flex justify-between items-center text-sm">
               <span className="font-semibold text-gray-900">Progress</span>
-              <span className="font-bold text-gray-900">{completionPercent}%</span>
+              <span className="font-bold text-gray-900">
+                {completionPercent}%
+              </span>
             </div>
             <div className="w-full h-2 bg-indigo-100 rounded-full overflow-hidden">
               <div

@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useGroupChat } from "./hooks/useGroupChat";
-import type { StudyGroup } from "./services/groupService";
-import { useParams } from "react-router-dom";
 import MemberAssignmentWidgets from "./components/MemberAssignmentWidgets";
 import { studyGroupApi } from "./services/studyGroupApi";
+import type { StudyGroup } from "./services/groupService";
+
+interface BusinessEnglishHubProps {
+  groupId: number;
+  groupData: StudyGroup;
+}
 
 // --- Types ---
 interface FileItem {
@@ -32,25 +36,33 @@ interface Message {
   file?: FileItem;
 }
 
-export const BusinessEnglishHub: React.FC = () => {
-  const { groupId = "1" } = useParams();
-  const numericGroupId = Number(groupId);
+export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
+  groupId,
+  groupData,
+}) => {
+  const numericGroupId = groupId;
+
   // --- States ---
   const [inputMessage, setInputMessage] = useState("");
   const [copiedCode, setCopiedCode] = useState(false);
   const [showAllMembers, setShowAllMembers] = useState(false);
-  const [groupName, setGroupName] = useState("Study Group");
-  const [inviteCode, setInviteCode] = useState("");
+  const [groupName, setGroupName] = useState(groupData.name);
+  const [inviteCode, setInviteCode] = useState(groupData.code);
   const [membersCount, setMembersCount] = useState(0);
 
-  const { messages, sendMessage, currentUserId } = useGroupChat(groupId);
+  const { messages, sendMessage, currentUserId } = useGroupChat(
+    String(groupId),
+  );
 
   useEffect(() => {
-    studyGroupApi.getGroup(numericGroupId).then(({ group }) => {
-      setGroupName(group.name);
-      setInviteCode(group.code);
-      setMembersCount(group.membersCount);
-    }).catch(() => undefined);
+    studyGroupApi
+      .getGroup(numericGroupId)
+      .then(({ group }) => {
+        setGroupName(group.name);
+        setInviteCode(group.code);
+        setMembersCount(group.membersCount);
+      })
+      .catch(() => undefined);
   }, [numericGroupId]);
 
   // --- Handlers ---
@@ -62,9 +74,12 @@ export const BusinessEnglishHub: React.FC = () => {
   };
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(groupData.code);
+    navigator.clipboard.writeText(inviteCode);
     setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
+
+    setTimeout(() => {
+      setCopiedCode(false);
+    }, 2000);
   };
 
   return (
@@ -84,7 +99,7 @@ export const BusinessEnglishHub: React.FC = () => {
             </h2>
             <div className="flex items-center gap-3">
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs font-mono font-medium rounded">
-                #{groupData.code}
+                #{inviteCode}
               </span>
               <div className="flex items-center gap-1.5 text-gray-600 text-xs font-medium">
                 <svg
@@ -144,7 +159,9 @@ export const BusinessEnglishHub: React.FC = () => {
                 <div className="flex flex-col gap-1 max-w-[80%]">
                   <div className="flex items-baseline gap-2">
                     <span className="font-semibold text-sm text-gray-900">
-                      {msg.sender?.id === currentUserId ? "You" : msg.sender?.name || "Unknown"}
+                      {msg.sender?.id === currentUserId
+                        ? "You"
+                        : msg.sender?.name || "Unknown"}
                     </span>
                     <span className="text-gray-400 text-xs">
                       {new Date(msg.createdAt).toLocaleTimeString([], {
@@ -258,7 +275,7 @@ export const BusinessEnglishHub: React.FC = () => {
               </span>
               <div className="flex justify-between items-center">
                 <span className="text-sky-700 text-xl font-mono font-bold">
-                  {groupData.code}
+                  {inviteCode}
                 </span>
                 <button
                   onClick={handleCopyCode}

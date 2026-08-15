@@ -5,9 +5,6 @@ import {
   studyGroupApi,
   type StudyGroupSummary,
 } from "./services/studyGroupApi";
-import { getMyGroups } from "./services/groupService";
-import type { StudyGroup } from "./services/groupService";
-import { useAuthStore } from "../auth/store/useAuthStore";
 
 const UPCOMING_MEETUPS = [
   {
@@ -165,7 +162,7 @@ function HeaderSection() {
 /**
  * Card hiển thị thông tin chi tiết từng nhóm học
  */
-function GroupCard({ group }: { group: StudyGroup }) {
+function GroupCard({ group }: { group: StudyGroupSummary }) {
   const navigate = useNavigate();
 
   return (

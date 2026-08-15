@@ -7,10 +7,7 @@ import {
   Post,
   Req,
   UseGuards,
-  Get,
   Delete,
-  Param,
-  ParseIntPipe,
   Patch,
 } from '@nestjs/common';
 
@@ -117,11 +114,6 @@ export class GroupController {
   @ApiOperation({
     summary: 'Get study groups of current user',
   })
-  async getMyGroups(@Req() req: any) {
-    return this.groupService.getMyGroups(
-      req.user.id,
-    );
-  }
 
   @Get(':groupId')
   @ApiOperation({

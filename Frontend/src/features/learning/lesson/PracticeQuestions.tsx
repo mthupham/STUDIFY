@@ -1,11 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-const API_BASE =
-  import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 type QuestionView = "multiple-choice" | "written";
 
 interface QuestionItem {
@@ -15,25 +10,24 @@ interface QuestionItem {
   options?: string[];
 }
 
-
 export const PracticeQuestions: React.FC = () => {
   const navigate = useNavigate();
   const { lessonId } = useParams<{ lessonId: string }>();
   const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-const [searchParams] = useSearchParams();
-const skill = searchParams.get("skill") ?? "reading";
+  const [searchParams] = useSearchParams();
+  const skill = searchParams.get("skill") ?? "reading";
   const [questions, setQuestions] = useState<QuestionItem[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
-const getAccessToken = () => {
-  return (
-    localStorage.getItem("accessToken") ||
-    localStorage.getItem("access_token") ||
-    localStorage.getItem("token")
-  );
-};
+  const getAccessToken = () => {
+    return (
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("access_token") ||
+      localStorage.getItem("token")
+    );
+  };
   const [notification, setNotification] = useState<{
     type: "success" | "error";
     message: string;
@@ -46,67 +40,60 @@ const getAccessToken = () => {
       setNotification(null);
     }, 3000);
   };
-      useEffect(() => {
-  const fetchQuestions = async () => {
-    if (!lessonId) {
-      showNotification("error", "Không tìm thấy lesson ID.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const token = getAccessToken();
-
-     const response = await fetch(
-  `${API_BASE}/learning/lessons/${lessonId}/questions?skill=${skill}`,
-        {
-          headers: {
-            ...(token
-              ? {
-                  Authorization: `Bearer ${token}`,
-                }
-              : {}),
-          },
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Không thể tải câu hỏi.",
-        );
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      if (!lessonId) {
+        showNotification("error", "Không tìm thấy lesson ID.");
+        setLoading(false);
+        return;
       }
-const questionList =
-  data.questions ||
-  data.data?.questions ||
-  [];
 
-setQuestions(questionList);
-      setCurrentQuestionIndex(0);
-    } catch (error) {
-      console.error("Load questions error:", error);
+      try {
+        setLoading(true);
 
-      showNotification(
-        "error",
-        error instanceof Error
-          ? error.message
-          : "Không thể tải câu hỏi.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+        const token = getAccessToken();
 
-  void fetchQuestions();
-}, [lessonId,skill]);
+        const response = await fetch(
+          `${API_BASE}/learning/lessons/${lessonId}/questions?skill=${skill}`,
+          {
+            headers: {
+              ...(token
+                ? {
+                    Authorization: `Bearer ${token}`,
+                  }
+                : {}),
+            },
+          },
+        );
 
- const currentQuestion = useMemo(
-  () => questions[currentQuestionIndex],
-  [questions, currentQuestionIndex],
-);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Không thể tải câu hỏi.");
+        }
+        const questionList = data.questions || data.data?.questions || [];
+
+        setQuestions(questionList);
+        setCurrentQuestionIndex(0);
+      } catch (error) {
+        console.error("Load questions error:", error);
+
+        showNotification(
+          "error",
+          error instanceof Error ? error.message : "Không thể tải câu hỏi.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchQuestions();
+  }, [lessonId, skill]);
+
+  const currentQuestion = useMemo(
+    () => questions[currentQuestionIndex],
+    [questions, currentQuestionIndex],
+  );
 
   const currentQuestionNumber = currentQuestionIndex + 1;
   const progressPercentage = (
@@ -135,99 +122,91 @@ setQuestions(questionList);
 
     console.log(currentQuestion.id, answer);
 
-
     showNotification("success", "Answer submitted successfully.");
   };
 
- const handleFinish = async () => {
-  const unanswered = questions.filter(
-    (q) => !answers[q.id] || answers[q.id].trim() === "",
-  );
-
-  if (unanswered.length > 0) {
-    showNotification(
-      "error",
-      `You still have ${unanswered.length} unanswered question(s).`,
-    );
-    return;
-  }
-
-  if (!lessonId) {
-    showNotification("error", "Không tìm thấy lesson ID.");
-    return;
-  }
-
-  try {
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("access_token") ||
-      localStorage.getItem("token");
-
-    const response = await fetch(
-      `${API_URL}/learning/lessons/${lessonId}/submit-practice`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token
-            ? {
-                Authorization: `Bearer ${token}`,
-              }
-            : {}),
-        },
-        body: JSON.stringify({
-          answers,
-        }),
-      },
+  const handleFinish = async () => {
+    const unanswered = questions.filter(
+      (q) => !answers[q.id] || answers[q.id].trim() === "",
     );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.message || "Không thể nộp bài practice.",
+    if (unanswered.length > 0) {
+      showNotification(
+        "error",
+        `You still have ${unanswered.length} unanswered question(s).`,
       );
+      return;
     }
 
-    showNotification(
-      "success",
-      "Practice submitted successfully.",
-    );
+    if (!lessonId) {
+      showNotification("error", "Không tìm thấy lesson ID.");
+      return;
+    }
 
-    setTimeout(() => {
-      navigate("/lessons/practice/result", {
-        state: {
-          result: data,
+    try {
+      const token =
+        localStorage.getItem("accessToken") ||
+        localStorage.getItem("access_token") ||
+        localStorage.getItem("token");
+
+      const response = await fetch(
+        `${API_URL}/learning/lessons/${lessonId}/submit-practice`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token
+              ? {
+                  Authorization: `Bearer ${token}`,
+                }
+              : {}),
+          },
+          body: JSON.stringify({
+            answers,
+          }),
         },
-      });
-    }, 800);
-  } catch (error) {
-    console.error("Submit practice error:", error);
+      );
 
-    showNotification(
-      "error",
-      error instanceof Error
-        ? error.message
-        : "Không thể nộp bài practice.",
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Không thể nộp bài practice.");
+      }
+
+      showNotification("success", "Practice submitted successfully.");
+
+      setTimeout(() => {
+        navigate("/lessons/practice/result", {
+          state: {
+            result: data,
+          },
+        });
+      }, 800);
+    } catch (error) {
+      console.error("Submit practice error:", error);
+
+      showNotification(
+        "error",
+        error instanceof Error ? error.message : "Không thể nộp bài practice.",
+      );
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-slate-500">Loading questions...</p>
+      </div>
     );
   }
-};
 
-if (loading) {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-slate-500">Loading questions...</p>
-    </div>
-  );
-}
-
-if (questions.length === 0 || !currentQuestion) {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-red-500">Không tìm thấy câu hỏi.</p>
-    </div>
-  );
-}
+  if (questions.length === 0 || !currentQuestion) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-500">Không tìm thấy câu hỏi.</p>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       {notification && (
@@ -261,7 +240,7 @@ if (questions.length === 0 || !currentQuestion) {
         <div className="w-full rounded-[24px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:p-8 lg:p-10">
           <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 pb-5">
             <span className="rounded-full bg-[#eaf2ff] px-3 py-1 text-sm font-semibold text-[#315dc7]">
-   {lessonId?.split("_")[0]} Level
+              {lessonId?.split("_")[0]} Level
             </span>
             <span className="text-sm text-slate-500">•</span>
             <div className="flex items-center gap-2 text-sm text-slate-500">
