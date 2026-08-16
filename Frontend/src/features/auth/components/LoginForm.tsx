@@ -111,7 +111,7 @@ export default function LoginForm() {
 
                     <button
                         type="button"
-                        onClick={() => window.location.href = 'http://localhost:3000/auth/google'}
+                        onClick={() => window.location.href =  `${import.meta.env.VITE_API_URL}/auth/google`}
                         className="w-full py-3 rounded-xl outline outline-1 outline-slate-300 hover:bg-slate-50 transition-colors inline-flex justify-center items-center gap-2"
                     >
                         <svg className="size-5" viewBox="0 0 24 24">
