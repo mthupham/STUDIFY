@@ -1,14 +1,17 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { GoogleGenAI } from '@google/genai';
 
-export interface GrammarFeedback {
-  explanation: string;
-  grammarRule: string;
-  example: string;
-  improvementTip: string;
+import {
+  GrammarError,
+  GrammarFeedback,
+  VocabularyAnalysis,
+  ClarityAnalysis,
+} from '../interfaces/speaking-analysis.interface';
+
+interface SpeakingGeminiFeedback {
+  grammar: GrammarFeedback;
+  technicalVocabulary: VocabularyAnalysis;
+  clarity: ClarityAnalysis;
 }
 
 @Injectable()
@@ -29,51 +32,63 @@ export class GeminiService {
 
   async explainGrammarError(
     originalSentence: string,
-    errors: {
-      text: string;
-      suggestion: string;
-      message: string;
-      ruleId: string;
-    }[],
+    errors: GrammarError[],
     scenario?: string,
-  ): Promise<GrammarFeedback> {
+  ): Promise<SpeakingGeminiFeedback> {
     try {
       const prompt = `
-You are an English grammar tutor for software developers.
+You are an English speaking tutor for software developers.
 
 The learner is practicing spoken English in this scenario:
 ${scenario ?? 'general'}
 
-Original sentence:
+Original transcript:
 "${originalSentence}"
 
 The grammar checker detected these errors:
 ${JSON.stringify(errors, null, 2)}
 
-Your task is to explain the detected grammar errors.
+Analyze the learner's speaking performance.
 
 IMPORTANT RULES:
 1. Do NOT invent additional grammar errors.
-2. Only explain errors provided by the grammar checker.
-3. Keep the explanation suitable for an English learner.
-4. Use simple and clear English.
-5. The example should be relevant to software engineering when possible.
-6. Give one practical improvement tip.
-7. Return ONLY valid JSON.
-8. Do not use markdown code fences.
+2. Only explain grammar errors provided by the grammar checker.
+3. Analyze technical vocabulary based on the scenario.
+4. Identify useful software-engineering terms that the learner actually used.
+5. Suggest technical vocabulary that would improve the answer.
+6. Analyze the clarity of the learner's answer.
+7. Keep feedback suitable for an English learner.
+8. Use simple and clear English.
+9. Scores must be integers from 0 to 100.
+10. Return ONLY valid JSON.
+11. Do not use markdown code fences.
 
 Return exactly this structure:
 
 {
-  "explanation": "...",
-  "grammarRule": "...",
-  "example": "...",
-  "improvementTip": "..."
+  "grammar": {
+    "explanation": "...",
+    "grammarRule": "...",
+    "example": "...",
+    "improvementTip": "..."
+  },
+  "technicalVocabulary": {
+    "score": 0,
+    "usedTerms": [],
+    "suggestions": [],
+    "feedback": "..."
+  },
+  "clarity": {
+    "score": 0,
+    "strengths": [],
+    "suggestions": [],
+    "feedback": "..."
+  }
 }
 `;
 
       const response = await this.client.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.1-flash-lite',
         contents: prompt,
         config: {
           responseMimeType: 'application/json',
@@ -86,15 +101,16 @@ Return exactly this structure:
         throw new Error('Gemini returned an empty response');
       }
 
-      return JSON.parse(text) as GrammarFeedback;
+      console.log('===== GEMINI RAW RESPONSE =====');
+      console.log(text);
+      console.log('===== END GEMINI RAW RESPONSE =====');
+
+      return JSON.parse(text) as SpeakingGeminiFeedback;
     } catch (error) {
-      console.error(
-        'Gemini grammar feedback error:',
-        error,
-      );
+      console.error('Gemini speaking feedback error:', error);
 
       throw new InternalServerErrorException(
-        'Failed to generate grammar feedback',
+        'Failed to generate speaking feedback',
       );
     }
   }

@@ -35,8 +35,15 @@ export interface ClarityAnalysis {
 
 export interface SpeakingAnalysisResponse {
   transcript: string;
-  grammar: GrammarAnalysis;
+
+  grammar: GrammarAnalysis & {
+    explanation: string;
+    grammarRule: string;
+    example: string;
+    improvementTip: string;
+  };
+
   technicalVocabulary: VocabularyAnalysis;
+
   clarity: ClarityAnalysis;
-  feedback?: GrammarFeedback;
 }

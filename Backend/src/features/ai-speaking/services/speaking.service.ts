@@ -36,88 +36,67 @@ export class SpeakingService {
   }
 
   async analyzeSpeaking(
-    transcript: string,
-    scenario: string,
-  ): Promise<SpeakingAnalysisResponse> {
-    const languageToolResult =
-      await this.languageToolService.checkGrammar(transcript);
+  transcript: string,
+  scenario: string,
+): Promise<SpeakingAnalysisResponse> {
+  const languageToolResult =
+    await this.languageToolService.checkGrammar(transcript);
 
-    const errors: GrammarError[] = languageToolResult.matches
-      .filter(
-        (match) =>
-          match.rule?.issueType === 'grammar' || !match.rule?.issueType,
-      )
-      .map((match) => {
-        const errorText =
-          match.context?.text?.slice(
-            match.context.offset,
-            match.context.offset + match.context.length,
-          ) ?? transcript.slice(match.offset, match.offset + match.length);
+  const errors: GrammarError[] = languageToolResult.matches
+    .filter(
+      (match) =>
+        match.rule?.issueType === 'grammar' || !match.rule?.issueType,
+    )
+    .map((match) => {
+      const errorText =
+        match.context?.text?.slice(
+          match.context.offset,
+          match.context.offset + match.context.length,
+        ) ?? transcript.slice(match.offset, match.offset + match.length);
 
-        return {
-          text: errorText,
-          suggestion: match.replacements?.[0]?.value ?? '',
-          message: match.message,
-          ruleId: match.rule?.id ?? '',
-          issueType: match.rule?.issueType ?? 'grammar',
-        };
-      });
-
-    // Không có lỗi
-    if (errors.length === 0) {
       return {
-        transcript,
-        grammar: {
-          hasErrors: false,
-          score: 100,
-          errors: [],
-        },
-        technicalVocabulary: {
-          score: 0,
-          usedTerms: [],
-          suggestions: [],
-          feedback: '',
-        },
-        clarity: {
-          score: 0,
-          strengths: [],
-          suggestions: [],
-          feedback: '',
-        },
+        text: errorText,
+        suggestion: match.replacements?.[0]?.value ?? '',
+        message: match.message,
+        ruleId: match.rule?.id ?? '',
+        issueType: match.rule?.issueType ?? 'grammar',
       };
-    }
+    });
 
-    // Có lỗi
-    const score = this.calculateGrammarScore(transcript, errors.length);
+  const score = this.calculateGrammarScore(
+    transcript,
+    errors.length,
+  );
 
-    const feedback = await this.geminiService.explainGrammarError(
-      transcript,
+  // Gemini luôn được gọi để phân tích:
+  // - grammar explanation
+  // - technical vocabulary
+  // - clarity
+  const feedback = await this.geminiService.explainGrammarError(
+    transcript,
+    errors,
+    scenario,
+  );
+
+  return {
+    transcript,
+
+    grammar: {
+      hasErrors: errors.length > 0,
+      score,
       errors,
-      scenario,
-    );
 
-    return {
-      transcript,
-      grammar: {
-        hasErrors: false,
-        score: 100,
-        errors: [],
-      },
-      technicalVocabulary: {
-        score: 0,
-        usedTerms: [],
-        suggestions: [],
-        feedback: '',
-      },
-      clarity: {
-        score: 0,
-        strengths: [],
-        suggestions: [],
-        feedback: '',
-      },
-    };
-  }
+      explanation: feedback.grammar.explanation,
+      grammarRule: feedback.grammar.grammarRule,
+      example: feedback.grammar.example,
+      improvementTip: feedback.grammar.improvementTip,
+    },
 
+    technicalVocabulary: feedback.technicalVocabulary,
+
+    clarity: feedback.clarity,
+  };
+}
   private calculateGrammarScore(
     transcript: string,
     errorCount: number,

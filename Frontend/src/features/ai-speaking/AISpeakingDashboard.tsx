@@ -15,6 +15,12 @@ declare global {
   }
 }
 
+interface ChatTurn {
+  question: SpeakingQuestion;
+  answer?: string;
+  analysis?: SpeakingAnalysisResponse;
+}
+
 // ==========================================
 // SVG ICONS & UI METADATA
 // ==========================================
@@ -94,7 +100,7 @@ const SCENARIOS_METADATA: ScenarioMetadata[] = [
     icon: <SunIcon />,
   },
   {
-    id: 'interviews',
+    id: 'interview',
     title: 'Tech Interviews',
     description: 'Prepare for System Design, Coding interviews, and Tech Lead questions.',
     icon: <UserGroupIcon />,
@@ -103,7 +109,7 @@ const SCENARIOS_METADATA: ScenarioMetadata[] = [
 
 export const VoiceLearningDashboard: React.FC = () => {
   const [selectedScenario, setSelectedScenario] = useState<string>('technical');
-  const [currentQuestion, setCurrentQuestion] = useState<SpeakingQuestion | null>(null);
+  const [turns, setTurns] = useState<ChatTurn[]>([]);
   const [analysis, setAnalysis] = useState<SpeakingAnalysisResponse | null>(null);
 
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -115,12 +121,20 @@ export const VoiceLearningDashboard: React.FC = () => {
 
   const finalTranscriptRef = useRef<string>('');
   const recognitionRef = useRef<any>(null);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Load question on page load and scenario change
+  const currentQuestion = turns.length > 0 ? turns[turns.length - 1].question : null;
+
+  // Auto-scroll chat to bottom on updates
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [turns, liveTranscript, isProcessing]);
+
+  // Load initial question when scenario changes
   useEffect(() => {
     let isMounted = true;
 
-    const fetchQuestion = async () => {
+    const fetchInitialQuestion = async () => {
       if (recognitionRef.current && isRecording) {
         recognitionRef.current.stop();
         setIsRecording(false);
@@ -135,7 +149,7 @@ export const VoiceLearningDashboard: React.FC = () => {
       try {
         const questionData = await getRandomQuestion(selectedScenario);
         if (isMounted) {
-          setCurrentQuestion(questionData);
+          setTurns([{ question: questionData }]);
         }
       } catch (error) {
         console.error('Failed to fetch question:', error);
@@ -149,7 +163,7 @@ export const VoiceLearningDashboard: React.FC = () => {
       }
     };
 
-    fetchQuestion();
+    fetchInitialQuestion();
 
     return () => {
       isMounted = false;
@@ -210,7 +224,6 @@ export const VoiceLearningDashboard: React.FC = () => {
 
   const handleStartListening = async () => {
     setErrorMessage(null);
-    setAnalysis(null);
     finalTranscriptRef.current = '';
     setLiveTranscript('');
 
@@ -243,12 +256,28 @@ export const VoiceLearningDashboard: React.FC = () => {
       setIsProcessing(true);
       setErrorMessage(null);
 
+      // 1. Gửi backend phân tích
       const result = await analyzeSpeaking(transcript, selectedScenario);
-
       setAnalysis(result);
-      if (result.transcript) {
-        setLiveTranscript(result.transcript);
-      }
+
+      // 2. Lấy câu hỏi mới tiếp theo
+      const nextQuestion = await getRandomQuestion(selectedScenario);
+
+      // 3. Cập nhật lượt hội thoại: lưu lại câu trả lời + result của lượt hiện tại, đẩy câu hỏi mới xuống dưới
+      setTurns((prevTurns) => {
+        const updated = [...prevTurns];
+        if (updated.length > 0) {
+          updated[updated.length - 1] = {
+            ...updated[updated.length - 1],
+            answer: result.transcript || transcript,
+            analysis: result,
+          };
+        }
+        return [...updated, { question: nextQuestion }];
+      });
+
+      setLiveTranscript('');
+      finalTranscriptRef.current = '';
     } catch (error) {
       console.error('Speaking analysis failed:', error);
       setErrorMessage('Unable to analyze your speech. Please try again.');
@@ -258,7 +287,7 @@ export const VoiceLearningDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6 text-slate-800 font-sans flex justify-center items-center bg-slate-100">
+    <div className="min-h-screen p-4 md:p-6 text-slate-800 font-sans flex justify-center items-center">
       <main className="w-full max-w-[1280px] grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Scenarios Panel */}
@@ -399,36 +428,36 @@ export const VoiceLearningDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Metrics */}
+          {/* Metrics Panel */}
           <div className="grid grid-cols-3 gap-3">
             <ScoreCard 
               label="Grammar" 
-              score={analysis ? analysis.grammar.score : null} 
+              score={analysis ? analysis.grammar?.score ?? null : null} 
               colorClass="text-sky-700" 
               progressBgClass="bg-sky-700" 
             />
             <ScoreCard 
               label="Tech Vocabulary" 
-              score={null} 
-              isPlaceholder
+              score={analysis ? analysis.technicalVocabulary?.score ?? null : null} 
               colorClass="text-emerald-700" 
               progressBgClass="bg-emerald-700" 
             />
             <ScoreCard 
               label="Clarity & Precision" 
-              score={null}
-              isPlaceholder 
+              score={analysis ? analysis.clarity?.score ?? null : null} 
               colorClass="text-amber-700" 
               progressBgClass="bg-amber-700" 
             />
           </div>
         </section>
 
-        {/* Real-time Transcript & Feedback Panel */}
+        {/* Real-time Conversation History & Dynamic Feedback Panel */}
         <aside className="lg:col-span-4 flex flex-col gap-6">
-          <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300 overflow-hidden flex flex-col h-[320px] relative">
+          
+          {/* Conversation History Scroll Box */}
+          <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300 overflow-hidden flex flex-col h-[340px] relative">
             <div className="p-4 bg-indigo-50/50 border-b border-slate-200 flex justify-between items-center">
-              <h3 className="text-sm font-semibold text-gray-900">Real-time Transcript</h3>
+              <h3 className="text-sm font-semibold text-gray-900">Conversation History</h3>
               <span
                 className={`px-2 py-0.5 text-[10px] font-bold rounded uppercase ${
                   isRecording
@@ -449,51 +478,82 @@ export const VoiceLearningDashboard: React.FC = () => {
               </div>
             ) : (
               <div className="p-4 overflow-y-auto flex flex-col gap-4 text-xs flex-1">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[10px] font-bold text-sky-700 tracking-wider">AI TECH LEAD</span>
-                  <div className="p-3 bg-indigo-50 text-gray-800 rounded-lg max-w-[90%] leading-relaxed">
-                    {currentQuestion?.question ?? 'Loading question...'}
-                  </div>
-                </div>
+                {turns.map((turn, index) => {
+                  const isLastTurn = index === turns.length - 1;
+                  const currentSpeech = isLastTurn && (isRecording || liveTranscript) ? liveTranscript : turn.answer;
 
-                <div className="flex flex-col gap-1 items-end">
-                  <span className="text-[10px] font-bold text-gray-500 tracking-wider">YOU (DEV)</span>
-                  <div className="p-3 bg-white border border-slate-200 text-gray-800 rounded-lg max-w-[95%] leading-relaxed shadow-sm">
-                    {liveTranscript ? (
-                      liveTranscript
-                    ) : (
-                      <span className="text-slate-400 italic">
-                        Your spoken speech will appear here in real-time...
-                      </span>
-                    )}
-                  </div>
-                </div>
+                  return (
+                    <React.Fragment key={turn.question.id + '-' + index}>
+                      {/* AI Question */}
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] font-bold text-sky-700 tracking-wider">AI TECH LEAD</span>
+                        <div className="p-3 bg-indigo-50 text-gray-800 rounded-lg max-w-[90%] leading-relaxed">
+                          {turn.question.question}
+                        </div>
+                      </div>
+
+                      {/* User Answer */}
+                      {(currentSpeech || isLastTurn) && (
+                        <div className="flex flex-col gap-1 items-end">
+                          <span className="text-[10px] font-bold text-gray-500 tracking-wider">YOU (DEV)</span>
+                          <div className="p-3 bg-white border border-slate-200 text-gray-800 rounded-lg max-w-[95%] leading-relaxed shadow-sm">
+                            {currentSpeech ? (
+                              currentSpeech
+                            ) : (
+                              <span className="text-slate-400 italic">
+                                Your spoken speech will appear here in real-time...
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+                <div ref={chatEndRef} />
               </div>
             )}
           </div>
 
-          {/* Analysis Cards */}
+          {/* Dynamic Analysis Cards (Generated directly from Backend) */}
           <div className="p-5 bg-slate-50 rounded-xl shadow-sm border border-slate-300 flex flex-col gap-4">
+            {/* Technical Grammar Review */}
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2 text-red-700 font-semibold text-sm">
                 <AlertCircleIcon />
-                <span>Technical Grammar Review</span>
+                <span>Technical Grammar & Explanation</span>
               </div>
 
               {analysis ? (
-                analysis.grammar.hasErrors ? (
-                  analysis.grammar.errors.map((err, index) => (
-                    <div key={index} className="p-3 bg-rose-50/60 border-l-4 border-red-600 rounded flex flex-col gap-1 text-xs">
-                      <span className="font-bold text-red-700">Error: "{err.text}"</span>
-                      <p className="text-gray-700 leading-normal">{err.message}</p>
-                      <span className="font-medium text-emerald-800">Suggestion: {err.suggestion}</span>
+                <div className="flex flex-col gap-2 text-xs">
+                  {/* Grammatical Errors list if any */}
+                  {analysis.grammar.hasErrors && analysis.grammar.errors.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      {analysis.grammar.errors.map((err, index) => (
+                        <div key={index} className="p-3 bg-rose-50/60 border-l-4 border-red-600 rounded flex flex-col gap-1">
+                          <span className="font-bold text-red-700">Error: "{err.text}"</span>
+                          <p className="text-gray-700 leading-normal">{err.message}</p>
+                          <span className="font-medium text-emerald-800">Suggestion: {err.suggestion}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))
-                ) : (
-                  <p className="text-xs text-emerald-700 font-medium">
-                    ✓ Great! No grammar errors detected.
-                  </p>
-                )
+                  )}
+
+                  {/* Backend Explanation & Rules */}
+                  {analysis.grammar.explanation && (
+                    <div className="p-3 bg-blue-50/60 border-l-4 border-sky-600 rounded flex flex-col gap-1">
+                      <span className="font-bold text-sky-800">Backend Explanation</span>
+                      <p className="text-gray-700 leading-normal">{analysis.grammar.explanation}</p>
+                    </div>
+                  )}
+
+                  {analysis.grammar.grammarRule && (
+                    <div className="p-2.5 bg-slate-100 rounded border border-slate-200 text-gray-700">
+                      <span className="font-bold text-slate-800">Rule: </span>
+                      {analysis.grammar.grammarRule}
+                    </div>
+                  )}
+                </div>
               ) : (
                 <p className="text-xs text-slate-500 italic">
                   Complete practice to see grammar review.
@@ -503,37 +563,51 @@ export const VoiceLearningDashboard: React.FC = () => {
 
             <hr className="border-slate-200 my-1" />
 
+            {/* Better Expressions & Recommendations */}
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2 text-emerald-800 font-semibold text-sm">
                 <CheckSparkleIcon />
-                <span>Better Expressions</span>
+                <span>Better Expressions & Feedback</span>
               </div>
 
               {analysis ? (
-                analysis.grammar.hasErrors === false ? (
-                  <p className="text-xs text-emerald-700 font-medium">
-                    Your sentence is grammatically correct.
-                  </p>
-                ) : analysis.feedback ? (
-                  <div className="p-3 bg-emerald-50/60 border-l-4 border-emerald-600 rounded flex flex-col gap-2 text-xs">
+                <div className="p-3 bg-emerald-50/60 border-l-4 border-emerald-600 rounded flex flex-col gap-2 text-xs">
+                  {analysis.grammar.example && (
                     <div>
                       <span className="font-bold text-emerald-800">Better Example</span>
                       <p className="text-gray-800 italic leading-normal mt-0.5">
-                        "{analysis.feedback.example}"
+                        "{analysis.grammar.example}"
                       </p>
                     </div>
+                  )}
+
+                  {analysis.grammar.improvementTip && (
                     <div>
                       <span className="font-bold text-emerald-800">Improvement Tip</span>
                       <p className="text-gray-700 leading-normal mt-0.5">
-                        {analysis.feedback.improvementTip}
+                        {analysis.grammar.improvementTip}
                       </p>
                     </div>
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-500 italic">
-                    No extra expression suggestions available.
-                  </p>
-                )
+                  )}
+
+                  {analysis.technicalVocabulary?.feedback && (
+                    <div className="mt-1 pt-2 border-t border-emerald-200/60">
+                      <span className="font-bold text-emerald-800">Vocabulary Feedback</span>
+                      <p className="text-gray-700 leading-normal mt-0.5">
+                        {analysis.technicalVocabulary.feedback}
+                      </p>
+                    </div>
+                  )}
+
+                  {analysis.clarity?.feedback && (
+                    <div className="mt-1 pt-2 border-t border-emerald-200/60">
+                      <span className="font-bold text-emerald-800">Clarity Feedback</span>
+                      <p className="text-gray-700 leading-normal mt-0.5">
+                        {analysis.clarity.feedback}
+                      </p>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <p className="text-xs text-slate-500 italic">
                   Complete practice to see recommendations.
@@ -550,7 +624,6 @@ export const VoiceLearningDashboard: React.FC = () => {
 interface ScoreCardProps {
   label: string;
   score: number | null;
-  isPlaceholder?: boolean;
   colorClass: string;
   progressBgClass: string;
 }
@@ -558,7 +631,6 @@ interface ScoreCardProps {
 const ScoreCard: React.FC<ScoreCardProps> = ({
   label,
   score,
-  isPlaceholder,
   colorClass,
   progressBgClass,
 }) => {
@@ -567,14 +639,14 @@ const ScoreCard: React.FC<ScoreCardProps> = ({
       <span className="text-[10px] font-bold text-gray-600 uppercase tracking-wider text-center">{label}</span>
       <div className="flex items-baseline gap-0.5">
         <span className={`text-2xl font-bold ${colorClass}`}>
-          {isPlaceholder ? 'N/A' : score !== null ? score : '--'}
+          {score !== null ? score : '--'}
         </span>
-        {!isPlaceholder && score !== null && <span className="text-xs text-gray-400">/100</span>}
+        {score !== null && <span className="text-xs text-gray-400">/100</span>}
       </div>
       <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
         <div
-          className={`h-full ${progressBgClass} rounded-full`}
-          style={{ width: `${isPlaceholder || score === null ? 0 : score}%` }}
+          className={`h-full ${progressBgClass} rounded-full transition-all duration-500`}
+          style={{ width: `${score === null ? 0 : score}%` }}
         />
       </div>
     </div>

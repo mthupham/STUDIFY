@@ -20,19 +20,35 @@ export interface GrammarAnalysis {
   hasErrors: boolean;
   score: number;
   errors: GrammarError[];
-}
 
-export interface GrammarFeedback {
   explanation: string;
   grammarRule: string;
   example: string;
   improvementTip: string;
 }
 
+export interface VocabularyAnalysis {
+  score: number;
+  usedTerms: string[];
+  suggestions: string[];
+  feedback: string;
+}
+
+export interface ClarityAnalysis {
+  score: number;
+  strengths: string[];
+  suggestions: string[];
+  feedback: string;
+}
+
 export interface SpeakingAnalysisResponse {
   transcript: string;
+
   grammar: GrammarAnalysis;
-  feedback?: GrammarFeedback;
+
+  technicalVocabulary: VocabularyAnalysis;
+
+  clarity: ClarityAnalysis;
 }
 
 export async function getRandomQuestion(
@@ -44,6 +60,7 @@ export async function getRandomQuestion(
       params: { scenario },
     },
   );
+
   return response.data;
 }
 
