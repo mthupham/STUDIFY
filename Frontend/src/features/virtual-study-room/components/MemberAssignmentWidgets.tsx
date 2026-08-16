@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   getApiErrorMessage,
   studyGroupApi,
-  type ApiTaskStatus,
   type GroupScheduleDto,
   type GroupTaskDto,
 } from "../services/studyGroupApi";
@@ -17,7 +16,7 @@ export default function MemberAssignmentWidgets({ groupId }: { groupId: number }
     setLoading(true);
     try {
       const [taskItems, scheduleItems] = await Promise.all([
-        studyGroupApi.getMyTasks(groupId),
+        studyGroupApi.getTasks(groupId),
         studyGroupApi.getUpcomingSchedules(groupId),
       ]);
       setTasks(taskItems.filter((task) => task.status !== "COMPLETED"));
@@ -35,20 +34,11 @@ export default function MemberAssignmentWidgets({ groupId }: { groupId: number }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupId]);
 
-  const updateStatus = async (taskId: number, status: ApiTaskStatus) => {
-    try {
-      await studyGroupApi.updateTaskStatus(groupId, taskId, status);
-      await load();
-    } catch (requestError) {
-      setError(getApiErrorMessage(requestError, "Unable to update task status."));
-    }
-  };
-
   return (
     <>
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">My Tasks</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">Group Tasks</h3>
           <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs font-bold text-sky-700">{tasks.length}</span>
         </div>
         {loading && <p className="text-xs text-gray-500">Loading assignments...</p>}
@@ -62,16 +52,9 @@ export default function MemberAssignmentWidgets({ groupId }: { groupId: number }
               <p className={`mt-1 text-xs font-medium ${overdue ? "text-red-700" : "text-gray-500"}`}>
                 {overdue ? "Overdue · " : "Due · "}{new Date(task.dueAt).toLocaleString()}
               </p>
-              <div className="mt-3 flex gap-2">
-                {task.status === "NOT_STARTED" && (
-                  <button type="button" onClick={() => void updateStatus(task.id, "IN_PROGRESS")} className="rounded-lg bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-700 hover:bg-sky-100">
-                    Start
-                  </button>
-                )}
-                <button type="button" onClick={() => void updateStatus(task.id, "COMPLETED")} className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-100">
-                  Complete
-                </button>
-              </div>
+              <p className="mt-2 text-xs font-semibold text-sky-700">
+                {task.status.replaceAll("_", " ")}
+              </p>
             </article>
           );
         })}

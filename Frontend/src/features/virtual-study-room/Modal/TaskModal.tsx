@@ -10,6 +10,7 @@ export type CategoryType = 'essay' | 'phonetics' | 'vocabulary' | 'grammar';
 export interface Member {
   userId: number;
   name: string;
+  role?: 'LEADER' | 'MEMBER';
   avatarUrl?: string;
   initials?: string;
   isCurrentUser?: boolean;
@@ -58,9 +59,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   title,
   members,
 }) => {
+  const leader = members.find((member) => member.role === 'LEADER');
   const [taskTitle, setTaskTitle] = useState('');
   const [category, setCategory] = useState<CategoryType>('essay');
-  const [selectedMemberName, setSelectedMemberName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [description, setDescription] = useState('');
@@ -70,7 +71,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     if (initialData) {
       setTaskTitle(initialData.title || '');
       setCategory(initialData.category || 'essay');
-      setSelectedMemberName(initialData.member?.name || members[0]?.name || '');
       setStartDate(initialData.startDate || '');
       setDueDate(initialData.dueDate || '');
       setDescription(initialData.description || '');
@@ -78,7 +78,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     } else {
       setTaskTitle('');
       setCategory('essay');
-      setSelectedMemberName(members[0]?.name || '');
       setStartDate('');
       setDueDate('');
       setDescription('');
@@ -90,16 +89,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!taskTitle || !dueDate || !selectedMemberName) return;
+    if (!taskTitle || !dueDate || !leader) return;
 
     // Tìm đối tượng Member đầy đủ từ danh sách được chọn
-    const matchedMember =
-      members.find((m) => m.name === selectedMemberName) || {
-        userId: 0,
-        name: selectedMemberName,
-        initials: selectedMemberName.substring(0, 2).toUpperCase(),
-      };
-
     onSubmit({
       title: taskTitle,
       category,
@@ -107,7 +99,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       startDate,
       dueDate,
       status,
-      member: matchedMember,
+      member: leader,
       dueStatusText: status === 'Completed' ? 'Completed' : 'Upcoming',
       dueStatusColorClass: status === 'Completed' ? 'text-emerald-800 font-bold' : 'text-gray-700',
     });
@@ -144,7 +136,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div>
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
                 Category
@@ -162,23 +154,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
 
             {/* YÊU CẦU 3: DROPDOWN DANH SÁCH THÀNH VIÊN */}
-            <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-                Assigned Member <span className="text-red-500">*</span>
-              </label>
-              <select
-                required
-                value={selectedMemberName}
-                onChange={(e) => setSelectedMemberName(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-600 bg-white"
-              >
-                {members.map((m) => (
-                  <option key={m.userId} value={m.name}>
-                    {m.name}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -210,7 +185,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-              Status
+              Status (Leader evaluation)
             </label>
             <select
               value={status}
@@ -221,6 +196,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <option value="In Progress">In Progress</option>
               <option value="Completed">Completed</option>
             </select>
+            <p className="mt-1 text-xs text-gray-500">
+              Only the group Leader can evaluate task progress.
+            </p>
           </div>
 
           <div>

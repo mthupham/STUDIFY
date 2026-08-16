@@ -272,7 +272,7 @@ function App() {
         />
         <Route
           path="/study-groups/workspace-leader/task-assignment"
-          element={<Navigate to="/study-groups/1/workspace-leader/task-assignment" replace />}
+          element={<Navigate to="/study-groups" replace />}
         />
         <Route
           path="/dashboard/pomodoro"

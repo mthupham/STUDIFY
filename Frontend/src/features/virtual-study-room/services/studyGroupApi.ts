@@ -32,6 +32,11 @@ export interface StudyGroupDetailResponse {
   };
 }
 
+interface StudyGroupDetailApiResponse {
+  status: string;
+  data: StudyGroupDetailResponse;
+}
+
 export interface GroupMemberDto {
   userId: number;
   name: string;
@@ -65,6 +70,7 @@ export interface TaskPayload {
   assignedTo: number;
   startAt?: string;
   dueAt: string;
+  status?: ApiTaskStatus;
 }
 
 export interface GroupScheduleDto {
@@ -99,11 +105,11 @@ export const studyGroupApi = {
   },
 
   async getGroup(groupId: number) {
-    const { data } = await axios.get<StudyGroupDetailResponse>(
+    const { data } = await axios.get<StudyGroupDetailApiResponse>(
       `${API_BASE}/groups/${groupId}`,
       { headers: authHeaders() },
     );
-    return data;
+    return data.data;
   },
 
   async getMembers(groupId: number) {
@@ -127,6 +133,13 @@ export const studyGroupApi = {
       `${API_BASE}/groups/${groupId}/tasks/me`,
       { headers: authHeaders() },
     );
+    return data;
+  },
+
+  async getAllMyTasks() {
+    const { data } = await axios.get<GroupTaskDto[]>(`${API_BASE}/tasks/me`, {
+      headers: authHeaders(),
+    });
     return data;
   },
 

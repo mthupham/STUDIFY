@@ -3,6 +3,7 @@ import axios from "axios";
 import { useAuthStore } from "../../auth/store/useAuthStore";
 import ProgressBar from "../../../components/ProgressBar";
 import { useNavigate } from "react-router-dom";
+import MemberTaskWidget from "./MemberTaskWidget";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
@@ -321,7 +322,8 @@ export default function Dashboard() {
 
         {/* RIGHT COLUMN: giữ nguyên mock, chưa có API thật cho phần này */}
         <div className="flex flex-col gap-6 lg:col-span-4">
-          <div className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-slate-300 bg-slate-50 p-6 shadow-sm">
+          <MemberTaskWidget />
+          <div className="hidden relative flex-col gap-4 overflow-hidden rounded-2xl border border-slate-300 bg-slate-50 p-6 shadow-sm">
             <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-emerald-300/10"></div>
             <div className="flex items-center gap-2">
               <div className="text-emerald-800">

@@ -191,6 +191,11 @@ export class TaskService {
         ...(dto.dueAt !== undefined && {
           dueAt,
         }),
+        ...(dto.status !== undefined && {
+          status: dto.status,
+          completedAt:
+            dto.status === GroupTaskStatus.COMPLETED ? new Date() : null,
+        }),
       },
     );
   }
@@ -201,7 +206,7 @@ export class TaskService {
     dto: UpdateTaskStatusDto,
     currentUserId: number,
   ) {
-    await this.groupService.requireMembership(
+    await this.groupService.requireLeader(
       groupId,
       currentUserId,
     );
@@ -218,12 +223,6 @@ export class TaskService {
     if (task.groupId !== groupId) {
       throw new ForbiddenException(
         'Task does not belong to this study group.',
-      );
-    }
-
-    if (task.assignedTo !== currentUserId) {
-      throw new ForbiddenException(
-        'You can only update your own assigned task.',
       );
     }
 
