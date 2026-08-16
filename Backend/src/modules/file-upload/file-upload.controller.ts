@@ -11,8 +11,10 @@ import {
   Req,
   Res,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
+import { JwtGuard } from '../auth/guards/jwt.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
@@ -31,11 +33,20 @@ export class FileUploadController {
     this.bucketName = configService.get<string>('SUPABASE_BUCKET') || 'Uploads';
   }
 
+  private formatFileSize(bytes: number): string {
+    if (!bytes || bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  }
+
   /**
    * Upload multiple files to a group
    * POST /api/files/upload/:groupId
    */
   @Post('upload/:groupId')
+  @UseGuards(JwtGuard) // 👈 Fixed double @@ typo
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -48,6 +59,7 @@ export class FileUploadController {
             format: 'binary',
           },
         },
+        uploadedBy: { type: 'string' },
       },
     },
   })
@@ -58,119 +70,27 @@ export class FileUploadController {
       limits: { fileSize: 2 * 1024 * 1024 },
       fileFilter: (req, file, cb) => {
         const allowedMimes = [
-          // Images
-          'image/jpeg',
-          'image/png',
-          'image/gif',
-          'image/webp',
-          'image/svg+xml',
-          'image/bmp',
-          'image/x-icon',
-          // Documents
-          'application/pdf',
-          'application/msword',
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          'application/vnd.ms-excel',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          'application/vnd.ms-powerpoint',
-          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-          'text/plain',
-          'text/csv',
-          'text/markdown',
-          'application/rtf',
-          // Video
-          'video/mp4',
-          'video/webm',
-          'video/quicktime',
-          'video/x-msvideo',
-          'video/x-matroska',
-          // Audio
-          'audio/mpeg',
-          'audio/wav',
-          'audio/x-wav',
-          'audio/ogg',
-          'audio/mp4',
-          'audio/aac',
-          // Archives
-          'application/zip',
-          'application/x-rar-compressed',
-          'application/x-7z-compressed',
-          'application/x-tar',
-          'application/gzip',
-          // Code & Data
-          'application/json',
-          'application/xml',
-          'application/javascript',
-          'text/html',
-          'text/css',
-          'text/javascript',
-          'text/x-python',
-          'text/x-java-source',
-          'text/x-c',
-          'text/x-c++',
-          'text/x-ruby',
-          'text/x-php',
-          'text/x-sh',
+          'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/bmp', 'image/x-icon',
+          'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+          'text/plain', 'text/csv', 'text/markdown', 'application/rtf',
+          'video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo', 'video/x-matroska',
+          'audio/mpeg', 'audio/wav', 'audio/x-wav', 'audio/ogg', 'audio/mp4', 'audio/aac',
+          'application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed', 'application/x-tar', 'application/gzip',
+          'application/json', 'application/xml', 'application/javascript', 'text/html', 'text/css', 'text/javascript',
+          'text/x-python', 'text/x-java-source', 'text/x-c', 'text/x-c++', 'text/x-ruby', 'text/x-php', 'text/x-sh',
         ];
 
         const allowedExtensions = [
-          // Images
-          '.jpg',
-          '.jpeg',
-          '.png',
-          '.gif',
-          '.webp',
-          '.svg',
-          '.bmp',
-          '.ico',
-          // Documents
-          '.pdf',
-          '.doc',
-          '.docx',
-          '.xls',
-          '.xlsx',
-          '.ppt',
-          '.pptx',
-          '.txt',
-          '.csv',
-          '.md',
-          '.rtf',
-          // Video
-          '.mp4',
-          '.webm',
-          '.mov',
-          '.avi',
-          '.mkv',
-          // Audio
-          '.mp3',
-          '.wav',
-          '.ogg',
-          '.m4a',
-          '.aac',
-          // Archives
-          '.zip',
-          '.rar',
-          '.7z',
-          '.tar',
-          '.gz',
-          // Code & Data
-          '.json',
-          '.xml',
-          '.js',
-          '.html',
-          '.css',
-          '.py',
-          '.java',
-          '.c',
-          '.cpp',
-          '.rb',
-          '.php',
-          '.sh',
+          '.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.ico',
+          '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.csv', '.md', '.rtf',
+          '.mp4', '.webm', '.mov', '.avi', '.mkv',
+          '.mp3', '.wav', '.ogg', '.m4a', '.aac',
+          '.zip', '.rar', '.7z', '.tar', '.gz',
+          '.json', '.xml', '.js', '.html', '.css', '.py', '.java', '.c', '.cpp', '.rb', '.php', '.sh',
         ];
 
-        // Some browsers report inconsistent MIME types for Office files
-        // (e.g. .docx/.xlsx/.pptx may come through as application/zip or
-        // application/octet-stream). Validate by extension as a fallback.
         const ext = file.originalname.split('.').pop()?.toLowerCase() || '';
         const isAllowedMime = allowedMimes.includes(file.mimetype);
         const isAllowedExt = allowedExtensions.includes(`.${ext}`);
@@ -182,18 +102,23 @@ export class FileUploadController {
         cb(null, true);
       },
     }),
-  )
+  ) // 👈 Fixed missing closing parenthesis for @UseInterceptors
   async uploadFiles(
     @UploadedFiles() files: Express.Multer.File[],
     @Param('groupId') groupId: string,
-    @Req() req: Request,
+    @Req() req: any,
   ) {
     if (!files || files.length === 0) {
       throw new BadRequestException('No files provided');
     }
 
-    const user = (req as any).user;
-    const username = user?.username || user?.id || 'anonymous';
+    // Checks req.user first (from JWT guard), then fallback to req.body.uploadedBy, then Anonymous
+    const rawUploadedBy = req.body?.uploadedBy;
+    const username =
+      req.user?.username ||
+      req.user?.email ||
+      (typeof rawUploadedBy === 'string' && rawUploadedBy.trim() !== '' ? rawUploadedBy.trim() : 'Anonymous');
+
     const path = `groups/${groupId}/files`;
 
     const result = await this.supabaseService.uploadFiles(
@@ -206,10 +131,17 @@ export class FileUploadController {
       throw new BadRequestException(result.error || 'Upload failed');
     }
 
-    // Save uploader metadata for each uploaded file
     const uploadedFiles = result.files ?? [];
-    for (const file of uploadedFiles) {
-      await this.supabaseService.saveFileMetadata(file.name, groupId, username);
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      const file = uploadedFiles[i];
+      const originalFile = files[i];
+
+      await this.supabaseService.saveFileMetadata(
+        file.name,
+        groupId,
+        username,
+        originalFile?.size ?? 0,
+      );
     }
 
     return {
@@ -275,70 +207,27 @@ export class FileUploadController {
       throw new BadRequestException(result.error || 'Failed to download file');
     }
 
-    // Clean original name (strip timestamp prefix like "1723680000-")
     const cleanFileName = decodedFileName.replace(/^\d+-/, '');
-
     const ext = cleanFileName.split('.').pop()?.toLowerCase() || '';
     const mimeMap: Record<string, string> = {
-      // Images
-      jpg: 'image/jpeg',
-      jpeg: 'image/jpeg',
-      png: 'image/png',
-      gif: 'image/gif',
-      webp: 'image/webp',
-      svg: 'image/svg+xml',
-      bmp: 'image/bmp',
-      ico: 'image/x-icon',
-      // Documents
-      pdf: 'application/pdf',
-      doc: 'application/msword',
-      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      xls: 'application/vnd.ms-excel',
-      xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      ppt: 'application/vnd.ms-powerpoint',
-      pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      txt: 'text/plain',
-      csv: 'text/csv',
-      md: 'text/markdown',
-      rtf: 'application/rtf',
-      // Video
-      mp4: 'video/mp4',
-      webm: 'video/webm',
-      mov: 'video/quicktime',
-      avi: 'video/x-msvideo',
-      mkv: 'video/x-matroska',
-      // Audio
-      mp3: 'audio/mpeg',
-      wav: 'audio/wav',
-      ogg: 'audio/ogg',
-      m4a: 'audio/mp4',
-      aac: 'audio/aac',
-      // Archives
-      zip: 'application/zip',
-      rar: 'application/x-rar-compressed',
-      '7z': 'application/x-7z-compressed',
-      tar: 'application/x-tar',
-      gz: 'application/gzip',
-      // Code & Data
-      json: 'application/json',
-      xml: 'application/xml',
-      js: 'application/javascript',
-      html: 'text/html',
-      css: 'text/css',
-      py: 'text/x-python',
-      java: 'text/x-java-source',
-      c: 'text/x-c',
-      cpp: 'text/x-c++',
-      rb: 'text/x-ruby',
-      php: 'text/x-php',
-      sh: 'text/x-sh',
+      jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp',
+      svg: 'image/svg+xml', bmp: 'image/bmp', ico: 'image/x-icon', pdf: 'application/pdf',
+      doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ppt: 'application/vnd.ms-powerpoint', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      txt: 'text/plain', csv: 'text/csv', md: 'text/markdown', rtf: 'application/rtf', mp4: 'video/mp4',
+      webm: 'video/webm', mov: 'video/quicktime', avi: 'video/x-msvideo', mkv: 'video/x-matroska',
+      mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4', aac: 'audio/aac',
+      zip: 'application/zip', rar: 'application/x-rar-compressed', '7z': 'application/x-7z-compressed',
+      tar: 'application/x-tar', gz: 'application/gzip', json: 'application/json', xml: 'application/xml',
+      js: 'application/javascript', html: 'text/html', css: 'text/css', py: 'text/x-python',
+      java: 'text/x-java-source', c: 'text/x-c', cpp: 'text/x-c++', rb: 'text/x-ruby', php: 'text/x-php', sh: 'text/x-sh',
     };
 
     const contentType =
       result.contentType || mimeMap[ext] || 'application/octet-stream';
 
     res.setHeader('Content-Type', contentType);
-    // Explicitly set Attachment with clean filename
     res.setHeader(
       'Content-Disposition',
       `attachment; filename="${encodeURIComponent(cleanFileName)}"`,
@@ -374,7 +263,6 @@ export class FileUploadController {
     @Param('fileName') fileName: string,
   ) {
     const decodedFileName = decodeURIComponent(fileName);
-
     const path = `groups/${groupId}/files/${decodedFileName}`;
 
     const result = await this.supabaseService.deleteFile(this.bucketName, path);

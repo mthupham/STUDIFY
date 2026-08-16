@@ -15,12 +15,12 @@ export class AuthService {
     private readonly mailService: MailService,
   ) {}
 
-  private generateTokens(payload: { id: number; email: string; role: string }) {
+  private generateTokens(payload: { id: number; email: string; role: string; username?: string }) {
     const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
     return { accessToken, refreshToken };
   }
-s
+
   // Loại bỏ các field nhạy cảm trước khi trả về client
   private sanitizeUser(user: any) {
     // Nếu là Sequelize instance thì convert sang plain object trước
@@ -37,18 +37,21 @@ s
   }
 
   async login(email: string, password: string) {
-    const user = await this.userService.validateUser(email, password);
-    const tokens = this.generateTokens({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    });
-    return {
-      message: 'Login successfully!',
-      data: this.sanitizeUser(user),
-      ...tokens,
-    };
-  }
+  const user = await this.userService.validateUser(email, password);
+  
+  const tokens = this.generateTokens({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    username: user.name, // 👈 Maps user.name from your model to the 'username' key in payload
+  });
+
+  return {
+    message: 'Login successfully!',
+    data: this.sanitizeUser(user),
+    ...tokens,
+  };
+}
 
   async register(registerDto: RegisterDto) {
     await this.userService.registerUser(
@@ -98,28 +101,27 @@ s
 
   
   async googleLogin(googleUser: { email: string; name: string; avatar: string; provider: string }) {
-    // Tìm user theo email, nếu chưa có thì tạo mới
-    let user = await this.userService.findByEmail(googleUser.email);
-    
-    if (!user) {
-      user = await this.userService.createGoogleUser(
-        googleUser.email,
-        googleUser.name,
-        googleUser.avatar,
-      );
-    }
-
-    const tokens = this.generateTokens({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    });
-
-    return {
-      message: 'Google login successfully!',
-      data: this.sanitizeUser(user),
-      ...tokens,
-    };
+  let user = await this.userService.findByEmail(googleUser.email);
+  
+  if (!user) {
+    user = await this.userService.createGoogleUser(
+      googleUser.email,
+      googleUser.name,
+      googleUser.avatar,
+    );
   }
-}
 
+  const tokens = this.generateTokens({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    username: user.name || googleUser.name, // 👈 Uses user.name
+  });
+
+  return {
+    message: 'Google login successfully!',
+    data: this.sanitizeUser(user),
+    ...tokens,
+  };
+}
+}

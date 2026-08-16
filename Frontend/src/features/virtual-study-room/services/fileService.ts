@@ -1,5 +1,13 @@
 import axios from 'axios';
 
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token') || localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export interface BackendFileItem {
@@ -34,6 +42,12 @@ export interface DeleteResponse {
   fileName: string;
 }
 
+// 1. Add this interface
+export interface UploadOptions {
+  uploadedBy?: string;
+  onProgress?: (progress: number) => void;
+}
+
 /**
  * Strips the timestamp prefix from stored filename for clean user display.
  * Example: "1786775305270-feature1.txt" -> "feature1.txt"
@@ -45,28 +59,21 @@ export const getCleanFileName = (storedName: string): string => {
 /**
  * 1. Upload one or multiple files
  */
-export const uploadFiles = async (
-  groupId: string,
-  files: File[],
-  onProgress?: (progress: number) => void
-): Promise<UploadResponse> => {
-  const formData = new FormData();
-  files.forEach((file) => {
-    formData.append('files', file);
+export const uploadFiles = async (groupId: string, formData: FormData) => {
+  // 1. Get token from storage (check your exact key name: 'token' or 'access_token')
+  const rawToken = localStorage.getItem('access_token') || localStorage.getItem('token');
+  
+  // Clean token string in case it's stringified JSON or has quotes
+  const token = rawToken?.replace(/^"|"$/g, '').replace(/^Bearer\s+/i, '');
+
+  // 2. Pass Authorization header in request config
+  const response = await axios.post(`http://localhost:3000/api/files/upload/${groupId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`, // 👈 THIS WAS MISSING
+    },
   });
 
-  const response = await axios.post<UploadResponse>(
-    `${API_URL}/api/files/upload/${groupId}`,
-    formData,
-    {
-      onUploadProgress: (progressEvent) => {
-        if (progressEvent.total) {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          if (onProgress) onProgress(progress);
-        }
-      },
-    }
-  );
   return response.data;
 };
 

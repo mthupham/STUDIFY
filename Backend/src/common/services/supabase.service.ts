@@ -226,132 +226,119 @@ export class SupabaseService {
     }
   }
 
-  /**
-   * Save file upload metadata (uploader info) to the file_metadata table
-   */
-  async saveFileMetadata(
-    fileName: string,
-    groupId: string,
-    uploadedBy: string,
-  ): Promise<{ success: boolean; error?: string }> {
-    try {
-      console.log('Saving metadata:', {
-        fileName,
-        groupId,
-        uploadedBy,
-      });
-      const { error } = await this.supabase.from('file_metadata').upsert(
-        {
-          file_name: fileName,
-          group_id: groupId,
-          uploaded_by: uploadedBy,
-          uploaded_at: new Date().toISOString(),
-        },
-        { onConflict: 'file_name' },
-      );
+/**
+ * 1. Store/Upsert File Metadata into DB
+ */
+async saveFileMetadata(
+  fileName: string,
+  groupId: string,
+  uploadedBy: string,
+  fileSize: number,
+) {
+  const { error } = await this.supabase.from('file_metadata').upsert(
+    {
+      file_name: fileName,
+      group_id: groupId,
+      uploaded_by: uploadedBy,
+      file_size: fileSize,
+      uploaded_at: new Date().toISOString(),
+    },
+    { onConflict: 'group_id,file_name' }, // Ensures multi-group filename conflicts are prevented
+  );
 
-      if (error) throw error;
-      return { success: true };
-    } catch (error) {
-      console.error('Save File Metadata Error:', error);
-      return {
-        success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to save metadata',
-      };
-    }
+  if (error) {
+    console.error('Save Metadata Error:', error);
+    throw error;
   }
+}
 
-  /**
-   * Get file upload metadata for a group
-   */
-  async getFileMetadata(groupId: string) {
-    try {
-      const { data, error } = await this.supabase
-        .from('file_metadata')
-        .select('file_name, uploaded_by, uploaded_at')
-        .eq('group_id', groupId);
+/**
+ * 2. Get Metadata Map for group
+ */
+async getFileMetadata(groupId: string) {
+  try {
+    const { data, error } = await this.supabase
+      .from('file_metadata')
+      .select('file_name, uploaded_by, uploaded_at, file_size')
+      .eq('group_id', groupId);
 
-      if (error) throw error;
+    if (error) throw error;
 
-      const metadataMap: Record<
-        string,
-        { uploadedBy: string; uploadedAt: string }
-      > = {};
-      (data || []).forEach((item) => {
-        metadataMap[item.file_name] = {
-          uploadedBy: item.uploaded_by,
-          uploadedAt: item.uploaded_at,
+    // Convert rows array into key-value map keyed by file_name
+    const metadata = (data || []).reduce((acc, row) => {
+      acc[row.file_name] = {
+        uploadedBy: row.uploaded_by,
+        fileSize: row.file_size,
+        uploadedAt: row.uploaded_at,
+      };
+      return acc;
+    }, {} as Record<string, { uploadedBy: string; fileSize: number; uploadedAt: string }>);
+
+    return { success: true, metadata };
+  } catch (error) {
+    console.error('Get File Metadata Error:', error);
+    return { success: false, metadata: {} };
+  }
+}
+
+/**
+ * 3. List Storage files and merge DB metadata
+ */
+async listFiles(bucketName: string, path = '') {
+  try {
+    const { data, error } = await this.supabase.storage
+      .from(bucketName)
+      .list(path, {
+        limit: 100,
+        sortBy: { column: 'created_at', order: 'desc' },
+      });
+
+    if (error) throw error;
+
+    const groupIdMatch = path.match(/^groups\/([^/]+)\/files$/);
+    const groupId = groupIdMatch ? groupIdMatch[1] : '';
+
+    const metadataResult = groupId
+      ? await this.getFileMetadata(groupId)
+      : { success: false, metadata: {} };
+    const metadataMap = metadataResult.metadata || {};
+
+    const filesWithUrls = (data || [])
+      .filter((item) => item.id !== null)
+      .map((file) => {
+        const filePath = path ? `${path}/${file.name}` : file.name;
+        const { data: publicUrlData } = this.supabase.storage
+          .from(bucketName)
+          .getPublicUrl(filePath);
+
+        const fileMeta = metadataMap[file.name] || {};
+
+        // Raw size from storage object metadata or fallback to file_metadata table size
+        const rawSize = file.metadata?.size || fileMeta.fileSize || 0;
+        const formattedSize = rawSize
+          ? (rawSize / (1024 * 1024)).toFixed(1) + ' MB'
+          : 'N/A';
+
+        return {
+          id: file.id,
+          name: file.name,
+          size: formattedSize,
+          createdAt: file.created_at
+            ? new Date(file.created_at).toISOString()
+            : fileMeta.uploadedAt || new Date().toISOString(),
+          uploadedBy: fileMeta.uploadedBy || 'Unknown User',
+          url: publicUrlData.publicUrl,
+          mimetype: file.metadata?.mimetype || '',
         };
       });
 
-      return { success: true, metadata: metadataMap };
-    } catch (error) {
-      console.error('Get File Metadata Error:', error);
-      return { success: false, metadata: {} };
-    }
+    return { success: true, files: filesWithUrls };
+  } catch (error) {
+    console.error('List Files Error:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'List failed',
+    };
   }
-
-  /**
-   * List files in a bucket path with public URLs & metadata
-   */
-  async listFiles(bucketName: string, path = '') {
-    try {
-      const { data, error } = await this.supabase.storage
-        .from(bucketName)
-        .list(path, {
-          limit: 100,
-          sortBy: { column: 'created_at', order: 'desc' },
-        });
-
-      if (error) throw error;
-
-      // Extract groupId from path: "groups/{groupId}/files"
-      const groupIdMatch = path.match(/^groups\/([^/]+)\/files$/);
-      const groupId = groupIdMatch ? groupIdMatch[1] : '';
-
-      // Fetch uploader metadata for this group
-      const metadataResult = groupId
-        ? await this.getFileMetadata(groupId)
-        : { success: false, metadata: {} };
-      const metadataMap = metadataResult.metadata || {};
-
-      const filesWithUrls = (data || [])
-        // Filter out folder placeholders created by Supabase
-        .filter((item) => item.id !== null)
-        .map((file) => {
-          const filePath = path ? `${path}/${file.name}` : file.name;
-          const { data: publicUrlData } = this.supabase.storage
-            .from(bucketName)
-            .getPublicUrl(filePath);
-
-          const sizeInMB = file.metadata?.size
-            ? (file.metadata.size / (1024 * 1024)).toFixed(1) + ' MB'
-            : 'N/A';
-
-          // Get uploader metadata for this file
-          const fileMeta = metadataMap[file.name] || {};
-
-          return {
-            id: file.id,
-            name: file.name,
-            size: sizeInMB,
-            createdAt: file.created_at
-              ? new Date(file.created_at).toISOString()
-              : fileMeta.uploadedAt || 'Unknown',
-            uploadedBy: fileMeta.uploadedBy || '',
-            url: publicUrlData.publicUrl,
-            mimetype: file.metadata?.mimetype || '',
-          };
-        });
-
-      return { success: true, files: filesWithUrls };
-    } catch (error) {
-      console.error('List Files Error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'List failed',
-      };
-    }
-  }
+}
 }

@@ -8,6 +8,7 @@ export interface FileItem {
   type: "pdf" | "doc" | "docx" | "folder" | "image" | "video" | "link" | string;
   category: "photo" | "video" | "file" | "link";
   sender?: string;
+  uploadedBy?: string;
   senderAvatar?: string;
   uploadedDate?: string;
   icon?: React.ReactNode;
@@ -106,6 +107,23 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({
     });
   };
 
+  const formatFileSize = (sizeInput: string | number | undefined): string => {
+  if (!sizeInput) return "0 B";
+
+  // If it's already a formatted string like "1.2 MB" or "45 KB", return as is
+  if (typeof sizeInput === "string" && /[a-zA-Z]/.test(sizeInput)) {
+    return sizeInput;
+  }
+
+  const bytes = Number(sizeInput);
+  if (isNaN(bytes) || bytes === 0) return "0 B";
+
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+};
+
   const filteredFiles = files.filter((file) => {
     if (activeFilter !== "all" && file.category !== activeFilter) return false;
     if (filterType === "sender" && selectedSender && file.sender !== selectedSender) return false;
@@ -172,11 +190,15 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({
                     {getFileIcon(file.type)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-sky-700">
-                      {getCleanFileName(file.name)}
-                    </h3>
-                    <div className="text-xs text-gray-500 mt-0.5">{file.size}</div>
-                  </div>
+  <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-sky-700">
+    {getCleanFileName(file.name)}
+  </h3>
+  <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+    <span>{formatFileSize(file.size)}</span>
+    <span>•</span>
+    <span>{file.sender || file.uploadedBy || 'Anonymous'}</span>
+  </div>
+</div>
                   <button
                     type="button"
                     onClick={(e) => {

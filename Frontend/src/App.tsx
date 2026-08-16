@@ -38,6 +38,16 @@ import ChatTestLobby from "./features/virtual-study-room/ChatTestLobby.tsx";
 
 import GoogleSucessPage from "./features/auth/components/GoogleSucessPage.tsx";
 
+import axios from 'axios';
+
+axios.interceptors.request.use((config) => {
+  const rawToken = localStorage.getItem('access_token') || localStorage.getItem('token');
+  if (rawToken) {
+    const token = rawToken.replace(/^"|"$/g, '').replace(/^Bearer\s+/i, '');
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
 function OnboardingGuard({ children }) {

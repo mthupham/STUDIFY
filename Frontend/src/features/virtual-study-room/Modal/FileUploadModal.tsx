@@ -51,41 +51,51 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
   };
 
   const uploadFilesToServer = async (
-    files: File[],
-    type: "image" | "file" | "folder"
-  ) => {
-    if (files.length > 10) {
-      alert("You can upload a maximum of 10 files per request.");
-      return;
-    }
+  files: File[],
+  type: "image" | "file" | "folder"
+) => {
+  if (files.length > 10) {
+    alert("You can upload a maximum of 10 files per request.");
+    return;
+  }
 
-    const oversized = files.find((f) => f.size > 2 * 1024 * 1024);
-    if (oversized) {
-      alert(`File "${oversized.name}" exceeds the maximum size limit of 2 MB.`);
-      return;
-    }
+  const oversized = files.find((f) => f.size > 2 * 1024 * 1024);
+  if (oversized) {
+    alert(`File "${oversized.name}" exceeds the maximum size limit of 2 MB.`);
+    return;
+  }
 
-    setUploading(true);
-    setUploadProgress(0);
+  setUploading(true);
+  setUploadProgress(0);
 
-    try {
-      const response = await uploadFiles(groupId, files, (progress) => {
+  const currentUsername =
+    localStorage.getItem("username") ||
+    localStorage.getItem("user_name") ||
+    localStorage.getItem("email") ||
+    "Anonymous";
+
+  try {
+    // Pass parameters via options object
+    const response = await uploadFiles(groupId, files, {
+      uploadedBy: currentUsername,
+      onProgress: (progress) => {
         setUploadProgress(progress);
-      });
+      },
+    });
 
-      if (response.success) {
-        onUpload(files, type);
-        setUploading(false);
-        setUploadProgress(0);
-        onClose();
-      }
-    } catch (error: any) {
-      console.error("Upload error:", error);
-      alert(error.response?.data?.message || "Upload failed. Please try again.");
+    if (response.success) {
+      onUpload(files, type);
       setUploading(false);
       setUploadProgress(0);
+      onClose();
     }
-  };
+  } catch (error: any) {
+    console.error("Upload error:", error);
+    alert(error.response?.data?.message || "Upload failed. Please try again.");
+    setUploading(false);
+    setUploadProgress(0);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
