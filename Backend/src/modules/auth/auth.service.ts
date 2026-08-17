@@ -15,7 +15,13 @@ export class AuthService {
     private readonly mailService: MailService,
   ) {}
 
-  private generateTokens(payload: { id: number; email: string; role: string }) {
+  private generateTokens(payload: {
+    id: number;
+    email: string;
+    role: string;
+    name?: string;
+    username?: string;
+  }) {
     const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
     return { accessToken, refreshToken };
@@ -42,6 +48,8 @@ s
       id: user.id,
       email: user.email,
       role: user.role,
+      name: user.name,
+      username: user.name,
     });
     return {
       message: 'Login successfully!',
@@ -113,6 +121,8 @@ s
       id: user.id,
       email: user.email,
       role: user.role,
+      name: user.name,
+      username: user.name,
     });
 
     return {

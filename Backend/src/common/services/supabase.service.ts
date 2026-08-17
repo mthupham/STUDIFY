@@ -246,7 +246,11 @@ export class SupabaseService {
           uploaded_by: uploadedBy,
           uploaded_at: new Date().toISOString(),
         },
-        { onConflict: 'file_name' },
+        // IMPORTANT:
+        // Most schemas model metadata uniqueness by (group_id, file_name),
+        // so upsert must conflict on both columns (otherwise PostgREST will error
+        // because there's no UNIQUE constraint on file_name alone).
+        { onConflict: 'file_name,group_id' },
       );
 
       if (error) throw error;

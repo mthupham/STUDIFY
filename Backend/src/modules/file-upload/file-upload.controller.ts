@@ -20,6 +20,7 @@ import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { SupabaseService } from '../../common/services/supabase.service';
 import { memoryStorage } from 'multer';
 import { JwtGuard } from '../auth/guards/jwt.guard';
+import { UserService } from '../user/user.service';
 import type { Request } from 'express';
 
 @Controller('api/files')
@@ -28,9 +29,40 @@ export class FileUploadController {
 
   constructor(
     private readonly supabaseService: SupabaseService,
+    private readonly userService: UserService,
     configService: ConfigService,
   ) {
     this.bucketName = configService.get<string>('SUPABASE_BUCKET') || 'Uploads';
+  }
+
+  private async resolveUploaderName(user: any): Promise<string> {
+    if (!user) return 'anonymous';
+
+    if (user.username?.trim()) return user.username.trim();
+    if (user.name?.trim()) return user.name.trim();
+    if (user.full_name?.trim()) return user.full_name.trim();
+    if (user.fullName?.trim()) return user.fullName.trim();
+
+    if (user.id) {
+      try {
+        const dbUser = await this.userService.getUserById(Number(user.id));
+        if (dbUser?.name?.trim()) {
+          return dbUser.name.trim();
+        }
+      } catch (error) {
+        console.warn('Failed to resolve uploader name from database:', error);
+      }
+    }
+
+    if (user.email?.includes('@')) {
+      return user.email.split('@')[0];
+    }
+
+    if (typeof user.sub === 'string' && user.sub.trim()) {
+      return user.sub.trim();
+    }
+
+    return 'anonymous';
   }
 
   /**
@@ -196,17 +228,7 @@ export class FileUploadController {
     }
 
     const user = (req as any).user;
-    // Debug log: Check your NestJS terminal to see the EXACT structure of req.user
-console.log('Decoded JWT user payload:', user);
-
-const username =
-  user?.username ||
-  user?.name ||
-  user?.full_name ||
-  user?.fullName ||
-  user?.email?.split('@')[0] ||
-  user?.sub ||
-  'anonymous';
+    const username = await this.resolveUploaderName(user);
     const path = `groups/${groupId}/files`;
 
     const result = await this.supabaseService.uploadFiles(
