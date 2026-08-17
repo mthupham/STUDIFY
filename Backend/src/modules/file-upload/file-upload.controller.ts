@@ -11,6 +11,7 @@ import {
   Req,
   Res,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -18,6 +19,7 @@ import { ConfigService } from '@nestjs/config';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { SupabaseService } from '../../common/services/supabase.service';
 import { memoryStorage } from 'multer';
+import { JwtGuard } from '../auth/guards/jwt.guard';
 import type { Request } from 'express';
 
 @Controller('api/files')
@@ -36,6 +38,7 @@ export class FileUploadController {
    * POST /api/files/upload/:groupId
    */
   @Post('upload/:groupId')
+  @UseGuards(JwtGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -193,7 +196,17 @@ export class FileUploadController {
     }
 
     const user = (req as any).user;
-    const username = user?.username || user?.id || 'anonymous';
+    // Debug log: Check your NestJS terminal to see the EXACT structure of req.user
+console.log('Decoded JWT user payload:', user);
+
+const username =
+  user?.username ||
+  user?.name ||
+  user?.full_name ||
+  user?.fullName ||
+  user?.email?.split('@')[0] ||
+  user?.sub ||
+  'anonymous';
     const path = `groups/${groupId}/files`;
 
     const result = await this.supabaseService.uploadFiles(
@@ -208,9 +221,11 @@ export class FileUploadController {
 
     // Save uploader metadata for each uploaded file
     const uploadedFiles = result.files ?? [];
-    for (const file of uploadedFiles) {
-      await this.supabaseService.saveFileMetadata(file.name, groupId, username);
-    }
+  for (const file of uploadedFiles) {
+  // file.path is "groups/{groupId}/files/1723...-phuc_2.4.png"
+  const storedFileName = file.path.split('/').pop() || file.name;
+  await this.supabaseService.saveFileMetadata(storedFileName, groupId, username);
+}
 
     return {
       success: true,

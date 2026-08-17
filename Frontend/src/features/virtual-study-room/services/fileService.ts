@@ -54,11 +54,18 @@ export const uploadFiles = async (
   files.forEach((file) => {
     formData.append('files', file);
   });
+  
+  const rawToken = localStorage.getItem('token') || localStorage.getItem('accessToken') || '';
+// Remove potential surrounding quotes or extra 'Bearer ' prefix
+  const token = rawToken.replace(/^"|"$/g, '').replace(/^Bearer\s+/i, '');
 
   const response = await axios.post<UploadResponse>(
     `${API_URL}/api/files/upload/${groupId}`,
     formData,
     {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
       onUploadProgress: (progressEvent) => {
         if (progressEvent.total) {
           const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
