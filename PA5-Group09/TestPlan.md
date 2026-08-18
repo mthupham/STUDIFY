@@ -73,9 +73,9 @@ These features may be manually checked during the final product demonstration bu
 | ------------------ | ------ | ---------------------- | ----------- |
 | Preparation        | [18th August] | Prepare test cases     | [Minh Thư]      |
 | Execution          | [19th August] | Execute test cases     | [Minh Thư]      |
-| Bug Fixing         | [20th August] | Fix defects            | [Minh Thư]      |
-| Regression Testing | [21th August] | Re-test fixed features | [Minh Thư]      |
-| Final Review       | [22th August] | Review results         | [Minh Thư]      |
+| Bug Fixing         | [22th August] | Fix defects            | [Minh Thư]      |
+| Regression Testing | [23th August] | Re-test fixed features | [Minh Thư]      |
+| Final Review       | [23th August] | Review results         | [Minh Thư]      |
 
 ### A.1.7 Responsibilities
 
