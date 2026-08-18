@@ -83,12 +83,16 @@ export class UserService {
     return { message: 'Update successful', data: user };
   }
 
-  async updateOnboarding(userId: number, weeklyStudyHours: number) {
-  const user = await this.userModel.findByPk(userId);
-  if (!user) throw new NotFoundException('User not found');
+  async updateOnboarding(userId: number, weeklyStudyHours: number, currentLevel?: string) {
+    const user = await this.userModel.findByPk(userId);
+    if (!user) throw new NotFoundException('User not found');
 
-  await user.update({ weeklyStudyHours });
-  return user;
+    const updateData: any = { weeklyStudyHours, hasCompletedOnboarding: true };
+    if (currentLevel) {
+      updateData.currentLevel = currentLevel;
+    }
+    await user.update(updateData);
+    return user;
   }
 
   async markOnboardingComplete(userId: number) {

@@ -6,7 +6,7 @@ import ForgotPasswordForm from "./features/auth/components/ForgotPasswordForm";
 import MainLayout from "./layouts/MainLayout.jsx";
 import DashboardPage from "./features/learning/dashboard/DashboardPage.jsx";
 import RoadmapPage from "./features/learning/roadmap/RoadmapPage.jsx";
-import UserProfile from "./features/user-profile/profile.jsx";
+import UserProfile from "./features/user-profile/profile";
 import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
 import Result from "./features/onboarding/ResultPlacementTest";
 import { useAuthStore } from "./features/auth/store/useAuthStore";

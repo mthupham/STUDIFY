@@ -181,13 +181,17 @@ export class PlacementTestService implements OnModuleInit {
    * Đọc nội dung lesson từ file lesson.json (không dùng bảng DB).
    */
   async getMyRoadmap(userId: number) {
-    // 1. Tìm kết quả placement test mới nhất của user
-    const latestResult = await this.resultModel.findOne({
-      where: { userId },
-      order: [['createdAt', 'DESC']],
-    });
+    // 1. Tìm kết quả level từ User trước, fallback kết quả placement test mới nhất của user
+    const user = await this.userService.getUserById(userId);
+    let userLevel = user?.currentLevel;
 
-    const userLevel = latestResult?.levelAssigned || 'A1';
+    if (!userLevel) {
+      const latestResult = await this.resultModel.findOne({
+        where: { userId },
+        order: [['createdAt', 'DESC']],
+      });
+      userLevel = latestResult?.levelAssigned || 'A1';
+    }
 
     // 2. Tìm dữ liệu level tương ứng trong lesson.json
     const levelGroupData = this.lessonData.find(
