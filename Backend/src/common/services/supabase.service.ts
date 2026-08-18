@@ -198,14 +198,13 @@ export class SupabaseService {
       const storedFileName = path.split('/').pop();
 
       if (storedFileName) {
-        // Storage filename: 1786775305270-feature1_updated (1).txt
-        // Metadata filename: feature1_updated (1).txt
-        const originalFileName = storedFileName.replace(/^\d+-/, '');
+        const cleanFileName = storedFileName.replace(/^\d+-/, '');
 
+        // Delete metadata matching either stored name or clean name
         const { error: metadataError } = await this.supabase
           .from('file_metadata')
           .delete()
-          .eq('file_name', originalFileName);
+          .in('file_name', [storedFileName, cleanFileName]);
 
         if (metadataError) {
           console.error('Delete File Metadata Error:', metadataError);
@@ -247,7 +246,11 @@ export class SupabaseService {
           uploaded_by: uploadedBy,
           uploaded_at: new Date().toISOString(),
         },
-        { onConflict: 'file_name' },
+        // IMPORTANT:
+        // Most schemas model metadata uniqueness by (group_id, file_name),
+        // so upsert must conflict on both columns (otherwise PostgREST will error
+        // because there's no UNIQUE constraint on file_name alone).
+        { onConflict: 'file_name,group_id' },
       );
 
       if (error) throw error;
@@ -329,8 +332,9 @@ export class SupabaseService {
             ? (file.metadata.size / (1024 * 1024)).toFixed(1) + ' MB'
             : 'N/A';
 
-          // Get uploader metadata for this file
-          const fileMeta = metadataMap[file.name] || {};
+          // Get uploader metadata for this file (check full name or stripped clean name)
+          const cleanName = file.name.replace(/^\d+-/, '');
+          const fileMeta = metadataMap[file.name] || metadataMap[cleanName] || {};
 
           return {
             id: file.id,
@@ -339,7 +343,7 @@ export class SupabaseService {
             createdAt: file.created_at
               ? new Date(file.created_at).toISOString()
               : fileMeta.uploadedAt || 'Unknown',
-            uploadedBy: fileMeta.uploadedBy || '',
+            uploadedBy: fileMeta.uploadedBy || 'anonymous', // <--- Will now properly find DanTheMan!
             url: publicUrlData.publicUrl,
             mimetype: file.metadata?.mimetype || '',
           };

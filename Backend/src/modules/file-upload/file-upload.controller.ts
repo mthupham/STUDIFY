@@ -11,6 +11,7 @@ import {
   Req,
   Res,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -18,6 +19,8 @@ import { ConfigService } from '@nestjs/config';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { SupabaseService } from '../../common/services/supabase.service';
 import { memoryStorage } from 'multer';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { UserService } from '../user/user.service';
 import type { Request } from 'express';
 
 @Controller('api/files')
@@ -26,9 +29,40 @@ export class FileUploadController {
 
   constructor(
     private readonly supabaseService: SupabaseService,
+    private readonly userService: UserService,
     configService: ConfigService,
   ) {
     this.bucketName = configService.get<string>('SUPABASE_BUCKET') || 'Uploads';
+  }
+
+  private async resolveUploaderName(user: any): Promise<string> {
+    if (!user) return 'anonymous';
+
+    if (user.username?.trim()) return user.username.trim();
+    if (user.name?.trim()) return user.name.trim();
+    if (user.full_name?.trim()) return user.full_name.trim();
+    if (user.fullName?.trim()) return user.fullName.trim();
+
+    if (user.id) {
+      try {
+        const dbUser = await this.userService.getUserById(Number(user.id));
+        if (dbUser?.name?.trim()) {
+          return dbUser.name.trim();
+        }
+      } catch (error) {
+        console.warn('Failed to resolve uploader name from database:', error);
+      }
+    }
+
+    if (user.email?.includes('@')) {
+      return user.email.split('@')[0];
+    }
+
+    if (typeof user.sub === 'string' && user.sub.trim()) {
+      return user.sub.trim();
+    }
+
+    return 'anonymous';
   }
 
   /**
@@ -36,6 +70,7 @@ export class FileUploadController {
    * POST /api/files/upload/:groupId
    */
   @Post('upload/:groupId')
+  @UseGuards(JwtGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -193,7 +228,7 @@ export class FileUploadController {
     }
 
     const user = (req as any).user;
-    const username = user?.username || user?.id || 'anonymous';
+    const username = await this.resolveUploaderName(user);
     const path = `groups/${groupId}/files`;
 
     const result = await this.supabaseService.uploadFiles(
@@ -208,9 +243,11 @@ export class FileUploadController {
 
     // Save uploader metadata for each uploaded file
     const uploadedFiles = result.files ?? [];
-    for (const file of uploadedFiles) {
-      await this.supabaseService.saveFileMetadata(file.name, groupId, username);
-    }
+  for (const file of uploadedFiles) {
+  // file.path is "groups/{groupId}/files/1723...-phuc_2.4.png"
+  const storedFileName = file.path.split('/').pop() || file.name;
+  await this.supabaseService.saveFileMetadata(storedFileName, groupId, username);
+}
 
     return {
       success: true,
