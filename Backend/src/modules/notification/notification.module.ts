@@ -8,6 +8,6 @@ import { Notification } from '../../models/notification.model';
   imports: [SequelizeModule.forFeature([Notification])],
   controllers: [NotificationController],
   providers: [NotificationService],
-  exports: [NotificationService], // export để các module khác có thể tạo notification
+  exports: [NotificationService], 
 })
 export class NotificationModule {}

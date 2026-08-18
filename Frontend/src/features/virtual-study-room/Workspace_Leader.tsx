@@ -1,27 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import ChangeRoleModal from "./Modal/ChangeRoleModal";
+import type { RoleType } from "./Modal/ChangeRoleModal";
+import BanMemberModal from "./Modal/BanMemberModal";
+import RemoveMemberModal from "./Modal/RemoveMemberModal";
 import { useGroupChat } from "./hooks/useGroupChat";
+import { useAuthStore } from "../auth/store/useAuthStore";
+import { changeMemberRole, removeMember } from "./services/groupService";
+import type { StudyGroup, GroupMember } from "./services/groupService";
+import { studyGroupApi } from "./services/studyGroupApi";
+import { ALL_ICONS } from "./components/groupIcons";
 
 // ==========================================
 // 1. TYPES & INTERFACES
 // ==========================================
-interface TaskItem {
-  title: string;
-  description: string;
-  dueDate: string;
-}
-
-interface Message {
-  id: string;
-  sender: string;
-  senderRole?: string;
-  avatar: string;
-  time: string;
-  text?: string;
-  isSelf?: boolean;
-  task?: TaskItem;
-}
-
 interface Member {
   id: string;
   name: string;
@@ -31,14 +23,13 @@ interface Member {
   lessons: number;
   streak: number;
   score: number;
+  role: RoleType;
 }
 
-interface Assignment {
-  id: string;
-  title: string;
-  dueDate: string;
-  progress: string;
-  statusColor: "emerald" | "sky";
+interface GroupDashboardProps {
+  groupId: number;
+  groupData: StudyGroup & { image?: string; icon?: string };
+  onGroupUpdated: () => void;
 }
 
 // ==========================================
@@ -48,12 +39,18 @@ interface MemberProfileDrawerProps {
   member: Member | null;
   isOpen: boolean;
   onClose: () => void;
+  groupId: number;
+  token: string;
+  onGroupUpdated: () => void;
 }
 
 const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
   member,
   isOpen,
   onClose,
+  groupId,
+  token,
+  onGroupUpdated,
 }) => {
   const [tasks, setTasks] = useState([
     {
@@ -69,6 +66,10 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
       completed: true,
     },
   ]);
+  const [showChangeRoleModal, setShowChangeRoleModal] = useState(false);
+  const [showBanMemberModal, setShowBanMemberModal] = useState(false);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   if (!member) return null;
 
@@ -106,9 +107,7 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
     z-10
     transform
     transition-transform
-    transition-transform
     duration-500
-    ease-[cubic-bezier(0.22,1,0.36,1)]
     ease-out
     ${isOpen ? "translate-x-0" : "translate-x-full"}
   `}
@@ -257,12 +256,18 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
                     </div>
                     <div>
                       <h5
-                        className={`text-xs font-semibold text-gray-900 ${task.completed ? "line-through text-gray-500" : ""}`}
+                        className={`text-xs font-semibold text-gray-900 ${
+                          task.completed ? "line-through text-gray-500" : ""
+                        }`}
                       >
                         {task.title}
                       </h5>
                       <span
-                        className={`text-[11px] ${task.completed ? "text-emerald-700 font-medium" : "text-gray-500"}`}
+                        className={`text-[11px] ${
+                          task.completed
+                            ? "text-emerald-700 font-medium"
+                            : "text-gray-500"
+                        }`}
                       >
                         {task.subtitle}
                       </span>
@@ -334,27 +339,96 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
         {/* Footer Actions */}
         <footer className="p-5 bg-slate-100 border-t border-slate-300 flex flex-col gap-2.5 shrink-0">
           <button
-            onClick={() => alert(`Role management for ${member.name}`)}
-            className="w-full py-2 px-3 bg-white hover:bg-slate-50 border border-slate-300 text-gray-800 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
+            disabled={actionLoading}
+            onClick={() => setShowChangeRoleModal(true)}
+            className="w-full py-2 px-3 bg-white hover:bg-slate-50 disabled:opacity-50 border border-slate-300 text-gray-800 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
           >
             Change Role
           </button>
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={() => alert(`Removed ${member.name}`)}
-              className="py-2 px-3 bg-white hover:bg-red-50 border border-red-200 text-red-700 font-semibold text-xs rounded-lg transition"
+              disabled={actionLoading}
+              onClick={() => setShowRemoveModal(true)}
+              className="py-2 px-3 bg-white hover:bg-red-50 disabled:opacity-50 border border-red-200 text-red-700 font-semibold text-xs rounded-lg transition"
             >
               Remove
             </button>
             <button
-              onClick={() => alert(`Banned ${member.name}`)}
-              className="py-2 px-3 bg-red-700 hover:bg-red-800 text-white font-semibold text-xs rounded-lg transition shadow-sm"
+              disabled={actionLoading}
+              onClick={() => setShowBanMemberModal(true)}
+              className="py-2 px-3 bg-red-700 hover:bg-red-800 disabled:opacity-50 text-white font-semibold text-xs rounded-lg transition shadow-sm"
             >
               Ban Member
             </button>
           </div>
         </footer>
       </aside>
+      <ChangeRoleModal
+        isOpen={showChangeRoleModal}
+        onClose={() => setShowChangeRoleModal(false)}
+        memberName={member.name}
+        memberAvatar={member.avatar}
+        currentRole={member.role}
+        onConfirmRole={async (newRole) => {
+          if (!token) return;
+          setActionLoading(true);
+          try {
+            await changeMemberRole(
+              token,
+              groupId,
+              Number(member.id),
+              newRole as "LEADER" | "MEMBER",
+            );
+            onGroupUpdated();
+            onClose();
+          } catch (err) {
+            console.error("Change role error:", err);
+          } finally {
+            setActionLoading(false);
+            setShowChangeRoleModal(false);
+          }
+        }}
+      />
+      <RemoveMemberModal
+        isOpen={showRemoveModal}
+        onClose={() => setShowRemoveModal(false)}
+        memberName={member.name}
+        memberAvatar={member.avatar}
+        onConfirmRemove={async () => {
+          if (!token) return;
+          setActionLoading(true);
+          try {
+            await removeMember(token, groupId, Number(member.id));
+            onGroupUpdated();
+            onClose();
+          } catch (err) {
+            console.error("Remove member error:", err);
+          } finally {
+            setActionLoading(false);
+            setShowRemoveModal(false);
+          }
+        }}
+      />
+      <BanMemberModal
+        isOpen={showBanMemberModal}
+        onClose={() => setShowBanMemberModal(false)}
+        memberName={member.name}
+        memberAvatar={member.avatar}
+        onConfirmBan={async () => {
+          if (!token) return;
+          setActionLoading(true);
+          try {
+            await removeMember(token, groupId, Number(member.id));
+            onGroupUpdated();
+            onClose();
+          } catch (err) {
+            console.error("Ban member error:", err);
+          } finally {
+            setActionLoading(false);
+            setShowBanMemberModal(false);
+          }
+        }}
+      />
     </div>
   );
 };
@@ -362,70 +436,134 @@ const MemberProfileDrawer: React.FC<MemberProfileDrawerProps> = ({
 // ==========================================
 // 3. MAIN GROUP DASHBOARD COMPONENT
 // ==========================================
-export const GroupDashboard: React.FC = () => {
+export const GroupDashboard: React.FC<GroupDashboardProps> = ({
+  groupId,
+  groupData,
+  onGroupUpdated,
+}) => {
   const navigate = useNavigate();
+  const { token } = useAuthStore();
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // --- Sample Members Data ---
-  const [members] = useState<Member[]>([
-    {
-      id: "m1",
-      name: "Sarah Chen",
+  const [members, setMembers] = useState<Member[]>(() =>
+    (groupData.members ?? []).map((m: GroupMember) => ({
+      id: String(m.userId),
+      name: m.user?.name ?? `User #${m.userId}`,
       avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-      level: "ADVANCED",
-      email: "sarah.chen@university.edu",
-      lessons: 42,
-      streak: 12,
-      score: 850,
-    },
-    {
-      id: "m2",
-      name: "Alex Thompson",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-      level: "FLUENT",
-      email: "alex.t@university.edu",
-      lessons: 65,
-      streak: 24,
-      score: 1200,
-    },
-    {
-      id: "m3",
-      name: "Marco Rossi",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-      level: "ADVANCED",
-      email: "marco.rossi@university.edu",
-      lessons: 28,
-      streak: 5,
-      score: 620,
-    },
-  ]);
+        m.user?.avatar ??
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(
+          m.user?.name ?? "U",
+        )}&background=random`,
+      email: m.user?.email ?? "",
+      level: "INTERMEDIATE" as const,
+      lessons: 0,
+      streak: 0,
+      score: 0,
+      role: m.role as RoleType,
+    })),
+  );
 
   const [inputMessage, setInputMessage] = useState("");
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
 
-  const pendingAssignments: Assignment[] = [
-    {
-      id: "a1",
-      title: "Weekly Vocabulary Quiz",
-      dueDate: "Oct 25, 4:00 PM",
-      progress: "8/12 Done",
-      statusColor: "emerald",
-    },
-    {
-      id: "a2",
-      title: "Case Study Analysis",
-      dueDate: "Oct 28, 9:00 AM",
-      progress: "0/12 Done",
-      statusColor: "sky",
-    },
-  ];
+  // State khởi tạo từ groupData
+  const [groupName, setGroupName] = useState(groupData?.name || "Study Group");
+  const [groupAvatar, setGroupAvatar] = useState<string>(
+    groupData?.icon || groupData?.image || "",
+  );
+  const [inviteCode, setInviteCode] = useState(groupData.code ?? "");
 
-  const inviteCode = "LP-B2-99";
-  const { messages, sendMessage, currentUserId } = useGroupChat(inviteCode);
+  const { messages, sendMessage, currentUserId } = useGroupChat(
+    String(groupId),
+  );
+
+  // Sync dữ liệu và kết nối API
+  useEffect(() => {
+    let isMounted = true;
+
+    Promise.all([
+      studyGroupApi.getGroup(Number(groupId)),
+      studyGroupApi.getMembers(Number(groupId)),
+    ])
+      .then(([detail, groupMembers]) => {
+        if (!isMounted) return;
+
+        if (detail?.group) {
+          setGroupName(detail.group.name || groupData?.name || "Study Group");
+          setGroupAvatar(detail.group.icon || groupData?.icon || "");
+          setInviteCode(detail.group.code || groupData?.code || "");
+        }
+        if (groupMembers) {
+          setMembers(
+            groupMembers.map((member) => ({
+              id: String(member.userId),
+              name: member.name,
+              avatar:
+                member.avatar ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                  member.name,
+                )}&background=random`,
+              level: "INTERMEDIATE",
+              email: member.email,
+              lessons: 0,
+              streak: 0,
+              score: 0,
+              role: member.role,
+            })),
+          );
+        }
+      })
+      .catch((err) => {
+        if (isMounted) console.error("Error loading group details:", err);
+      });
+
+    return () => {
+      isMounted = false;
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, [groupId, groupData]);
+
+  // --- Hàm render Icon linh hoạt (Hiển thị URL ảnh hoặc Icon SVG) ---
+  const renderGroupHeaderIcon = () => {
+    if (!groupAvatar) {
+      return (
+        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+        </svg>
+      );
+    }
+
+    // Kiểm tra xem groupAvatar có phải là URL ảnh (http/https/data) hay không
+    const isUrl =
+      groupAvatar.startsWith("http://") ||
+      groupAvatar.startsWith("https://") ||
+      groupAvatar.startsWith("data:");
+
+    if (isUrl) {
+      return (
+        <img
+          src={groupAvatar}
+          alt={groupName}
+          className="w-full h-full object-cover"
+        />
+      );
+    }
+
+    // Trường hợp groupAvatar là Icon ID từ ALL_ICONS (vd: "chat", "book", "globe")
+    const matchedIcon = ALL_ICONS.find((item) => item.id === groupAvatar);
+    if (matchedIcon) {
+      return matchedIcon.icon("w-6 h-6");
+    }
+
+    // Fallback Icon mặc định nếu không khớp ID nào
+    return (
+      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+      </svg>
+    );
+  };
 
   // --- Handlers ---
   const handleSendMessage = () => {
@@ -436,18 +574,17 @@ export const GroupDashboard: React.FC = () => {
   };
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(inviteCode);
+    navigator.clipboard.writeText(inviteCode || groupData.code);
     setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  // Mở Drawer khi bấm chọn thành viên
   const handleSelectMember = (member: Member) => {
     setSelectedMember(member);
     setIsDrawerOpen(true);
   };
 
-  // Đóng Drawer
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
     setSelectedMember(null);
@@ -477,18 +614,17 @@ export const GroupDashboard: React.FC = () => {
       {/* ---------------- GROUP HEADER ---------------- */}
       <header className="w-full px-8 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center shrink-0">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-blue-600 rounded-xl flex justify-center items-center text-white shadow-md shadow-blue-500/20">
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-            </svg>
+          {/* Hiển thị Icon / Avatar linh hoạt */}
+          <div className="w-12 h-12 bg-blue-600 rounded-xl flex justify-center items-center text-white shadow-md shadow-blue-500/20 overflow-hidden shrink-0">
+            {renderGroupHeaderIcon()}
           </div>
           <div className="flex flex-col gap-0.5">
             <h2 className="!text-gray-900 !text-xl !font-semibold !leading-tight">
-              Advanced C1 Masterminds
+              {groupName}
             </h2>
             <div className="flex items-center gap-3">
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs font-mono font-medium rounded">
-                #{inviteCode}
+                #{inviteCode || groupData.code}
               </span>
               <div className="flex items-center gap-1.5 text-gray-600 text-xs font-medium">
                 <svg
@@ -498,7 +634,7 @@ export const GroupDashboard: React.FC = () => {
                 >
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                 </svg>
-                <span>{members.length} / 10 Members</span>
+                <span>{members.length} Members</span>
               </div>
             </div>
           </div>
@@ -508,7 +644,7 @@ export const GroupDashboard: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() =>
-              navigate("/study-groups/workspace-leader/edit-group")
+              navigate(`/study-groups/${groupId}/workspace-leader/edit-group`)
             }
             className="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-gray-700 font-medium text-sm rounded-xl transition-all flex items-center gap-2 shadow-sm"
           >
@@ -526,11 +662,6 @@ export const GroupDashboard: React.FC = () => {
               />
             </svg>
             Edit Group Info
-          </button>
-          <button className="p-2.5 text-gray-400 hover:text-gray-600 hover:bg-slate-100 rounded-xl transition-colors">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-            </svg>
           </button>
         </div>
       </header>
@@ -551,14 +682,21 @@ export const GroupDashboard: React.FC = () => {
             {messages.map((msg) => (
               <div key={msg.id} className="flex items-start gap-3.5 group">
                 <img
-                  src={msg.sender?.avatar || "https://via.placeholder.com/40"}
+                  src={
+                    msg.sender?.avatar ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      msg.sender?.name || "U",
+                    )}&background=random`
+                  }
                   alt={msg.sender?.name || "Member avatar"}
                   className="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-100 shadow-sm"
                 />
                 <div className="flex flex-col gap-1 max-w-[80%]">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-sm text-gray-900">
-                      {msg.sender?.id === currentUserId ? "You" : msg.sender?.name || "Unknown"}
+                      {msg.sender?.id === currentUserId
+                        ? "You"
+                        : msg.sender?.name || "Unknown"}
                     </span>
                     <span className="text-gray-400 text-xs">
                       {new Date(msg.createdAt).toLocaleTimeString([], {
@@ -662,7 +800,14 @@ export const GroupDashboard: React.FC = () => {
         <aside className="w-80 bg-slate-50 border-l border-slate-200 flex flex-col shrink-0 overflow-y-auto gap-6 p-6">
           {/* Bento Quick Actions */}
           <div className="grid grid-cols-2 gap-3">
-            <button className="p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
+            <button
+              onClick={() =>
+                navigate(
+                  `/study-groups/${groupId}/workspace-leader/task-assignment`,
+                )
+              }
+              className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group"
+            >
               <div className="w-9 h-9 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
                   className="w-5 h-5"
@@ -686,7 +831,12 @@ export const GroupDashboard: React.FC = () => {
               </div>
             </button>
 
-            <button className="p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group">
+            <button
+              onClick={() =>
+                navigate(`/study-groups/${groupId}/workspace-leader/repository`)
+              }
+              className="cursor-pointer p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm transition-all flex flex-col gap-3 text-left group"
+            >
               <div className="w-9 h-9 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
                 <svg
                   className="w-5 h-5"
@@ -733,7 +883,7 @@ export const GroupDashboard: React.FC = () => {
                 </h3>
               </div>
               <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[11px] font-mono font-semibold rounded-full">
-                12/15 Seats
+                {members.length} Members
               </span>
             </div>
 
@@ -806,58 +956,6 @@ export const GroupDashboard: React.FC = () => {
               )}
             </button>
           </div>
-
-          {/* Pending Assignments Section */}
-          <div className="p-4 bg-white rounded-xl border border-slate-200 flex flex-col gap-4 shadow-sm">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="text-gray-900 font-bold text-xs uppercase tracking-wider">
-                PENDING ASSIGNMENTS
-              </h3>
-              <button className="text-sky-700 hover:text-sky-800 text-[11px] font-bold transition-colors">
-                View All
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-2.5">
-              {pendingAssignments.map((assignment) => (
-                <div
-                  key={assignment.id}
-                  className={`p-3 bg-slate-50 rounded-lg border-l-4 ${
-                    assignment.statusColor === "emerald"
-                      ? "border-l-emerald-600"
-                      : "border-l-sky-700"
-                  } flex flex-col gap-1`}
-                >
-                  <p className="text-gray-900 text-xs font-bold">
-                    {assignment.title}
-                  </p>
-                  <div className="flex justify-between items-center text-[11px] text-gray-500 mt-0.5">
-                    <span>{assignment.dueDate}</span>
-                    <span className="font-semibold text-gray-700">
-                      {assignment.progress}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button className="w-full py-2.5 bg-sky-700 hover:bg-sky-800 text-white text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm mt-1">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Create New Assignment
-            </button>
-          </div>
         </aside>
       </div>
 
@@ -866,6 +964,9 @@ export const GroupDashboard: React.FC = () => {
         member={selectedMember}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
+        groupId={groupId}
+        token={token ?? ""}
+        onGroupUpdated={onGroupUpdated}
       />
     </div>
   );

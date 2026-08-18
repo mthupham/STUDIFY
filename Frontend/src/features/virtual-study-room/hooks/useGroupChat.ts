@@ -3,7 +3,7 @@ import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '../../auth/store/useAuthStore';
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+const API_BASE = import.meta.env.VITE_API_URL ?? ' https://4885-27-74-254-72.ngrok-free.app';
 const TEMP_GROUP_ID = 'LP-B2-99';
 
 export interface GroupChatSender {
@@ -24,6 +24,7 @@ export interface GroupChatMessage {
 
 export function useGroupChat(groupId = TEMP_GROUP_ID) {
   const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
   const [messages, setMessages] = useState<GroupChatMessage[]>([]);
   const [connected, setConnected] = useState(false);
   const socketRef = useRef<Socket | null>(null);
@@ -32,7 +33,13 @@ export function useGroupChat(groupId = TEMP_GROUP_ID) {
     let isMounted = true;
 
     axios
-      .get<GroupChatMessage[]>(`${API_BASE}/chat/group/${groupId}`)
+      .get<GroupChatMessage[]>(`${API_BASE}/chat/group/${groupId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
+      
       .then(({ data }) => {
         if (isMounted) {
           setMessages(data);
@@ -45,10 +52,17 @@ export function useGroupChat(groupId = TEMP_GROUP_ID) {
     return () => {
       isMounted = false;
     };
-  }, [groupId]);
+  }, [groupId, token]);
 
   useEffect(() => {
-    const socket = io(`${API_BASE}/chat`);
+    const socket = io(`${API_BASE}/chat`, {
+      // Start with WebSocket so ngrok does not intercept Socket.IO's HTTP
+      // polling handshake with its free-tier browser warning page.
+      transports: ['websocket', 'polling'],
+      auth: {
+        token,
+      },
+    });
     socketRef.current = socket;
 
     socket.on('connect', () => {
@@ -71,11 +85,11 @@ export function useGroupChat(groupId = TEMP_GROUP_ID) {
     return () => {
       socket.disconnect();
     };
-  }, [groupId]);
+  }, [groupId, token]);
 
   useEffect(() => {
     socketRef.current?.emit('joinGroup', groupId);
-  }, [groupId]);
+  }, [groupId, token]);
 
   const sendMessage = useCallback(
     (text: string) => {
@@ -89,7 +103,7 @@ export function useGroupChat(groupId = TEMP_GROUP_ID) {
         text: text.trim(),
       });
     },
-    [groupId, user?.id],
+    [groupId, user?.id, token],
   );
 
   return {

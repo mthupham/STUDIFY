@@ -16,7 +16,7 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: ['http://localhost:5173'],
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
   });
 
@@ -30,11 +30,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
-  
   const logger = new Logger('Bootstrap');
-  logger.log(`Server started on http://localhost:3000`);
-  logger.log(`Swagger docs available at http://localhost:3000/api`);
+  const port = Number(process.env.PORT ?? 3000);
+  await app.listen(port, '0.0.0.0');
+  logger.log(`Server started on port ${port}`);
+  logger.log(`Swagger docs available at /api`);
 }
 
 bootstrap();

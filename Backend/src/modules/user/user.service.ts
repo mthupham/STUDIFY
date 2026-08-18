@@ -101,12 +101,23 @@ export class UserService {
   async updateWeeklyStudyHours(
   userId: number,
   weeklyStudyHours: number,
-) {
-  await this.userModel.update(
-    { weeklyStudyHours },
-    {
-      where: { id: userId },
-    },
-  );
-}
+  ) {
+    await this.userModel.update(
+      { weeklyStudyHours },
+      {
+        where: { id: userId },
+      },
+    );
+  }
+
+  async createGoogleUser(email: string, name: string, avatar: string) {
+    const user = await this.userModel.create({
+      email,
+      name,
+      avatar,
+      password: '',  
+      provider: 'google',
+    } as any);
+    return user;
+  }
 }
