@@ -1,182 +1,276 @@
-### TC-[Test case]-001
+### TC-AISPEAKING-001
 
-**Title:** [Test case title]
-
-**Preconditions:**
-
-* [Condition]
-
-**Steps:**
-
-1. [Step]
-2. [Step]
-3. [Step]
-
-**Expected Result:**
-
-* [Expected result]
-
-**Priority:** [High/Medium/Low]
-
----
-
-### TC-[Test case]-002
-
-**Title:** [Test case title]
+**Title:** Open AI Speaking page with default scenario
 
 **Preconditions:**
 
-* [Condition]
+* User is logged in and has completed onboarding
+* Backend is running
 
 **Steps:**
 
-1. [Step]
-2. [Step]
+1. Open the **AI Speaking** page from the sidebar
+2. Check the scenario list, question area, and conversation history
 
 **Expected Result:**
 
-* [Expected result]
+* Page loads with three scenarios: **Technical English**, **Daily Tech Sync**, and **Tech Interviews**
+* **Technical English** is selected by default
+* A speaking question is shown
+* The question also appears in Conversation History
+* Score cards show no score yet
+* Error detection and feedback is empty
+* **Start Listening** is enabled
 
-**Priority:** [High/Medium/Low]
+**Priority:** High
 
 ---
 
-### TC-[Test case]-003
+### TC-AISPEAKING-002
 
-**Title:** [Test case title]
+**Title:** Change scenario to Daily Tech Sync
+
+**Preconditions:**
+
+* User is on the AI Speaking page
+* A question is already loaded
 
 **Steps:**
 
-1. [Step]
-2. [Step]
+1. Click **Daily Tech Sync**
+2. Check the new question and conversation history
 
 **Expected Result:**
 
-* [Expected result]
+* A new daily-sync question is shown
+* Conversation History is reset with the new question
+* Previous answer, scores, and feedback are cleared
+* **Start Listening** is enabled
 
-**Priority:** [High/Medium/Low]
+**Priority:** High
 
 ---
 
-### TC-[Test case]-004
+### TC-AISPEAKING-003
 
-**Title:** [Test case title]
+**Title:** Change scenario to Tech Interviews
+
+**Preconditions:**
+
+* User is on the AI Speaking page
 
 **Steps:**
 
-1. [Step]
-2. [Step]
+1. Click **Tech Interviews**
+2. Check the new question and conversation history
 
 **Expected Result:**
 
-* [Expected result]
+* A new interview question is shown
+* Conversation History shows the new question
+* Score cards show no score yet
+* Error detection and feedback is empty
 
-**Priority:** [High/Medium/Low]
+**Priority:** High
 
 ---
 
-### TC-[Test case]-005
+### TC-AISPEAKING-004
 
-**Title:** [Test case title]
+**Title:** Record answer and see live transcript
+
+**Preconditions:**
+
+* User is on the AI Speaking page
+* A question is loaded
+* Microphone access is allowed
 
 **Steps:**
 
-1. [Step]
-2. [Step]
+1. Click **Start Listening**
+2. Speak a short answer in English
+3. Check the recording state and conversation history
 
 **Expected Result:**
 
-* [Expected result]
+* **Stop Practice** becomes enabled
+* Page shows that recording is active
+* Spoken words appear in Conversation History while speaking
 
-**Priority:** [High/Medium/Low]
+**Priority:** High
 
 ---
 
-### TC-[Test case]-006
+### TC-AISPEAKING-005
 
-**Title:** [Test case title]
+**Title:** Analyze answer and show feedback
+
+**Preconditions:**
+
+* User has recorded an answer
+* Backend is running
 
 **Steps:**
 
-1. [Step]
-2. [Step]
+1. Click **Stop Practice**
+2. Wait for analysis to finish
+3. Check the score cards and feedback sections
 
 **Expected Result:**
 
-* [Expected result]
+* Grammar, Tech Vocabulary, and Clarity scores are shown
+* Grammar feedback and improvement tips are shown
+* Vocabulary and clarity feedback are shown
+* A new question is loaded for the next turn
+* The previous question and answer stay in Conversation History
 
-**Priority:** [High/Medium/Low]
+**Priority:** High
 
 ---
 
-### TC-[Test case]-007
+### TC-AISPEAKING-006
 
-**Title:** [Test case title]
+**Title:** Stop practice with no speech
+
+**Preconditions:**
+
+* User is on the AI Speaking page
+* A question is loaded
+* Microphone access is allowed
 
 **Steps:**
 
-1. [Step]
-2. [Step]
+1. Click **Start Listening**
+2. Stay silent
+3. Click **Stop Practice**
 
 **Expected Result:**
 
-* [Expected result]
+* Error message is shown: **"No speech was detected. Please try again."**
+* Scores do not change
+* The same question remains for retry
 
-**Priority:** [High/Medium/Low]
+**Priority:** Medium
 
 ---
 
-### TC-[Test case]-008
+### TC-AISPEAKING-007
 
-**Title:** [Test case title]
+**Title:** Show grammar errors after analysis
+
+**Preconditions:**
+
+* User is on the AI Speaking page
+* A question is loaded
+* Backend is running
 
 **Steps:**
 
-1. [Step]
-2. [Step]
+1. Click **Start Listening**
+2. Speak a sentence with a grammar mistake, for example: "I am responsible for manage the database."
+3. Click **Stop Practice**
+4. Check the grammar feedback section
 
 **Expected Result:**
 
-* [Expected result]
+* Grammar score is below 100
+* The wrong phrase is shown with a correction suggestion
+* Explanation and a better example sentence are shown
 
-**Priority:** [High/Medium/Low]
+**Priority:** High
 
 ---
 
-### TC-[Test case]-009
+### TC-AISPEAKING-008
 
-**Title:** [Test case title]
+**Title:** Keep conversation history after multiple turns
+
+**Preconditions:**
+
+* User has completed at least one practice turn
 
 **Steps:**
 
-1. [Step]
-2. [Step]
+1. Complete one full practice turn
+2. Complete a second practice turn
+3. Check Conversation History
 
 **Expected Result:**
 
-* [Expected result]
+* Previous questions and answers remain visible
+* The latest question is shown for the current turn
+* History includes all completed turns
 
-**Priority:** [High/Medium/Low]
+**Priority:** Medium
 
 ---
 
-### TC-[Test case]-010
+### TC-AISPEAKING-009
 
-**Title:** [Test case title]
+**Title:** Disable scenario change during analysis
+
+**Preconditions:**
+
+* User is on the AI Speaking page
+* A question is loaded
 
 **Steps:**
 
-1. [Step]
-2. [Step]
+1. Record an answer and click **Stop Practice**
+2. While analysis is running, try to click another scenario
 
 **Expected Result:**
 
-* [Expected result]
+* Scenario buttons cannot be clicked during analysis
+* **Start Listening** and **Stop Practice** are disabled during analysis
+* Scenario buttons work again after analysis finishes
 
-**Priority:** [High/Medium/Low]
+**Priority:** Medium
+
+---
+
+### TC-AISPEAKING-010
+
+**Title:** Show error when backend is unavailable
+
+**Preconditions:**
+
+* User is logged in
+* Backend is stopped or unreachable
+
+**Steps:**
+
+1. Open the AI Speaking page or switch scenario while backend is down
+2. Check the page response
+
+**Expected Result:**
+
+* Error message is shown: **"Unable to load question. Please check backend connection."**
+* No question is loaded
+* **Start Listening** stays disabled
+
+**Priority:** Medium
+
+---
 
 ### Test Execution
 
-| Test Case ID | Execution Date | Status | Actual Result   | Bug ID  |
-| ------------ | -------------- | ------ | --------------- | ------- |
-| TC-AUTH-001  | [Date]         | Pass   | [Actual result] | N/A     |
+| Test Case ID      | Execution Date | Status  | Actual Result | Bug ID |
+| ----------------- | -------------- | ------- | ------------- | ------ |
+| TC-AISPEAKING-001 | 20/08/2026     | Pass    | Page loaded with default Technical English scenario and a question | N/A |
+| TC-AISPEAKING-002 | 20/08/2026     | Pass    | Switched to Daily Tech Sync and a question is loaded | N/A |
+| TC-AISPEAKING-003 | 20/08/2026     | Pass    | Switched to Tech Interviews and a question is loaded | N/A |
+| TC-AISPEAKING-004 | 20/08/2026     | Not Run | —             | N/A    |
+| TC-AISPEAKING-005 | 20/08/2026     | Not Run | —             | N/A    |
+| TC-AISPEAKING-006 | 20/08/2026     | Pass    | Error message is successfully displayed | N/A |
+| TC-AISPEAKING-007 | 20/08/2026     | Not Run | —             | N/A    |
+| TC-AISPEAKING-008 | 20/08/2026     | Not Run | —             | N/A    |
+| TC-AISPEAKING-009 | 20/08/2026     | Not Run | —             | N/A    |
+| TC-AISPEAKING-010 | 20/08/2026     | Pass    | Error message is successfully displayed | N/A    |
+
+### Notes from Test Run (20/08/2026)
+
+* Random question API works for all three scenarios
+* Analyze API returns scores and feedback correctly
+* Invalid scenario and empty transcript return error responses
+* No bugs found in the tested API paths during this session
