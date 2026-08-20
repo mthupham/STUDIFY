@@ -1,0 +1,121 @@
+{
+  "levels": ["A1","A2","B1","B2","C1","C2"],
+  "levelRanges": {
+    "A1": { "start": 1, "end": 10 },
+    "A2": { "start": 11, "end": 20 },
+    "B1": { "start": 21, "end": 30 },
+    "B2": { "start": 31, "end": 40 },
+    "C1": { "start": 41, "end": 50 },
+    "C2": { "start": 51, "end": 60 }
+  },
+  "views": [
+    {
+      "id": "viewA1",
+      "label": "A1",
+      "level": "A1",
+      "nodes": [
+        {"id":"n1","type":"Lesson","label":"Lesson 1","status":"completed","progress":100,"position":5,"row":"top"},
+        {"id":"n2","type":"Lesson","label":"Lesson 2","status":"completed","progress":100,"position":15,"row":"bottom"},
+        {"id":"n3","type":"Lesson","label":"Lesson 3","status":"completed","progress":100,"position":25,"row":"top"},
+        {"id":"n4","type":"Lesson","label":"Lesson 4","status":"completed","progress":100,"position":35,"row":"bottom"},
+        {"id":"n5","type":"Lesson","label":"Lesson 5","status":"completed","progress":100,"position":45,"row":"top"},
+        {"id":"n6","type":"Lesson","label":"Lesson 6","status":"completed","progress":100,"position":55,"row":"bottom"},
+        {"id":"n7","type":"Lesson","label":"Lesson 7","status":"completed","progress":100,"position":65,"row":"top"},
+        {"id":"n8","type":"Lesson","label":"Lesson 8","status":"completed","progress":100,"position":75,"row":"bottom"},
+        {"id":"n9","type":"Lesson","label":"Lesson 9","status":"completed","progress":100,"position":85,"row":"top"},
+        {"id":"n10","type":"Exam","label":"Exam 1","status":"completed","progress":100,"position":95,"row":"bottom"}
+      ]
+    },
+    {
+      "id": "viewA2",
+      "label": "A2",
+      "level": "A2",
+      "nodes": [
+        {"id":"n11","type":"Lesson","label":"Lesson 11","status":"active","progress":50,"position":5,"row":"top"},
+        {"id":"n12","type":"Lesson","label":"Lesson 12","status":"locked","progress":0,"position":15,"row":"bottom"},
+        {"id":"n13","type":"Lesson","label":"Lesson 13","status":"locked","progress":0,"position":25,"row":"top"},
+        {"id":"n14","type":"Lesson","label":"Lesson 14","status":"locked","progress":0,"position":35,"row":"bottom"},
+        {"id":"n15","type":"Lesson","label":"Lesson 15","status":"locked","progress":0,"position":45,"row":"top"},
+        {"id":"n16","type":"Lesson","label":"Lesson 16","status":"locked","progress":0,"position":55,"row":"bottom"},
+        {"id":"n17","type":"Lesson","label":"Lesson 17","status":"locked","progress":0,"position":65,"row":"top"},
+        {"id":"n18","type":"Lesson","label":"Lesson 18","status":"locked","progress":0,"position":75,"row":"bottom"},
+        {"id":"n19","type":"Lesson","label":"Lesson 19","status":"locked","progress":0,"position":85,"row":"top"},
+        {"id":"n20","type":"Exam","label":"Exam 2","status":"locked","progress":0,"position":95,"row":"bottom"}
+      ]
+    },
+    {
+      "id": "viewB1",
+      "label": "B1",
+      "level": "B1",
+      "nodes": [
+        {"id":"n21","type":"Lesson","label":"Lesson 21","status":"locked","progress":0,"position":5,"row":"top"},
+        {"id":"n22","type":"Lesson","label":"Lesson 22","status":"locked","progress":0,"position":15,"row":"bottom"},
+        {"id":"n23","type":"Lesson","label":"Lesson 23","status":"locked","progress":0,"position":25,"row":"top"},
+        {"id":"n24","type":"Lesson","label":"Lesson 24","status":"locked","progress":0,"position":35,"row":"bottom"},
+        {"id":"n25","type":"Lesson","label":"Lesson 25","status":"locked","progress":0,"position":45,"row":"top"},
+        {"id":"n26","type":"Lesson","label":"Lesson 26","status":"locked","progress":0,"position":55,"row":"bottom"},
+        {"id":"n27","type":"Lesson","label":"Lesson 27","status":"locked","progress":0,"position":65,"row":"top"},
+        {"id":"n28","type":"Lesson","label":"Lesson 28","status":"locked","progress":0,"position":75,"row":"bottom"},
+        {"id":"n29","type":"Lesson","label":"Lesson 29","status":"locked","progress":0,"position":85,"row":"top"},
+        {"id":"n30","type":"Exam","label":"Exam 3","status":"locked","progress":0,"position":95,"row":"bottom"}
+      ]
+    },
+    {
+      "id": "viewB2",
+      "label": "B2",
+      "level": "B2",
+      "nodes": [
+        {"id":"n31","type":"Lesson","label":"Lesson 31","status":"locked","progress":0,"position":5,"row":"top"},
+        {"id":"n32","type":"Lesson","label":"Lesson 32","status":"locked","progress":0,"position":15,"row":"bottom"},
+        {"id":"n33","type":"Lesson","label":"Lesson 33","status":"locked","progress":0,"position":25,"row":"top"},
+        {"id":"n34","type":"Lesson","label":"Lesson 34","status":"locked","progress":0,"position":35,"row":"bottom"},
+        {"id":"n35","type":"Lesson","label":"Lesson 35","status":"locked","progress":0,"position":45,"row":"top"},
+        {"id":"n36","type":"Lesson","label":"Lesson 36","status":"locked","progress":0,"position":55,"row":"bottom"},
+        {"id":"n37","type":"Lesson","label":"Lesson 37","status":"locked","progress":0,"position":65,"row":"top"},
+        {"id":"n38","type":"Lesson","label":"Lesson 38","status":"locked","progress":0,"position":75,"row":"bottom"},
+        {"id":"n39","type":"Lesson","label":"Lesson 39","status":"locked","progress":0,"position":85,"row":"top"},
+        {"id":"n40","type":"Exam","label":"Exam 4","status":"locked","progress":0,"position":95,"row":"bottom"}
+      ]
+    },
+    {
+      "id": "viewC1",
+      "label": "C1",
+      "level": "C1",
+      "nodes": [
+        {"id":"n41","type":"Lesson","label":"Lesson 41","status":"locked","progress":0,"position":5,"row":"top"},
+        {"id":"n42","type":"Lesson","label":"Lesson 42","status":"locked","progress":0,"position":15,"row":"bottom"},
+        {"id":"n43","type":"Lesson","label":"Lesson 43","status":"locked","progress":0,"position":25,"row":"top"},
+        {"id":"n44","type":"Lesson","label":"Lesson 44","status":"locked","progress":0,"position":35,"row":"bottom"},
+        {"id":"n45","type":"Lesson","label":"Lesson 45","status":"locked","progress":0,"position":45,"row":"top"},
+        {"id":"n46","type":"Lesson","label":"Lesson 46","status":"locked","progress":0,"position":55,"row":"bottom"},
+        {"id":"n47","type":"Lesson","label":"Lesson 47","status":"locked","progress":0,"position":65,"row":"top"},
+        {"id":"n48","type":"Lesson","label":"Lesson 48","status":"locked","progress":0,"position":75,"row":"bottom"},
+        {"id":"n49","type":"Lesson","label":"Lesson 49","status":"locked","progress":0,"position":85,"row":"top"},
+        {"id":"n50","type":"Exam","label":"Exam 5","status":"locked","progress":0,"position":95,"row":"bottom"}
+      ]
+    },
+    {
+      "id": "viewC2",
+      "label": "C2",
+      "level": "C2",
+      "nodes": [
+        {"id":"n51","type":"Lesson","label":"Lesson 51","status":"locked","progress":0,"position":5,"row":"top"},
+        {"id":"n52","type":"Lesson","label":"Lesson 52","status":"locked","progress":0,"position":15,"row":"bottom"},
+        {"id":"n53","type":"Lesson","label":"Lesson 53","status":"locked","progress":0,"position":25,"row":"top"},
+        {"id":"n54","type":"Lesson","label":"Lesson 54","status":"locked","progress":0,"position":35,"row":"bottom"},
+        {"id":"n55","type":"Lesson","label":"Lesson 55","status":"locked","progress":0,"position":45,"row":"top"},
+        {"id":"n56","type":"Lesson","label":"Lesson 56","status":"locked","progress":0,"position":55,"row":"bottom"},
+        {"id":"n57","type":"Lesson","label":"Lesson 57","status":"locked","progress":0,"position":65,"row":"top"},
+        {"id":"n58","type":"Lesson","label":"Lesson 58","status":"locked","progress":0,"position":75,"row":"bottom"},
+        {"id":"n59","type":"Lesson","label":"Lesson 59","status":"locked","progress":0,"position":85,"row":"top"},
+        {"id":"n60","type":"Exam","label":"Final Exam","status":"locked","progress":0,"position":95,"row":"bottom"}
+      ]
+    }
+  ],
+  "metrics": {
+    "level": "A1.5",
+    "lessons": "12/60",
+    "streak": 14,
+    "tip": "If you pass your quiz, you will unlock the next level immediately"
+  }
+}

@@ -19,24 +19,14 @@ import ResultPractice from "./features/learning/lesson/ResultPractice.tsx";
 import StudyGroupHub from "./features/virtual-study-room/StudyGroup.tsx";
 import JoinGroup from "./features/virtual-study-room/JoinGroup.tsx";
 import NewGroup from "./features/virtual-study-room/CreateNewGroup.tsx";
-import WorkspaceRouter from "./features/virtual-study-room/WorkspaceRouter";
+import MemberWorkspace from "./features/virtual-study-room/Workspace_Member.tsx";
+import LeaderWorkspace from "./features/virtual-study-room/Workspace_Leader.tsx";
 import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo.tsx";
 import RepositoryUpload from "./features/virtual-study-room/RepositoryUpload.tsx";
 import TaskAssignmentDashboard from "./features/virtual-study-room/TaskAssignment.tsx";
 
-import Pomodoro from "./features/pomodoro/PomodoroTimer";
-import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidget";
-
-import FlashcardLibrary from "./features/flashcard/flashcard-decks";
-import DeckDetailView from "./features/flashcard/flashcard-detail-view.tsx";
-
-import VoiceLearningDashboard from "./features/ai-speaking/AISpeakingDashboard.tsx";
-
-//test chat
-import ChatTestLobby from "./features/virtual-study-room/ChatTestLobby.tsx";
-
-
-import GoogleSucessPage from "./features/auth/components/GoogleSucessPage.tsx";
+import Pomodoro from "./features/pomodoro/PomodoroTimer.tsx";
+import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidget.tsx";
 
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
@@ -59,17 +49,6 @@ function App() {
       <FloatingPomodoroWidget />
       <Routes>
 
-        //chat test
-        <Route
-          path="/chat-test-lobby"
-          element={
-            <MainLayout>
-              <ChatTestLobby />
-            </MainLayout>
-          }
-        />
-
-        <Route path="/auth/google/success" element={<GoogleSucessPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />
@@ -210,29 +189,29 @@ function App() {
         />
 
         <Route
-          path="/study-groups/:groupId/workspace-member"
+          path="/study-groups/workspace-member"
           element={
             <OnboardingGuard>
               <MainLayout>
-                <WorkspaceRouter />
+                <MemberWorkspace />
               </MainLayout>
             </OnboardingGuard>
           }
         />
 
         <Route
-          path="/study-groups/:groupId/workspace-leader"
+          path="/study-groups/workspace-leader"
           element={
             <OnboardingGuard>
               <MainLayout>
-                <WorkspaceRouter />
+                <LeaderWorkspace />
               </MainLayout>
             </OnboardingGuard>
           }
         />
 
         <Route
-          path="/study-groups/:groupId/workspace-leader/edit-group"
+          path="/study-groups/workspace-leader/edit-group"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -243,7 +222,7 @@ function App() {
         />
 
         <Route
-          path="/study-groups/:groupId/workspace-leader/repository"
+          path="/study-groups/workspace-leader/repository"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -253,7 +232,7 @@ function App() {
           }
         />
         <Route
-          path="/study-groups/:groupId/workspace-leader/task-assignment"
+          path="/study-groups/workspace-leader/task-assignment"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -261,18 +240,6 @@ function App() {
               </MainLayout>
             </OnboardingGuard>
           }
-        />
-        <Route
-          path="/study-groups/workspace-member"
-          element={<Navigate to="/study-groups/1/workspace-member" replace />}
-        />
-        <Route
-          path="/study-groups/workspace-leader"
-          element={<Navigate to="/study-groups/1/workspace-leader" replace />}
-        />
-        <Route
-          path="/study-groups/workspace-leader/task-assignment"
-          element={<Navigate to="/study-groups" replace />}
         />
         <Route
           path="/dashboard/pomodoro"
@@ -284,44 +251,10 @@ function App() {
             </OnboardingGuard>
           }
         />
-
-        <Route
-          path="/flashcard"
-          element={
-            <OnboardingGuard>
-              <MainLayout>
-                <FlashcardLibrary />
-              </MainLayout>
-            </OnboardingGuard>
-          }
-        />
-
-        <Route
-          path="/flashcard/:deckId"
-          element={
-            <OnboardingGuard>
-              <MainLayout>
-                <DeckDetailView />
-              </MainLayout>
-            </OnboardingGuard>
-          }
-        />
-
-        <Route
-          path="/ai-speaking"
-          element={
-            <OnboardingGuard>
-              <MainLayout>
-                <VoiceLearningDashboard />
-              </MainLayout>
-            </OnboardingGuard>
-          }
-        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
-
 
 export default App;
