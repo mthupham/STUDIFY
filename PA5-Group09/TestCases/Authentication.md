@@ -159,17 +159,22 @@
 
 ### TC-REG-008
 
-**Title:** Auto-login and redirect after successful registration
+**Title:** Auto-login and full onboarding flow after successful registration
 
 **Steps:**
 
 1. Complete registration with valid data.
-2. Observe the app state immediately after submission.
+2. Observe that user is auto-logged in and redirected to `/onboarding` (no separate login step required).
+3. Complete the onboarding flow: set weekly study commitment (Step 1), then take the Placement Test / self-select CEFR level (Step 2).
+4. Observe the app after finishing the test/level selection.
 
 **Expected Result:**
 
-* No separate login step is required; user session is established immediately.
+* No separate login step is required; user session is established immediately after registration.
 * User is redirected to `/onboarding` (since `hasCompletedOnboarding` is false for a new user).
+* After completing the onboarding test, user is taken to a Result page showing their score/assigned CEFR level.
+* On the Result page, user is given the option to proceed to `/dashboard` (not auto-redirected).
+* Clicking that option successfully navigates the user to `/dashboard`.
 
 **Priority:** High
 
