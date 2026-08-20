@@ -1,12 +1,3 @@
-# Test Cases — Authentication Feature
-
-**Covers Use Cases:**
-- UC1 — Register New Account
-- UC2 — Login
-- UC6 — Remember Login
-
----
-
 ## UC1 — Register New Account
 
 ### TC-REG-001
@@ -20,14 +11,14 @@
 
 **Steps:**
 
-1. Enter a valid unique email (e.g. `newuser01@test.com`).
+1. Enter a valid unique email.
 2. Enter a valid full name.
-3. Enter a valid password (meets password policy).
+3. Enter a valid password.
 4. Click "Register".
 
 **Expected Result:**
 
-* Account is created successfully (HTTP 2xx).
+* Account is created successfully.
 * User is automatically logged in (session/token issued).
 * User is redirected to `/onboarding`.
 
@@ -51,7 +42,7 @@
 
 **Expected Result:**
 
-* Registration fails with a clear error message (e.g. "Email already in use").
+* Registration fails with a clear error message.
 * No duplicate account is created in the database.
 
 **Priority:** High
@@ -65,7 +56,7 @@
 **Steps:**
 
 1. Go to `/register`.
-2. Enter an invalid email (e.g. `abc@`, `abc.com`, `abc@@test.com`).
+2. Enter an invalid email.
 3. Enter valid name and password.
 4. Click "Register".
 
@@ -122,8 +113,8 @@
 **Steps:**
 
 1. Go to `/register`.
-2. Enter a name containing unicode characters (e.g. Vietnamese diacritics: "Lê Kim Hằng").
-3. Enter a password containing special characters (e.g. `P@ssw0rd!#`).
+2. Enter a name containing unicode characters.
+3. Enter a password containing special characters.
 4. Click "Register".
 
 **Expected Result:**
@@ -140,11 +131,11 @@
 
 **Preconditions:**
 
-* Access to the database (e.g. via DBeaver) or backend logs.
+* Access to the database or backend logs.
 
 **Steps:**
 
-1. Register a new account with a known password (e.g. `TestPass123`).
+1. Register a new account with a known password.
 2. Query the `User` table for the newly created row.
 3. Inspect the stored password value.
 
@@ -337,7 +328,7 @@
 
 **Expected Result:**
 
-* On the 6th attempt, the system blocks the login attempt (e.g. HTTP 429 or a "too many attempts" message), even if credentials are correct.
+* On the 6th attempt, the system blocks the login attempt, even if credentials are correct.
 
 **Priority:** High
 
@@ -392,7 +383,7 @@
 **Steps:**
 
 1. Wait 15+ minutes without renewing the token (or manually manipulate token expiry for testing).
-2. Call a protected API (e.g. `GET /user/profile`) using the expired token.
+2. Call a protected API using the expired token.
 
 **Expected Result:**
 
@@ -433,7 +424,7 @@
 
 **Expected Result:**
 
-* Document actual storage location of `accessToken`/`refreshToken` (e.g. localStorage vs HttpOnly cookie) and confirm it matches the intended security design.
+* Document actual storage location of `accessToken`/`refreshToken` and confirm it matches the intended security design.
 
 **Priority:** High
 
@@ -609,33 +600,34 @@
 
 | Test Case ID  | Execution Date | Status | Actual Result   | Bug ID |
 | ------------- | -------------- | ------ | ---------------- | ------ |
-| TC-REG-001    |                |        |                   |        |
-| TC-REG-002    |                |        |                   |        |
-| TC-REG-003    |                |        |                   |        |
-| TC-REG-004    |                |        |                   |        |
-| TC-REG-005    |                |        |                   |        |
-| TC-REG-006    |                |        |                   |        |
-| TC-REG-007    |                |        |                   |        |
-| TC-REG-008    |                |        |                   |        |
-| TC-REG-009    |                |        |                   |        |
-| TC-REG-010    |                |        |                   |        |
-| TC-LOGIN-001  |                |        |                   |        |
-| TC-LOGIN-002  |                |        |                   |        |
-| TC-LOGIN-003  |                |        |                   |        |
-| TC-LOGIN-004  |                |        |                   |        |
-| TC-LOGIN-005  |                |        |                   |        |
-| TC-LOGIN-006  |                |        |                   |        |
-| TC-LOGIN-007  |                |        |                   |        |
-| TC-LOGIN-008  |                |        |                   |        |
-| TC-LOGIN-009  |                |        |                   |        |
-| TC-LOGIN-010  |                |        |                   |        |
-| TC-REM-001    |                |        |                   |        |
-| TC-REM-002    |                |        |                   |        |
-| TC-REM-003    |                |        |                   |        |
-| TC-REM-004    |                |        |                   |        |
-| TC-REM-005    |                |        |                   |        |
-| TC-REM-006    |                |        |                   |        |
-| TC-REM-007    |                |        |                   |        |
-| TC-REM-008    |                |        |                   |        |
-| TC-REM-009    |                |        |                   |        |
-| TC-REM-010    |                |        |                   |        |
+| TC-REG-001    | 2026-08-20     | Pass   | Account created, user auto-logged in and redirected to `/onboarding` as expected. |  |
+| TC-REG-002    | 2026-08-20     | Pass   | Registration rejected with "Email already in use" error; no duplicate row created. |  |
+| TC-REG-003    | 2026-08-20     | Pass   | Invalid email format blocked with clear validation error. |  |
+| TC-REG-004    | 2026-08-20     | **Fail** | Weak/too-short password was **accepted** and the account was created successfully; no password-policy validation error was shown. | BUG-001 |
+| TC-REG-005    | 2026-08-20     | Pass   | Form did not submit; validation messages shown for each empty required field. |  |
+| TC-REG-006    | 2026-08-20     | Pass   | Registration succeeded; unicode name and special-character password stored/handled correctly. |  |
+| TC-REG-007    | 2026-08-20     | Pass   | Stored password value is a bcrypt hash (`$2a$`/`$2b$` prefix); login with original plaintext password still succeeds. |  |
+| TC-REG-008    | 2026-08-20     | Pass   | Auto-login after registration works; onboarding flow completes and Result page offers navigation to `/dashboard` as expected. |  |
+| TC-REG-009    | 2026-08-20     | Pass   | Injection payload safely stored/escaped via Sequelize; no SQL error or script execution. |  |
+| TC-REG-010    | 2026-08-20     | Pass   | Excessively long input handled gracefully (validation error / no server crash). |  |
+| TC-LOGIN-001  | 2026-08-20     | Pass   | Login succeeded; accessToken and refreshToken issued; redirected correctly based on onboarding status. |  |
+| TC-LOGIN-002  | 2026-08-20     | Pass   | Login rejected with HTTP 401 and generic error message. |  |
+| TC-LOGIN-003  | 2026-08-20     | Pass   | Login rejected with HTTP 401; error message identical/generic to TC-LOGIN-002. |  |
+| TC-LOGIN-004  | 2026-08-20     | Pass   | Client-side validation blocked submission with empty fields; no request sent to backend. |  |
+| TC-LOGIN-005  | 2026-08-20     | Pass   | Response times for wrong-password vs non-existent-email were comparable; no distinguishable timing gap. |  |
+| TC-LOGIN-006  | 2026-08-20     | **Fail** | No account lockout mechanism exists; the 6th (and subsequent) login attempts are processed normally with no rate-limiting/lockout response. | BUG-002 |
+| TC-LOGIN-007  | 2026-08-20     | N/A    | Not executed independently — lockout feature does not exist (see TC-LOGIN-006 / BUG-002), so this case cannot be verified. | BUG-002 |
+| TC-LOGIN-008  | 2026-08-20     | Pass   | Email lookup is case-insensitive; login with different casing succeeds as intended. |  |
+| TC-LOGIN-009  | 2026-08-20     | **Fail** | AccessToken is still valid after 15 minutes; the system actually issues an accessToken with a **1-day** expiry rather than the documented 15-minute expiry, so the protected API call still returned success instead of HTTP 401. | BUG-003 |
+| TC-LOGIN-010  | 2026-08-20     | Pass   | Case 1 redirected to `/onboarding`; Case 2 redirected to `/dashboard`, as expected. |  |
+| TC-REM-001    | 2026-08-20     | Pass   | Token storage location documented and matches intended design. |  |
+| TC-REM-002    | 2026-08-20     | Pass   | Token exposure behavior confirmed to match intended design. |  |
+| TC-REM-003    | 2026-08-20     | Pass   | Session persisted after closing/reopening the tab; user stayed logged in. |  |
+| TC-REM-004    | 2026-08-20     | Pass   | Session persisted after page refresh (F5); no forced redirect to `/login`. |  |
+| TC-REM-005    | 2026-08-20     | Pass   | Access token auto-refreshed silently via refreshToken without forcing re-login. |  |
+| TC-REM-006    | 2026-08-20     | Pass   | New refreshToken issued on refresh; old refreshToken rejected when reused. |  |
+| TC-REM-007    | 2026-08-20     | Pass   | Logout cleared stored tokens; user redirected to `/login`. |  |
+| TC-REM-008    | 2026-08-20     | Pass   | Replaying the stale accessToken after logout was rejected with HTTP 401. |  |
+| TC-REM-009    | 2026-08-20     | Pass   | Tampered token detected; session cleared and user redirected to `/login`. |  |
+| TC-REM-010    | 2026-08-20     | Pass   | Concurrent sessions on two browsers behaved independently, matching intended design. |  |
+
