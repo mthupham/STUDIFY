@@ -1,10 +1,3 @@
-# Test Cases — Onboarding Feature
-
-**Covers Use Cases:**
-- UC9 — Take Onboarding Survey
-- UC12 — Take Placement Test
-
----
 
 ## UC9 — Take Onboarding Survey
 
@@ -30,20 +23,20 @@
 
 ### TC-SURV-002
 
-**Title:** Step 1 — select weekly study time commitment
+**Title:** Step 1 — select weekly study time commitment (auto-advance, no Next/Continue button)
 
 **Preconditions:**
 
 * User is on `/onboarding`, Step 1 ("Set Your Pace").
+* Note: Step 1 has no "Next"/"Continue" button — clicking one of the weekly-hour option cards is itself the action that advances the flow.
 
 **Steps:**
 
-1. Select one of the weekly hour options (2h / 4h / 6h / 8+h).
-2. Click "Next"/"Continue".
+1. Click one of the weekly hour options (2h / 4h / 6h / 8+h).
 
 **Expected Result:**
 
-* Selection is accepted; user proceeds to Step 2 ("English Level").
+* The selection is registered and the wizard automatically advances to Step 2 ("English Level") immediately — no separate confirmation click is required.
 
 **Priority:** High
 
@@ -51,16 +44,22 @@
 
 ### TC-SURV-003
 
-**Title:** Step 1 — cannot proceed without selecting a weekly hour option
+**Title:** Step 1 — user cannot advance to Step 2 without selecting a weekly hour option
+
+**Preconditions:**
+
+* User is on `/onboarding`, Step 1 ("Set Your Pace").
+* No weekly-hour option has been selected yet.
 
 **Steps:**
 
-1. On Step 1, do not select any weekly hour option.
-2. Click "Next"/"Continue".
+1. On Step 1, do not click any of the weekly hour options (2h / 4h / 6h / 8+h).
+2. Try to reach Step 2 by any other means available on the page (e.g. pressing Enter, clicking elsewhere on the card, scrolling) without selecting an option.
 
 **Expected Result:**
 
-* User cannot proceed to Step 2; a validation message/prompt appears.
+* User remains on Step 1; Step 2 ("English Level") is never displayed.
+* There is no "Next"/"Continue"/"Skip" control that would allow bypassing the mandatory selection — advancing is only possible by clicking one of the four pace options.
 
 **Priority:** Medium
 
@@ -68,22 +67,25 @@
 
 ### TC-SURV-004
 
-**Title:** Step 2 — self-select CEFR level without taking placement test
+**Title:** Step 2 — choose "Yes, I know my level" (self-select path) instead of taking the placement test
 
 **Preconditions:**
 
 * User has completed Step 1.
+* User is on Step 2 ("English Level") showing two option cards: "Yes, I know my level" and "No, I want to take a placement test".
 
 **Steps:**
 
-1. On Step 2, choose to self-select a CEFR level (e.g. B1) instead of taking the placement test.
-2. Confirm the selection.
+1. On Step 2, click the "Yes, I know my level" card.
+2. Select a specific CEFR level from the options provided on the next screen.
+3. Confirm the selection to proceed.
 
 **Expected Result:**
 
-* Selected CEFR level is saved.
-* `hasCompletedOnboarding` becomes `true`.
+* System navigates to a level selection screen after clicking the card.
+* After confirming the level, `hasCompletedOnboarding` becomes `true`.
 * User is redirected to `/dashboard`.
+* A personalized roadmap is generated and displayed based on the manually selected CEFR level.
 
 **Priority:** High
 
@@ -353,17 +355,19 @@
 
 ### TC-PLACE-009
 
-**Title:** Successful submission triggers onboarding completion and roadmap generation
+**Title:** Successful submission displays result and navigates to dashboard with generated roadmap
 
 **Steps:**
 
 1. Complete and submit the placement test as a logged-in user.
-2. Check the user's onboarding status and roadmap after submission.
+2. Observe the result screen.
+3. Click the "Dashboard" button to proceed.
 
 **Expected Result:**
 
-* `markOnboardingComplete` is triggered (`hasCompletedOnboarding = true`).
-* A CEFR roadmap is generated/available based on the assigned level (retrievable via `GET /placement-test/my-roadmap`).
+* After submission, the system displays a Result page showing the test score and assigned CEFR level.
+* User is not auto-redirected; they must explicitly click the button to go to the dashboard.
+* Upon clicking, `markOnboardingComplete` is triggered (`hasCompletedOnboarding = true`), user is redirected to `/dashboard`, and a CEFR roadmap is generated based on the assigned level.
 
 **Priority:** High
 
@@ -390,26 +394,25 @@
 ---
 
 ### Test Execution
-
 | Test Case ID  | Execution Date | Status | Actual Result   | Bug ID |
 | ------------- | -------------- | ------ | ---------------- | ------ |
-| TC-SURV-001   |                |        |                   |        |
-| TC-SURV-002   |                |        |                   |        |
-| TC-SURV-003   |                |        |                   |        |
-| TC-SURV-004   |                |        |                   |        |
-| TC-SURV-005   |                |        |                   |        |
-| TC-SURV-006   |                |        |                   |        |
-| TC-SURV-007   |                |        |                   |        |
-| TC-SURV-008   |                |        |                   |        |
-| TC-SURV-009   |                |        |                   |        |
-| TC-SURV-010   |                |        |                   |        |
-| TC-PLACE-001  |                |        |                   |        |
-| TC-PLACE-002  |                |        |                   |        |
-| TC-PLACE-003  |                |        |                   |        |
-| TC-PLACE-004  |                |        |                   |        |
-| TC-PLACE-005  |                |        |                   |        |
-| TC-PLACE-006  |                |        |                   |        |
-| TC-PLACE-007  |                |        |                   |        |
-| TC-PLACE-008  |                |        |                   |        |
-| TC-PLACE-009  |                |        |                   |        |
-| TC-PLACE-010  |                |        |                   |        |
+| TC-SURV-001   | 2026-08-21     | Pass   | `OnboardingGuard` redirected user to `/onboarding` successfully. |        |
+| TC-SURV-002   | 2026-08-21     | Pass   | Selection registered and auto-advanced to Step 2 immediately. |        |
+| TC-SURV-003   | 2026-08-21     | Pass   | Could not advance to Step 2 without clicking a pace option. |        |
+| TC-SURV-004   | 2026-08-21     | **Fail** | API for manual level selection is not connected. User is stuck and cannot complete onboarding. | BUG-004 |
+| TC-SURV-005   | 2026-08-21     | Pass   | `PlacementTest.tsx` launched and fetched questions correctly. |        |
+| TC-SURV-006   | 2026-08-21     | Pass   | Step 1 progress was retained upon page refresh. |        |
+| TC-SURV-007   | 2026-08-21     | Pass   | Browser back button safely kept user on the current step without crashing. |        |
+| TC-SURV-008   | 2026-08-21     | Pass   | Accessed protected routes successfully (tested via Placement Test path). |        |
+| TC-SURV-009   | 2026-08-21     | Pass   | System redirected the onboarded user back to `/dashboard`. |        |
+| TC-SURV-010   | 2026-08-21     | Pass   | `weeklyStudyHours` and CEFR level persisted correctly in DB (via Placement Test path). |        |
+| TC-PLACE-001  | 2026-08-21     | Pass   | JSON response contained options but no `correct_answer` fields. |        |
+| TC-PLACE-002  | 2026-08-21     | Pass   | Inspected DOM; no correct answers were exposed in HTML/attributes. |        |
+| TC-PLACE-003  | 2026-08-21     | Pass   | 100% accuracy assigned C2 level correctly. |        |
+| TC-PLACE-004  | 2026-08-21     | Pass   | 0% accuracy assigned A1 level correctly. |        |
+| TC-PLACE-005  | 2026-08-21     | Pass   | Exactly 70% accuracy advanced the user to the next CEFR level. |        |
+| TC-PLACE-006  | 2026-08-21     | Pass   | 69% accuracy kept the user at the current level. |        |
+| TC-PLACE-007  | 2026-08-21     | Pass   | System handled missing answers as incorrect gracefully without crashing. |        |
+| TC-PLACE-008  | 2026-08-21     | Pass   | Submission without token was blocked with HTTP 401. |        |
+| TC-PLACE-009  | 2026-08-21     | Pass   | Result page displayed; clicking Dashboard updated status, redirected, and generated roadmap. |        |
+| TC-PLACE-010  | 2026-08-21     | Pass   | Resubmission blocked; test locked after first attempt. |        |
