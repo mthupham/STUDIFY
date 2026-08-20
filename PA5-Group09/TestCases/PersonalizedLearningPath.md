@@ -247,13 +247,13 @@
 
 | Test Case ID  | Execution Date | Status | Actual Result   | Bug ID |
 | ------------- | -------------- | ------ | --------------- | ------ |
-| TC-PLP-001    |                |        |                 |        |
-| TC-PLP-002    |                |        |                 |        |
-| TC-PLP-003    |                |        |                 |        |
-| TC-PLP-004    |                |        |                 |        |
-| TC-PLP-005    |                |        |                 |        |
-| TC-PLP-006    |                |        |                 |        |
-| TC-PLP-007    |                |        |                 |        |
-| TC-PLP-008    |                |        |                 |        |
-| TC-PLP-009    |                |        |                 |        |
-| TC-PLP-010    |                |        |                 |        |
+| TC-PLP-001    | 21/08/2026     | Pass   | Roadmap loads successfully with 6 CEFR levels, HTTP 200/304 response.             |        |
+| TC-PLP-002    | 21/08/2026     | Pass   | Request without token returns HTTP 401 Unauthorized as expected.              |        |
+| TC-PLP-003    | 21/08/2026     | Pass   | Correct node statuses returned (completed, active, locked) matching user progress.                |        |
+| TC-PLP-004    | 21/08/2026     | Pass   | Clicking a locked node does not navigate to the lesson; no errors occur.                |        |
+| TC-PLP-005    | 21/08/2026     | Pass   | Clicking an active/available node navigates to the lesson page and loads content correctly.         |        |
+| TC-PLP-006    | 22/08/2026     |    |                 |        |
+| TC-PLP-007    | 22/08/2026     |    |                 |        |
+| TC-PLP-008    | 22/08/2026     |    |                 |        |
+| TC-PLP-009    | 22/08/2026     |    |                 |        |
+| TC-PLP-010    | 22/08/2026     |    |                 |        |
