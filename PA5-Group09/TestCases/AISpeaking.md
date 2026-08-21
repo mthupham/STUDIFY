@@ -260,17 +260,23 @@
 | TC-AISPEAKING-001 | 20/08/2026     | Pass    | Page loaded with default Technical English scenario and a question | N/A |
 | TC-AISPEAKING-002 | 20/08/2026     | Pass    | Switched to Daily Tech Sync and a question is loaded | N/A |
 | TC-AISPEAKING-003 | 20/08/2026     | Pass    | Switched to Tech Interviews and a question is loaded | N/A |
-| TC-AISPEAKING-004 | 20/08/2026     | Not Run | —             | N/A    |
-| TC-AISPEAKING-005 | 20/08/2026     | Not Run | —             | N/A    |
-| TC-AISPEAKING-006 | 20/08/2026     | Pass    | Error message is successfully displayed | N/A |
-| TC-AISPEAKING-007 | 20/08/2026     | Not Run | —             | N/A    |
-| TC-AISPEAKING-008 | 20/08/2026     | Not Run | —             | N/A    |
-| TC-AISPEAKING-009 | 20/08/2026     | Not Run | —             | N/A    |
-| TC-AISPEAKING-010 | 20/08/2026     | Pass    | Error message is successfully displayed | N/A    |
+| TC-AISPEAKING-004 | 21/08/2026     | Pass    | User's speech is successfully displayed onto Conversation History | N/A |
+| TC-AISPEAKING-005 | 21/08/2026     | Pass    | Feedbacks and score are displayed correctly | N/A |
+| TC-AISPEAKING-006 | 20/08/2026     | Pass    | Error message is successfully displayed and score stayed the same | N/A |
+| TC-AISPEAKING-007 | 21/08/2026     | Pass    | Mistake is spotted and feedbacks are loaded | N/A |
+| TC-AISPEAKING-008 | 21/08/2026     | Pass    | Conversation History properly stored all revious questions and answers | N/A |
+| TC-AISPEAKING-009 | 21/08/2026     | Pass    | Screnario menu is successfully blocked | N/A |
+| TC-AISPEAKING-010 | 20/08/2026     | Pass    | Error message is successfully displayed | N/A |
 
 ### Notes from Test Run (20/08/2026)
 
 * Random question API works for all three scenarios
-* Analyze API returns scores and feedback correctly
 * Invalid scenario and empty transcript return error responses
 * No bugs found in the tested API paths during this session
+
+### Notes from Test Run (20/08/2026)
+
+* Speech-to-text is working as intended
+* Analyze API returns scores and feedback correctly
+* No bugs found in the tested API paths during this session
+
