@@ -268,11 +268,11 @@ This extension point occurs at step 5 of the Basic Flow, immediately after the L
 
 ### 1.1 Brief Description
 
-This use case allows the Learner to study the content of a specific lesson that was selected from the lesson list of a level. The lesson study screen combines two main components: condensed theory content and a quiz to test comprehension. This use case is included by the **View Lesson Details by Level** use case, and it in turn includes two use cases: **Study Theory** (condensed content) and **Take Quiz**.
+This use case allows the Learner to study the content of a specific lesson that was selected from the lesson list of a level. The lesson study screen combines two main components: condensed theory content and optional practice exercises. This use case is included by the **View Lesson Details by Level** use case, and it in turn includes two use cases: **Study Theory** (condensed content) and **Practice Exercises**.
 
 ![Study Lesson Screen](../../Images/Module_2/UC3.png)
 
-*Figure 3.1: Lesson study screen ("Mastering the Present Perfect") showing the Theory → Quiz → Result step indicator, condensed theory content, and an embedded concept-check question.*
+*Figure 3.1: Lesson study screen ("Mastering the Present Perfect") showing the Theory and Practice Exercises sections, condensed theory content, and an embedded concept-check question.*
 
 ---
 
@@ -286,19 +286,19 @@ This use case begins immediately after the Learner selects a specific lesson fro
 2. The system loads the full content of the lesson, including the theory section and the associated quiz.
 3. The system displays the lesson study screen, starting with the theory content section.
 4. The system executes the **Study Theory** use case *(<<include>>)* to present the condensed theoretical content to the Learner.
-5. After the Learner finishes reviewing the theory content, the Learner proceeds to the quiz section.
-6. The system executes the **Take Quiz** use case *(<<include>>)* to present the quiz associated with the lesson.
-7. Once the Learner completes the quiz, the system updates the Learner's progress for this lesson (marking it as Completed or In Progress, depending on the quiz result policy).
-8. The use case ends when the Learner's lesson progress has been successfully updated and the result is presented.
+5. The Learner reviews the theory content and clicks the "Mark as Complete" button.
+6. The system updates the Learner's progress for this lesson, marking it as Completed.
+7. The Learner may optionally proceed to the practice exercises (reading or writing).
+8. The use case ends when the Learner's lesson progress has been successfully updated.
 
 ### 2.2 Alternative Flows
 
-#### 2.2.1 Learner Skips Quiz
+#### 2.2.1 Learner Skips Practice Exercises
 
-*Trigger condition: The Learner chooses to exit after reviewing the theory content without taking the quiz.*
+*Trigger condition: The Learner chooses to exit after clicking "Mark as Complete" on the theory content without taking the practice exercises.*
 
-1. At step 5 of the Basic Flow, the Learner selects "Skip Quiz" or navigates away from the lesson screen.
-2. The system saves the Learner's progress for the theory section only, marking the lesson status as "In Progress."
+1. At step 7 of the Basic Flow, the Learner navigates away from the lesson screen without accessing practice exercises.
+2. The system has already saved the Learner's progress for the lesson as "Completed" in step 6.
 3. The use case ends.
 
 #### 2.2.2 Load Failure / Network Error
@@ -313,15 +313,14 @@ This use case begins immediately after the Learner selects a specific lesson fro
 
 #### 2.2.3 Learner Exits Lesson Early
 
-*Trigger condition: The Learner chooses to leave the lesson screen before completing the theory or quiz section.*
+*Trigger condition: The Learner chooses to leave the lesson screen before marking the theory as complete.*
 
 ![Exit Lesson Early Screen](../../Images/Module_2/UC3_exit_early.png)
 
-1. At any point between step 3 and step 6 of the Basic Flow, the Learner selects "Exit" or navigates back.
-2. The system displays a confirmation prompt: "Your progress in this lesson will be saved. Are you sure you want to exit?"
-3. If the Learner confirms, the system saves the current partial progress and navigates the Learner back to the lesson list (View Lesson Details by Level).
-4. If the Learner cancels, the flow resumes at the point it was interrupted.
-5. The use case ends if the Learner confirmed the exit.
+1. At any point between step 3 and step 4 of the Basic Flow, the Learner navigates back.
+2. The lesson status remains incomplete.
+3. The flow navigates the Learner back to the lesson list (View Lesson Details by Level).
+4. The use case ends.
 
 ---
 
@@ -333,7 +332,7 @@ Lesson content (theory and quiz) must be fully loaded within a maximum of 3 seco
 
 ### 3.2 Usability
 
-The transition between the theory section and the quiz section must be clear and intuitive, with visible progress indicators (e.g., a step indicator showing "Theory → Quiz → Result") so the Learner always understands their current position within the lesson.
+The transition between the theory section and the practice exercises must be clear and intuitive, with visible buttons for Practice Writing Exercises and Practice Reading Exercises.
 
 ---
 

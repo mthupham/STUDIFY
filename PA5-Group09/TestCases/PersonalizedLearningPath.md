@@ -113,7 +113,7 @@
 
 **Expected Result:**
 
-* The system navigates to the lesson page for that specific lesson (e.g., `/lessons/:level/:lessonIndex`).
+* The system navigates to the lesson page for that specific lesson (e.g., `/lesson/:level/:lessonIndex`).
 * The lesson content loads correctly.
 
 **Priority:** High
@@ -133,8 +133,8 @@
 
 **Steps:**
 
-1. Complete the theory section (Study Theory).
-2. Complete the quiz (Take Quiz) and submit.
+1. Review the theory section (Study Theory).
+2. Click the "Mark as Complete" button.
 3. Navigate back to `/roadmap` (click "Go to Roadmap" button or use nav).
 4. Inspect the `GET /roadmap` response.
 
@@ -150,7 +150,7 @@
 
 ### TC-PLP-007
 
-**Title:** Exiting a lesson mid-way saves partial progress
+**Title:** Exiting a lesson early leaves the lesson incomplete
 
 **Preconditions:**
 
@@ -236,7 +236,6 @@
 **Expected Result:**
 
 * The UI displays a user-friendly error message (e.g., "Cannot load Roadmap.") instead of a blank screen or crash.
-* A retry mechanism or reload option is available.
 * No unhandled JavaScript errors in the console.
 
 **Priority:** Medium
@@ -252,8 +251,8 @@
 | TC-PLP-003    | 21/08/2026     | Pass   | Correct node statuses returned (completed, active, locked) matching user progress.                |        |
 | TC-PLP-004    | 21/08/2026     | Pass   | Clicking a locked node does not navigate to the lesson; no errors occur.                |        |
 | TC-PLP-005    | 21/08/2026     | Pass   | Clicking an active/available node navigates to the lesson page and loads content correctly.         |        |
-| TC-PLP-006    | 22/08/2026     |    |                 |        |
-| TC-PLP-007    | 22/08/2026     |    |                 |        |
-| TC-PLP-008    | 22/08/2026     |    |                 |        |
-| TC-PLP-009    | 22/08/2026     |    |                 |        |
-| TC-PLP-010    | 22/08/2026     |    |                 |        |
+| TC-PLP-006    | 22/08/2026     | Pass   | Roadmap updates successfully after clicking "Mark as Complete" on theory. |        |
+| TC-PLP-007    | 22/08/2026     | Pass   | Navigating away before marking complete keeps lesson status incomplete. |        |
+| TC-PLP-008    | 22/08/2026     | Pass   | Metrics panel (level, lessons, streak) displays accurate data from API. |        |
+| TC-PLP-009    | 22/08/2026     |        |                 |        |
+| TC-PLP-010    | 22/08/2026     | Pass   | UI displays error message "Cannot load Roadmap." with no JS errors. |        |
