@@ -60,6 +60,23 @@ export class User extends Model<User> {
     @Column({ allowNull: true, type: DataType.DATE, field: 'reset_otp_expires' })
     declare resetOtpExpires: Date | null;
 
+    @Column({
+        allowNull: false,
+        defaultValue: 0,
+        type: DataType.INTEGER,
+        field: 'failed_login_attempts',
+    })
+    declare failedLoginAttempts: number;
+
+    @Column({
+        allowNull: true,
+        type: DataType.DATE,
+        field: 'lock_until',
+    })
+    declare lockUntil: Date | null;
+
+    
+
 
     toJSON() {
         const values = { ...this.get() } as Record<string, unknown>;
