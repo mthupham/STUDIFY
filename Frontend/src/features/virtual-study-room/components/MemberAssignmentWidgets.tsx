@@ -17,7 +17,7 @@ export default function MemberAssignmentWidgets({ groupId }: { groupId: number }
     try {
       const [taskItems, scheduleItems] = await Promise.all([
         studyGroupApi.getTasks(groupId),
-        studyGroupApi.getUpcomingSchedules(groupId),
+        studyGroupApi.getSchedules(groupId),
       ]);
       setTasks(taskItems.filter((task) => task.status !== "COMPLETED"));
       setSchedules(scheduleItems);
@@ -61,9 +61,9 @@ export default function MemberAssignmentWidgets({ groupId }: { groupId: number }
       </section>
 
       <section className="space-y-3">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">Upcoming Sessions</h3>
-        {!loading && schedules.length === 0 && <p className="rounded-xl border border-slate-200 bg-white p-3 text-xs text-gray-500">No upcoming study sessions.</p>}
-        {schedules.slice(0, 3).map((schedule) => (
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">Study Sessions</h3>
+        {!loading && schedules.length === 0 && <p className="rounded-xl border border-slate-200 bg-white p-3 text-xs text-gray-500">No study sessions.</p>}
+        {schedules.map((schedule) => (
           <article key={schedule.id} className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <h4 className="text-sm font-semibold text-gray-900">{schedule.title}</h4>
             <p className="mt-1 text-xs font-medium text-sky-700">{new Date(schedule.startAt).toLocaleString()}</p>
