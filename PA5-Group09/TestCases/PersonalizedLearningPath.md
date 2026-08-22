@@ -254,5 +254,5 @@
 | TC-PLP-006    | 22/08/2026     | Pass   | Roadmap updates successfully after clicking "Mark as Complete" on theory. |        |
 | TC-PLP-007    | 22/08/2026     | Pass   | Navigating away before marking complete keeps lesson status incomplete. |        |
 | TC-PLP-008    | 22/08/2026     | Pass   | Metrics panel (level, lessons, streak) displays accurate data from API. |        |
-| TC-PLP-009    | 22/08/2026     |        |                 |        |
+| TC-PLP-009    | 22/08/2026     | Pass   | Streak is reset to 0 after missing a day of learning. |        |
 | TC-PLP-010    | 22/08/2026     | Pass   | UI displays error message "Cannot load Roadmap." with no JS errors. |        |
