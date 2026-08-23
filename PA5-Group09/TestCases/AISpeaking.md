@@ -1,3 +1,5 @@
+## Test Case: Take Onboarding Survey
+
 ### TC-AISPEAKING-001
 
 **Title:** Open AI Speaking page with default scenario
@@ -273,10 +275,6 @@
 * Random question API works for all three scenarios
 * Invalid scenario and empty transcript return error responses
 * No bugs found in the tested API paths during this session
-
-### Notes from Test Run (20/08/2026)
-
 * Speech-to-text is working as intended
 * Analyze API returns scores and feedback correctly
-* No bugs found in the tested API paths during this session
 

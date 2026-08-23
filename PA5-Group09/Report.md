@@ -1,7 +1,7 @@
 # PA5 Final Project Report
 
 **Project:** Studify
-**Group:** Group [GroupId]
+**Group:** Group [9]
 **Course:** [Course Name]
 **Date:** [Date]
 
@@ -22,16 +22,16 @@
 | --------- | --------------------- | -------------------: |
 | UC01      | Authentication        |                   10 |
 | UC02      | Onboarding            |                   10 |
-| UC03      | Personalized Learning Path|10 |
+| UC03      | Personalized Learning Path|               10 |
 | UC04      | Study Groups          |                   10 |
 | UC05      | AI Speaking Assistant |                   10 |
 | **Total** |                       |               **50** |
 
 ---
 
-# A.3 Functional Test Cases
+# A.3 Functional Test Cases and Test Execution
 
-## UC01 - Authentication
+## Authentication
 
 **Performed by:** [Name]
 **Reviewed by:** [Name]
@@ -39,34 +39,7 @@
 
 --- 
 
-## UC02 - [Use Case Name]
-
-**Performed by:** [Name]
-**Reviewed by:** [Name]
-**Edited by:** [Name]
----
-
-## UC03 - [Use Case Name]
-
-**Performed by:** [Name]
-**Reviewed by:** [Name]
-**Edited by:** [Name]
-
-> Add 10 functional test cases following the same structure.
-
----
-
-## UC04 - [Use Case Name]
-
-**Performed by:** [Name]
-**Reviewed by:** [Name]
-**Edited by:** [Name]
-
-> Add 10 functional test cases following the same structure.
-
----
-
-# A.6 UC05 - AI Speaking Assistant
+## Onboarding
 
 **Performed by:** [Name]
 **Reviewed by:** [Name]
@@ -74,19 +47,27 @@
 
 ---
 
-# A.7 Test Execution
+## Personalized Learning Path
 
 **Performed by:** [Name]
 **Reviewed by:** [Name]
 **Edited by:** [Name]
 
-| Test Case ID | Execution Date | Status | Actual Result   | Bug ID  |
-| ------------ | -------------- | ------ | --------------- | ------- |
-| TC-AUTH-001  | [Date]         | Pass   | [Actual result] | N/A     |
-| TC-AUTH-002  | [Date]         | Fail   | [Actual result] | BUG-001 |
-| TC-AUTH-003  | [Date]         | Pass   | [Actual result] | N/A     |
+---
 
-> Continue until all test cases have been executed.
+## Study Groups
+
+**Performed by:** [Name]
+**Reviewed by:** [Name]
+**Edited by:** [Name]
+
+---
+
+## AI Speaking Assistant
+
+**Performed by:** [Name]
+**Reviewed by:** [Name]
+**Edited by:** [Name]
 
 ---
 

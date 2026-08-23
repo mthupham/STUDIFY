@@ -1,4 +1,4 @@
-## UC1 — Register New Account
+## T — Register New Account
 
 ### TC-REG-001
 

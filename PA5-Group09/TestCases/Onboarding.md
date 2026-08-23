@@ -1,5 +1,5 @@
 
-## UC9 — Take Onboarding Survey
+## Test Case: Take Onboarding Survey
 
 ### TC-SURV-001
 

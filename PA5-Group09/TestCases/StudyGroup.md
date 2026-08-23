@@ -1,3 +1,5 @@
+## Test Case: Study Group
+
 ### TC-SG-GROUP-001
 
 **Title:** Create a valid study group

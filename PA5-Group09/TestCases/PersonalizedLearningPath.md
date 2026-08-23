@@ -1,15 +1,4 @@
-# Test Cases — Personalized Learning Path
-
-**Covers Use Cases:**
-- UC1 — View Learning Roadmap
-- UC2 — View Lesson Details by Level
-- UC3 — Study Lesson (progress update flow)
-- UC9 — Track Learning Progress
-- UC10 — View Roadmap Completion %
-
----
-
-## UC1 — View Learning Roadmap
+## Test Case: Personalized Learning Path
 
 ### TC-PLP-001
 
