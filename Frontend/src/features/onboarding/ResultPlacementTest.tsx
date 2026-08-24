@@ -38,7 +38,9 @@ const ResultPage: React.FC = () => {
 
   const result = location.state?.result as PlacementResult;
 
-  const { user } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
+  const setAuthSession = useAuthStore((state) => state.setAuthSession);
   const markOnboardingCompleted = useAuthStore(
     (state) => state.markOnboardingCompleted,
   );
@@ -57,7 +59,16 @@ const ResultPage: React.FC = () => {
   console.log(result.testDetails);
 
   const handleStudyNow = () => {
-    markOnboardingCompleted();
+    if (user) {
+      const updatedUser = {
+        ...user,
+        currentLevel: result.assignedLevel,
+        hasCompletedOnboarding: true,
+      };
+      setAuthSession(updatedUser, token || "");
+    } else {
+      markOnboardingCompleted();
+    }
     navigate("/dashboard");
   };
   return (

@@ -149,4 +149,15 @@ export class UserService {
     } as any);
     return user;
   }
+
+  async chooseLevelManually(userId: number, level: string) {
+    const user = await this.userModel.findByPk(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    await user.update({
+      currentLevel: level,
+      hasCompletedOnboarding: true,
+    });
+    return user;
+  }
 }
