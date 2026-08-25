@@ -44,7 +44,11 @@
 * AI-generated content:
   * Clarified the core distinction: a Use Case Diagram answers "WHAT can the Actor achieve" (independent goals), not "HOW/in what click-by-click order" — the latter belongs in the Basic/Alternative Flow of the Use Case Specification, or in a BPMN/Activity Diagram for cross-UC process views.
   * Listed 4 diagnostic signs of a diagram that is actually a workflow in disguise (include chains matching screen-click order; UC's that "can't happen" if a middle step is removed; UC names that read like screen/section titles rather than goals; UC's with no reuse potential).
+<<<<<<< HEAD
   * Introduced a "stopping-point test" — asking whether the Learner has achieved a complete, independent value/goal if they stopped at that exact step — and applied it to distinguish true UCs ("Study a Lesson", "Track Learning Progress") from mere steps ("View Lesson Detail").
+=======
+  * Introduced a "stopping-point test" - asking whether the Learner has achieved a complete, independent value/goal if they stopped at that exact step - and applied it to distinguish true UCs ("Study a Lesson", "Track Learning Progress") from mere steps ("View Lesson Detail").
+>>>>>>> origin/DOC_PA3
   * Proposed a concrete 4-step fix for the Studify diagram: (1) list the Learner's true top-level goals (3 root UCs: follow the roadmap, take a quiz, track progress); (2) collapse the roadmap → lesson-detail → theory screen sequence into the Basic Flow of a single "Follow the Learning Roadmap" UC; (3) keep "Take Quiz" as an independent UC since it's reusable/callable on its own, with Multiple-Choice/Fill-in-Blank kept as legitimate generalizations; (4) move "real-time completion % calculation" into a Post-Condition/Business Rule of "Track Learning Progress" instead of a separate UC.
 * Student's work and validation:
   * Prompted for a deeper explanation after the initial review flagged this specific mistake, to fully understand the underlying UML principle before applying it.
