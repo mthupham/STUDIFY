@@ -1,0 +1,1700 @@
+[
+  {
+    "level": "A1",
+    "level_title": "BREAKTHROUGH",
+    "vocabulary_lessons": [
+      {
+        "topic_id": "A1_T1",
+        "topic_name": "Computer Hardware & Peripherals",
+        "items": [1111
+          {
+            "term": "Monitor",
+            "phonetic": "/ˈmɒn.ɪ.tər/",
+            "definition": "The screen that shows images and text from the computer.",
+            "example_sentence": "Look at the monitor to see the picture."
+          },
+          {
+            "term": "Keyboard",
+            "phonetic": "/ˈkiː.bɔːd/",
+            "definition": "A device with keys used to type words and numbers.",
+            "example_sentence": "I use the keyboard to write an email."
+          },
+          {
+            "term": "Mouse",
+            "phonetic": "/maʊs/",
+            "definition": "A device used to move the pointer on the screen.",
+            "example_sentence": "Move the mouse to click the icon."
+          },
+          {
+            "term": "Motherboard",
+            "phonetic": "/ˈmʌð.ə.bɔːd/",
+            "definition": "The main board that connects all computer parts.",
+            "example_sentence": "The motherboard connects the hardware."
+          },
+          {
+            "term": "RAM",
+            "phonetic": "/ræm/",
+            "definition": "Computer memory used while programs are running.",
+            "example_sentence": "More RAM can help the computer work faster."
+          },
+          {
+            "term": "Hard drive",
+            "phonetic": "/ˈhɑːd draɪv/",
+            "definition": "A device that stores files and programs.",
+            "example_sentence": "My photos are on the hard drive."
+          },
+          {
+            "term": "Printer",
+            "phonetic": "/ˈprɪn.tər/",
+            "definition": "A machine that prints documents on paper.",
+            "example_sentence": "The printer is printing my report."
+          },
+          {
+            "term": "Cable",
+            "phonetic": "/ˈkeɪ.bəl/",
+            "definition": "A wire used to connect devices.",
+            "example_sentence": "Connect the cable to the monitor."
+          }
+        ]
+      },
+      {
+        "topic_id": "A1_T2",
+        "topic_name": "UI/UX Elements Basics",
+        "items": [
+          {
+            "term": "Button",
+            "phonetic": "/ˈbʌt.ən/",
+            "definition": "A clickable object that performs an action.",
+            "example_sentence": "Click the button to continue."
+          },
+          {
+            "term": "Menu",
+            "phonetic": "/ˈmen.juː/",
+            "definition": "A list of options in a program.",
+            "example_sentence": "Open the menu to see more choices."
+          },
+          {
+            "term": "Icon",
+            "phonetic": "/ˈaɪ.kɒn/",
+            "definition": "A small picture that represents a program or file.",
+            "example_sentence": "Click the icon to open the app."
+          },
+          {
+            "term": "Window",
+            "phonetic": "/ˈwɪn.dəʊ/",
+            "definition": "An area on the screen where a program appears.",
+            "example_sentence": "The browser window is open."
+          },
+          {
+            "term": "Tab",
+            "phonetic": "/tæb/",
+            "definition": "A section inside a window or browser.",
+            "example_sentence": "Open a new tab in the browser."
+          },
+          {
+            "term": "Checkbox",
+            "phonetic": "/ˈtʃek.bɒks/",
+            "definition": "A small box that you can select or clear.",
+            "example_sentence": "Tick the checkbox to agree."
+          },
+          {
+            "term": "Textbox",
+            "phonetic": "/ˈtekst.bɒks/",
+            "definition": "An area where users can type text.",
+            "example_sentence": "Enter your name in the textbox."
+          },
+          {
+            "term": "Scrollbar",
+            "phonetic": "/ˈskrəʊl.bɑːr/",
+            "definition": "A tool used to move up or down a page.",
+            "example_sentence": "Use the scrollbar to read more."
+          }
+        ]
+      },
+      {
+        "topic_id": "A1_T3",
+        "topic_name": "Coding Characters & Symbols",
+        "items": [
+          {
+            "term": "Slash",
+            "phonetic": "/slæʃ/",
+            "definition": "The symbol used like this: /",
+            "example_sentence": "Type a slash in the web address."
+          },
+          {
+            "term": "Backslash",
+            "phonetic": "/ˈbæk.slæʃ/",
+            "definition": "The symbol used like this: \\",
+            "example_sentence": "Windows paths often use a backslash."
+          },
+          {
+            "term": "Semicolon",
+            "phonetic": "/ˌsem.iˈkəʊ.lən/",
+            "definition": "The symbol used like this: ;",
+            "example_sentence": "Add a semicolon at the end of the line."
+          },
+          {
+            "term": "Bracket",
+            "phonetic": "/ˈbræk.ɪt/",
+            "definition": "A symbol used to group code, such as { }.",
+            "example_sentence": "Put the code inside brackets."
+          },
+          {
+            "term": "Parenthesis",
+            "phonetic": "/pəˈren.θə.sɪs/",
+            "definition": "A symbol used like this: ( ).",
+            "example_sentence": "Write the value inside the parenthesis."
+          },
+          {
+            "term": "Hash",
+            "phonetic": "/hæʃ/",
+            "definition": "The symbol used like this: #",
+            "example_sentence": "Start the comment with a hash."
+          },
+          {
+            "term": "Asterisk",
+            "phonetic": "/ˈæs.tər.ɪsk/",
+            "definition": "The symbol used like this: *",
+            "example_sentence": "Use an asterisk for multiplication."
+          }
+        ]
+      },
+      {
+        "topic_id": "A1_T4",
+        "topic_name": "Basic Action Verbs in IT",
+        "items": [
+          {
+            "term": "Click",
+            "phonetic": "/klɪk/",
+            "definition": "To press a mouse button once.",
+            "example_sentence": "Click the icon."
+          },
+          {
+            "term": "Double-click",
+            "phonetic": "/ˌdʌb.əl ˈklɪk/",
+            "definition": "To press a mouse button two times quickly.",
+            "example_sentence": "Double-click the file to open it."
+          },
+          {
+            "term": "Right-click",
+            "phonetic": "/ˌraɪt ˈklɪk/",
+            "definition": "To press the right mouse button.",
+            "example_sentence": "Right-click the folder for options."
+          },
+          {
+            "term": "Drag",
+            "phonetic": "/dræɡ/",
+            "definition": "To move an item while holding the mouse button.",
+            "example_sentence": "Drag the icon across the screen."
+          },
+          {
+            "term": "Drop",
+            "phonetic": "/drɒp/",
+            "definition": "To release an item after dragging it.",
+            "example_sentence": "Drop the file into the folder."
+          },
+          {
+            "term": "Install",
+            "phonetic": "/ɪnˈstɔːl/",
+            "definition": "To add software to a computer.",
+            "example_sentence": "Install the new program."
+          },
+          {
+            "term": "Delete",
+            "phonetic": "/dɪˈliːt/",
+            "definition": "To remove a file or item.",
+            "example_sentence": "Delete the old document."
+          },
+          {
+            "term": "Open",
+            "phonetic": "/ˈəʊ.pən/",
+            "definition": "To start or view a file or program.",
+            "example_sentence": "Open the browser."
+          },
+          {
+            "term": "Close",
+            "phonetic": "/kləʊz/",
+            "definition": "To stop or exit a file, window, or program.",
+            "example_sentence": "Close the window."
+          },
+          {
+            "term": "Save",
+            "phonetic": "/seɪv/",
+            "definition": "To store work on a computer.",
+            "example_sentence": "Save the file before you leave."
+          }
+        ]
+      }
+    ],
+    "grammar_lessons": [
+      {
+        "grammar_id": "A1_G1",
+        "grammar_title": "Imperative Sentences (Giving Commands)",
+        "rule": "Verb (Base Form) + Object",
+        "explanation": "Use imperative sentences to give instructions or commands.",
+        "examples": [
+          "Click the button.",
+          "Open the window.",
+          "Save the file.",
+          "Install the program.",
+          "Close the tab."
+        ]
+      },
+      {
+        "grammar_id": "A1_G2",
+        "grammar_title": "This is / These are",
+        "rule": "This is + singular noun; These are + plural noun",
+        "explanation": "Use this structure to identify objects and computer parts.",
+        "examples": [
+          "This is a monitor.",
+          "This is a keyboard.",
+          "This is an icon.",
+          "These are cables.",
+          "These are buttons."
+        ]
+      },
+      {
+        "grammar_id": "A1_G3",
+        "grammar_title": "Present Simple with Have/Has",
+        "rule": "Subject + have/has + noun",
+        "explanation": "Use have or has to talk about computer parts and features.",
+        "examples": [
+          "I have a printer.",
+          "The computer has RAM.",
+          "The laptop has a hard drive.",
+          "We have a mouse.",
+          "The system has a motherboard."
+        ]
+      },
+      {
+        "grammar_id": "A1_G4",
+        "grammar_title": "There is / There are",
+        "rule": "There is + singular noun; There are + plural noun",
+        "explanation": "Use this structure to describe what is on a screen or in a computer setup.",
+        "examples": [
+          "There is a button on the screen.",
+          "There is a textbox in the window.",
+          "There is a menu at the top.",
+          "There are two tabs open.",
+          "There are three icons on the desktop."
+        ]
+      }
+    ]
+  },
+  {
+    "level": "A2",
+    "level_title": "WAYSTAGE",
+    "vocabulary_lessons": [
+      {
+        "topic_id": "A2_T1",
+        "topic_name": "Software & Operating Systems",
+        "items": [
+          {
+            "term": "Open-source",
+            "phonetic": "/ˌoʊ.pənˈsɔːrs/",
+            "definition": "Software with free source code that people can look at, change, and share.",
+            "example_sentence": "Linux is a famous open-source operating system."
+          },
+          {
+            "term": "Proprietary software",
+            "phonetic": "/prəˈpraɪ.ə.ter.i ˈsɑːft.wer/",
+            "definition": "Software owned by a company that you cannot freely change or share.",
+            "example_sentence": "Windows is a common type of proprietary software."
+          },
+          {
+            "term": "Application",
+            "phonetic": "/ˌæp.ləˈkeɪ.ʃən/",
+            "definition": "A program designed to help users perform specific tasks on a computer.",
+            "example_sentence": "Download this helpful application to edit your project photos."
+          },
+          {
+            "term": "System software",
+            "phonetic": "/ˈsɪs.təm ˈsɑːft.wer/",
+            "definition": "Programs that manage and control the computer hardware and basic system operations.",
+            "example_sentence": "The operating system is the most important system software."
+          },
+          {
+            "term": "Windows",
+            "phonetic": "/ˈwɪn.doʊz/",
+            "definition": "A popular operating system made by Microsoft for personal and business computers.",
+            "example_sentence": "My computer uses the latest version of Windows."
+          },
+          {
+            "term": "macOS",
+            "phonetic": "/mæk.oʊ.ɛs/",
+            "definition": "The official operating system developed by Apple for all Mac computers.",
+            "example_sentence": "Designers often use macOS because they like the interface."
+          },
+          {
+            "term": "Linux",
+            "phonetic": "/ˈlɪn.əks/",
+            "definition": "A free, open-source operating system used widely on servers and computers.",
+            "example_sentence": "Many developers prefer to use Linux for writing code."
+          }
+        ]
+      },
+      {
+        "topic_id": "A2_T2",
+        "topic_name": "File Management & Storage",
+        "items": [
+          {
+            "term": "Folder path",
+            "phonetic": "/ˈfoʊl.dər pæθ/",
+            "definition": "A string of characters that shows the exact location of a file.",
+            "example_sentence": "The folder path is C:\\Users\\Name\\Documents on Windows."
+          },
+          {
+            "term": "Directory",
+            "phonetic": "/daɪˈrek.tɚ.i/",
+            "definition": "A location or folder on a computer where you store digital files.",
+            "example_sentence": "Please create a new directory for your web project."
+          },
+          {
+            "term": "Extension",
+            "phonetic": "/ɪkˈsten.ʃən/",
+            "definition": "Letters at the end of a filename that show its file format.",
+            "example_sentence": "The .txt extension shows that this is a text file."
+          },
+          {
+            "term": "Compress",
+            "phonetic": "/kəmˈpres/",
+            "definition": "To make a file smaller so it takes up less storage space.",
+            "example_sentence": "Compress these large images before you send the email."
+          },
+          {
+            "term": "Extract",
+            "phonetic": "/ɪkˈstrækt/",
+            "definition": "To take compressed files out of a zip folder to use them.",
+            "example_sentence": "You must extract the files before running the application."
+          },
+          {
+            "term": "Cloud storage",
+            "phonetic": "/klaʊd ˈstɔːr.ɪdʒ/",
+            "definition": "A service that saves your computer data safely on the internet space.",
+            "example_sentence": "Google Drive is a famous type of cloud storage."
+          },
+          {
+            "term": "Backup",
+            "phonetic": "/ˈbæk.ʌp/",
+            "definition": "A copy of important data made to protect it from being lost.",
+            "example_sentence": "Always make a regular backup of your system files."
+          }
+        ]
+      },
+      {
+        "topic_id": "A2_T3",
+        "topic_name": "Basic Command Line Interface (CLI)",
+        "items": [
+          {
+            "term": "Command",
+            "phonetic": "/kəˈmænd/",
+            "definition": "An instruction that you type into a computer terminal to perform actions.",
+            "example_sentence": "Type the 'mkdir' command to create a new folder."
+          },
+          {
+            "term": "Argument",
+            "phonetic": "/ˈɑːrɡ.jə.mənt/",
+            "definition": "Extra text you add to a command to change how it works.",
+            "example_sentence": "In 'cd Documents', the folder name is the command argument."
+          },
+          {
+            "term": "Path",
+            "phonetic": "/pæθ/",
+            "definition": "The specific text direction that tells a computer where a file lives.",
+            "example_sentence": "Type the complete path to open the secret file."
+          },
+          {
+            "term": "Directory traversal",
+            "phonetic": "/daɪˈrek.tɚ.i trəˈvɜːr.səl/",
+            "definition": "The action of moving through different computer folders using the command line.",
+            "example_sentence": "Use the 'cd' command for quick directory traversal."
+          },
+          {
+            "term": "Execute",
+            "phonetic": "/ˈek.sə.kjuːt/",
+            "definition": "To run a program, a specific script, or a computer command line.",
+            "example_sentence": "Press Enter to execute the command in your terminal."
+          },
+          {
+            "term": "Permission",
+            "phonetic": "/pɚˈmɪʃ.ən/",
+            "definition": "A setting that controls who can read, write, or change a file.",
+            "example_sentence": "You need administrative permission to delete this system directory."
+          }
+        ]
+      },
+      {
+        "topic_id": "A2_T4",
+        "topic_name": "Common Error Messages",
+        "items": [
+          {
+            "term": "404 Not Found",
+            "phonetic": "/fɔːr oʊ fɔːr nɑːt faʊnd/ ",
+            "definition": "A network code showing that a web page cannot be located online.",
+            "example_sentence": "The browser displays a 404 Not Found error message."
+          },
+          {
+            "term": "Connection Timeout",
+            "phonetic": "/kəˈnek.ʃən ˈtaɪm.aʊt/",
+            "definition": "An error when a server takes too long to reply to requests.",
+            "example_sentence": "Bad internet access often causes a connection timeout error."
+          },
+          {
+            "term": "Permission Denied",
+            "phonetic": "/pɚˈmɪʃ.ən dɪˈnaɪd/",
+            "definition": "An error message showing you do not have rights to view files.",
+            "example_sentence": "I received a permission denied message when opening the file."
+          },
+          {
+            "term": "Disk Full",
+            "phonetic": "/dɪsk fʊl/",
+            "definition": "A notification that there is no more storage space on your hardware.",
+            "example_sentence": "Clear your trash bin because you have a disk full error."
+          }
+        ]
+      },
+      {
+        "topic_id": "A2_T5",
+        "topic_name": "Internet & Networking Basics",
+        "items": [
+          {
+            "term": "IP Address",
+            "phonetic": "/ˌaɪˈpiː əˈdres/",
+            "definition": "A unique number that identifies every device connected to a computer network.",
+            "example_sentence": "Every router has a specific IP address to communicate online."
+          },
+          {
+            "term": "Router",
+            "phonetic": "/ˈraʊ.t̬ɚ/",
+            "definition": "A network device that sends data between your computer and the internet.",
+            "example_sentence": "Restart the router if your network connection stops working."
+          },
+          {
+            "term": "Wi-Fi",
+            "phonetic": "/ˈwaɪ.faɪ/",
+            "definition": "A wireless networking technology that allows devices to connect to the internet.",
+            "example_sentence": "Connect your new laptop to the office Wi-Fi network."
+          },
+          {
+            "term": "Bandwidth",
+            "phonetic": "/ˈbænd.wɪtθ/",
+            "definition": "The maximum amount of data sent over an internet connection per second.",
+            "example_sentence": "Watching high-quality video uses a lot of network bandwidth."
+          },
+          {
+            "term": "Download speed",
+            "phonetic": "/ˈdaʊn.loʊd spiːd/",
+            "definition": "How fast your computer receives digital data from the internet network system.",
+            "example_sentence": "Our office has a fast download speed for large files."
+          },
+          {
+            "term": "Upload speed",
+            "phonetic": "/ˈʌp.loʊd spiːd/",
+            "definition": "How fast your computer sends data from your local device to internet.",
+            "example_sentence": "Fiber internet offers excellent upload speed for backup files."
+          },
+          {
+            "term": "Browser",
+            "phonetic": "/ˈbraʊ.zɚ/",
+            "definition": "A software application used to access and view websites on the internet.",
+            "example_sentence": "Google Chrome is a very popular web browser today."
+          },
+          {
+            "term": "URL",
+            "phonetic": "/ˌjuː.ɑːrˈel/",
+            "definition": "The specific web address that you type to find a website online.",
+            "example_sentence": "Please type the URL carefully into your browser address bar."
+          }
+        ]
+      }
+    ],
+    "grammar_lessons": [
+      {
+        "grammar_id": "A2_G1",
+        "grammar_title": "The Passive Voice (Present Simple)",
+        "rule": "Subject + am/is/are + Past Participle (V3)",
+        "explanation": "Use this grammar to focus on system actions or errors when the person doing the action is not important.",
+        "examples": [
+          "The main directory is created by the system.",
+          "A 404 Not Found error is displayed here.",
+          "Your backup files are saved in cloud storage.",
+          "The software command is executed in the terminal.",
+          "Access to this private folder is denied completely."
+        ]
+      },
+      {
+        "grammar_id": "A2_G2",
+        "grammar_title": "First Conditional (Type 1)",
+        "rule": "If + Present Simple, Will + Verb",
+        "explanation": "Use this structure to talk about realistic results or troubleshooting problems in a computer system.",
+        "examples": [
+          "If the disk is full, the computer will stop.",
+          "If you change the folder path, it will fail.",
+          "We will lose data if we forget the backup.",
+          "If you compress the file, download speed will increase.",
+          "If the router breaks, the Wi-Fi will disconnect."
+        ]
+      },
+      {
+        "grammar_id": "A2_G3",
+        "grammar_title": "Prepositions of Place and Direction",
+        "rule": "Prepositions like 'into', 'from', 'in', 'to', 'through'",
+        "explanation": "Use these words to describe file paths, directory traversal, or where data goes.",
+        "examples": [
+          "Move the application file into the new directory.",
+          "The browser downloads files from the web server.",
+          "Your digital photos are stored in cloud storage.",
+          "Type the correct path to find the folder.",
+          "Data travels through the router to your computer."
+        ]
+      },
+      {
+        "grammar_id": "A2_G4",
+        "grammar_title": "Conjunctions for Comparison (While / Whereas)",
+        "rule": "Clause 1 + while / whereas + Clause 2",
+        "explanation": "Use these conjunctions to compare different software, operating systems, or internet metrics.",
+        "examples": [
+          "Linux is open-source, while Windows is proprietary software.",
+          "Download speed is fast, whereas upload speed is slow.",
+          "macOS runs on Macs, while Linux runs anywhere.",
+          "An application handles tasks, whereas system software controls hardware.",
+          "A command runs actions, while an argument changes them."
+        ]
+      }
+    ]
+  },
+  {
+    "level": "B1",
+    "level_title": "THRESHOLD",
+    "vocabulary_lessons": [
+      {
+        "topic_id": "B1_T1",
+        "topic_name": "Programming Core Concepts",
+        "items": [
+          {
+            "term": "Variables",
+            "phonetic": "/ˈver.i.ə.bəlz/",
+            "definition": "Named containers used for storing data values in a computer program.",
+            "example_sentence": "You must declare variables before using them in code."
+          },
+          {
+            "term": "Data types",
+            "phonetic": "/ˈdeɪ.t̬ə taɪps/",
+            "definition": "Classifications that specify what kind of value a variable can hold.",
+            "example_sentence": "Integers and strings are common data types in Python."
+          },
+          {
+            "term": "Functions",
+            "phonetic": "/ˈfʌŋk.ʃənz/",
+            "definition": "Reusable blocks of code designed to perform a single, specific action.",
+            "example_sentence": "This custom function calculates the total price of items."
+          },
+          {
+            "term": "Loops",
+            "phonetic": "/luːps/",
+            "definition": "Programming structures that repeat a block of code while conditions are met.",
+            "example_sentence": "Use a for loop to iterate through the array."
+          },
+          {
+            "term": "Conditionals",
+            "phonetic": "/kənˈdɪʃ.ən.əlz/",
+            "definition": "Statements that run different code actions based on true or false conditions.",
+            "example_sentence": "If-else conditionals control the execution flow of programs."
+          },
+          {
+            "term": "Arrays",
+            "phonetic": "/əˈreɪz/",
+            "definition": "Ordered collections of elements stored together, usually of the same type.",
+            "example_sentence": "The array contains a list of active user IDs."
+          },
+          {
+            "term": "Strings",
+            "phonetic": "/strɪŋz/",
+            "definition": "Sequences of characters used in computer programming to represent text data.",
+            "example_sentence": "Enclose strings in quotation marks when writing code."
+          }
+        ]
+      },
+      {
+        "topic_id": "B1_T2",
+        "topic_name": "Web Development Foundations (HTML/CSS)",
+        "items": [
+          {
+            "term": "Tags",
+            "phonetic": "/tæɡz/",
+            "definition": "HTML elements used to define the structure and content of web pages.",
+            "example_sentence": "The paragraph tag creates a new block of text."
+          },
+          {
+            "term": "Attributes",
+            "phonetic": "/ˈæt.rɪ.bjuːts/",
+            "definition": "Extra information provided inside HTML tags to modify their behavior or appearance.",
+            "example_sentence": "The href attribute specifies the destination URL of links."
+          },
+          {
+            "term": "Selectors",
+            "phonetic": "/sɪˈlek.tɚz/",
+            "definition": "CSS rules used to target specific HTML elements for styling purposes.",
+            "example_sentence": "Class selectors start with a dot in your stylesheet."
+          },
+          {
+            "term": "Layout",
+            "phonetic": "/ˈleɪ.aʊt/",
+            "definition": "The structural arrangement of visual elements on a web page interface.",
+            "example_sentence": "A clean layout improves the readability of your website."
+          },
+          {
+            "term": "Flexbox",
+            "phonetic": "/ˈfleks.bɑːks/",
+            "definition": "A one-dimensional layout model used to align items easily in rows.",
+            "example_sentence": "Use Flexbox to center a navigation bar horizontally."
+          },
+          {
+            "term": "Grid",
+            "phonetic": "/ɡrɪd/",
+            "definition": "A two-dimensional layout system used to create complex web structures easily.",
+            "example_sentence": "The CSS grid aligns elements perfectly into columns."
+          },
+          {
+            "term": "Responsive web design",
+            "phonetic": "/rɪˈspɑːn.sɪv web dɪˈzaɪn/",
+            "definition": "An approach that makes web pages render well on all screen sizes.",
+            "example_sentence": "Responsive web design ensures the site looks good on mobile."
+          }
+        ]
+      },
+      {
+        "topic_id": "B1_T3",
+        "topic_name": "Relational Databases & Basic SQL",
+        "items": [
+          {
+            "term": "Database",
+            "phonetic": "/ˈdeɪ.t̬ə.beɪs/",
+            "definition": "An organized collection of structured data stored electronically in computer systems.",
+            "example_sentence": "The application saves user profiles in a relational database."
+          },
+          {
+            "term": "Table",
+            "phonetic": "/ˈteɪ.bəl/",
+            "definition": "A collection of related data entries consisting of columns and rows.",
+            "example_sentence": "The users table contains all customer registration information."
+          },
+          {
+            "term": "Row",
+            "phonetic": "/roʊ/",
+            "definition": "A single record containing specific data fields within a database table.",
+            "example_sentence": "Each row represents a unique transaction in our system."
+          },
+          {
+            "term": "Column",
+            "phonetic": "/ˈkɑː.ləm/",
+            "definition": "A vertical field that contains a specific category of table information.",
+            "example_sentence": "The email column stores addresses of all active members."
+          },
+          {
+            "term": "Primary Key",
+            "phonetic": "/ˈpraɪ.meri kiː/",
+            "definition": "A unique identifier chosen to distinctively identify each record in tables.",
+            "example_sentence": "The user ID serves as the table's primary key."
+          },
+          {
+            "term": "Foreign Key",
+            "phonetic": "/ˈfɔːr.ən kiː/",
+            "definition": "A column that creates a relationship link between two database tables.",
+            "example_sentence": "The order table uses foreign keys to link users."
+          },
+          {
+            "term": "Queries",
+            "phonetic": "/ˈkwɪr.iz/",
+            "definition": "Formal requests for data or information extracted from database table systems.",
+            "example_sentence": "Write optimized SQL queries to fetch data quickly."
+          }
+        ]
+      },
+      {
+        "topic_id": "B1_T4",
+        "topic_name": "Version Control with Git (Basics)",
+        "items": [
+          {
+            "term": "Repository",
+            "phonetic": "/rɪˈpɑː.zɪ.tɔːr.i/",
+            "definition": "A digital storage space where project files and history versions live.",
+            "example_sentence": "Clone the remote repository to your local computer first."
+          },
+          {
+            "term": "Commit",
+            "phonetic": "/kəˈmɪt/",
+            "definition": "A saved snapshot representing specific code changes made to project files.",
+            "example_sentence": "Write a clear message every time you commit code."
+          },
+          {
+            "term": "Push",
+            "phonetic": "/pʊʃ/",
+            "definition": "A command used to upload local repository commits to remote servers.",
+            "example_sentence": "Push your committed changes to GitHub before ending work."
+          },
+          {
+            "term": "Pull",
+            "phonetic": "/pʊl/",
+            "definition": "A command used to download content from remote repositories to synchronize.",
+            "example_sentence": "Run a git pull to get latest codebase updates."
+          },
+          {
+            "term": "Clone",
+            "phonetic": "/kloʊn/",
+            "definition": "A command that creates local copies of existing remote Git repositories.",
+            "example_sentence": "Clone the project repository to start working on tasks."
+          },
+          {
+            "term": "Branch",
+            "phonetic": "/bræntʃ/",
+            "definition": "A parallel version of repositories used to develop features without affecting main.",
+            "example_sentence": "Create a new branch to work on login features."
+          },
+          {
+            "term": "Merge",
+            "phonetic": "/mɝːdʒ/",
+            "definition": "The process of combining changes from one Git branch into another.",
+            "example_sentence": "Merge the feature branch into main after code reviews."
+          }
+        ]
+      },
+      {
+        "topic_id": "B1_T5",
+        "topic_name": "Technical Reading - Documentation & Readme",
+        "items": [
+          {
+            "term": "Documentation",
+            "phonetic": "/ˌdɑː.kjə.menˈteɪ.ʃən/",
+            "definition": "Written texts explaining how software works or how users use tools.",
+            "example_sentence": "Read the official documentation to understand the framework APIs."
+          },
+          {
+            "term": "Readme",
+            "phonetic": "/ˈriːd.miː/",
+            "definition": "Introductory text files containing basic project overview information and startup guidelines.",
+            "example_sentence": "The README file explains how to install library dependencies."
+          },
+          {
+            "term": "Skim",
+            "phonetic": "/skɪm/",
+            "definition": "Reading text quickly to find main ideas or look over structure.",
+            "example_sentence": "Skim the documentation headers to locate the configuration steps."
+          },
+          {
+            "term": "Scan",
+            "phonetic": "/skæn/",
+            "definition": "Reading text rapidly to look for specific keywords, words, or details.",
+            "example_sentence": "Scan the webpage text for database error codes carefully."
+          },
+          {
+            "term": "Prerequisites",
+            "phonetic": "/ˌpriːˈrek.wə.zɪts/",
+            "definition": "Conditions or tools that must exist before software can be installed.",
+            "example_sentence": "Node.js is one of the main prerequisites for installation."
+          },
+          {
+            "term": "Quick Start",
+            "phonetic": "/kwɪk stɑːrt/",
+            "definition": "A guide section designed to help users configure software very rapidly.",
+            "example_sentence": "Follow the quick start guide to run your server."
+          },
+          {
+            "term": "Configuration",
+            "phonetic": "/kənˌfɪɡ.jəˈreɪ.ʃən/",
+            "definition": "The specific choices or settings used to make software work properly.",
+            "example_sentence": "Modify the database configuration file before launching software services."
+          }
+        ]
+      }
+    ],
+    "grammar_lessons": [
+      {
+        "grammar_id": "B1_G1",
+        "grammar_title": "Modals for Obligations and Prerequisites",
+        "rule": "Subject + must / need to / should + Verb (base form)",
+        "explanation": "Use these modals to describe technical rules, project requirements, and recommended workflows in documentation.",
+        "examples": [
+          "You must declare variables before writing complex functions.",
+          "Developers need to check prerequisites before installing frameworks.",
+          "You should write clear commit messages in repositories.",
+          "The database layout must contain a primary key column.",
+          "We should apply responsive web design for mobile displays."
+        ]
+      },
+      {
+        "grammar_id": "B1_G2",
+        "grammar_title": "Gerunds and Infinitives for Purpose",
+        "rule": "To + Verb (Infinitive) OR For + Verb-ing (Gerund)",
+        "explanation": "Use these structures to explain the purpose, function, or reasons behind choosing specific technologies.",
+        "examples": [
+          "Use loops to repeat block operations multiple times.",
+          "This function is perfect for converting strings to arrays.",
+          "Create separate branches to isolate new feature code safely.",
+          "We use custom SQL queries for fetching table rows.",
+          "Configure attributes to change the behavior of HTML tags."
+        ]
+      },
+      {
+        "grammar_id": "B1_G3",
+        "grammar_title": "Defining Relative Clauses",
+        "rule": "Noun + who / which / that + Clause",
+        "explanation": "Use relative clauses to define technical entities, database properties, and architectural components precisely.",
+        "examples": [
+          "An array is a structure that stores indexed elements.",
+          "A foreign key is columns which link separate tables.",
+          "Git is an application that tracks code commit histories.",
+          "Selectors are rules which target layout tags for styling.",
+          "A README is documentation that guides quick start setups."
+        ]
+      },
+      {
+        "grammar_id": "B1_G4",
+        "grammar_title": "Imperatives for Technical Instructions",
+        "rule": "Verb (base form) + Object",
+        "explanation": "Use the imperative form to give step-by-step directions in configuration files, scripts, and README templates.",
+        "examples": [
+          "Clone the repository to your local directory now.",
+          "Run database queries to verify row updates carefully.",
+          "Do not change primary key settings in tables.",
+          "Skim the configuration documentation for deployment prerequisites.",
+          "Push your feature branch changes to remote repositories."
+        ]
+      }
+    ]
+  },
+  {
+    "level": "B2",
+    "level_title": "VANTAGE",
+    "vocabulary_lessons": [
+      {
+        "topic_id": "B2_T1",
+        "topic_name": "Object-Oriented Programming (OOP) & Advanced Coding",
+        "items": [
+          {
+            "term": "Encapsulation",
+            "phonetic": "/ɪnˌkæp.sjəˈleɪ.ʃən/",
+            "definition": "Bundling data and the methods that operate on that data into a single, secure unit.",
+            "example_sentence": "Encapsulation hides the internal state of objects from outside interference."
+          },
+          {
+            "term": "Inheritance",
+            "phonetic": "/ɪnˈher.ɪ.təns/",
+            "definition": "A mechanism where one class automatically acquires the properties and behaviors of a parent class.",
+            "example_sentence": "Inheritance promotes code reusability across related software modules."
+          },
+          {
+            "term": "Polymorphism",
+            "phonetic": "/ˌpɑː.liˈmɔːr.fɪ.zəm/",
+            "definition": "The ability of different objects to respond to the same method call in their own way.",
+            "example_sentence": "Polymorphism allows great flexibility in designing complex software systems."
+          },
+          {
+            "term": "Abstraction",
+            "phonetic": "/æbˈstræk.ʃən/",
+            "definition": "Hiding complex implementation details and showing only the essential features of a programming object.",
+            "example_sentence": "Use abstraction to simplify the interaction with the database layer."
+          },
+          {
+            "term": "Design Patterns",
+            "phonetic": "/dɪˈzaɪn ˈpæt.ɚnz/",
+            "definition": "Typical, standardized solutions to commonly occurring problems in software design and architecture.",
+            "example_sentence": "The Singleton is one of the most famous design patterns."
+          }
+        ]
+      },
+      {
+        "topic_id": "B2_T2",
+        "topic_name": "Backend Development & RESTful APIs",
+        "items": [
+          {
+            "term": "Client-Server architecture",
+            "phonetic": "/ˌklaɪ.ənt ˈsɝː.vɚ ˈɑːr.kə.tek.tʃɚ/",
+            "definition": "A computing model where multiple clients request resources or services from a centralized server.",
+            "example_sentence": "Most modern web applications follow a client-server architecture."
+          },
+          {
+            "term": "HTTP Methods",
+            "phonetic": "/ˌeɪtʃ.tiː.tiːˈpiː ˈmeθ.ədz/",
+            "definition": "Standardized actions like GET or POST used to indicate the desired operation on web resources.",
+            "example_sentence": "Use different HTTP methods to create, read, update, or delete data."
+          },
+          {
+            "term": "Status codes",
+            "phonetic": "/ˈstæt̬.əs koʊdz/",
+            "definition": "Three-digit numbers indicating the outcome of a server request, such as 200 or 500.",
+            "example_sentence": "A 404 status code means the requested resource is completely missing."
+          },
+          {
+            "term": "JSON",
+            "phonetic": "/ˈdʒeɪ.sən/",
+            "definition": "A lightweight, text-based data format widely used for transmitting data between clients and servers.",
+            "example_sentence": "The backend API returns user profile data in JSON format."
+          },
+          {
+            "term": "Authentication",
+            "phonetic": "/ɑːˌθen.t̬əˈkeɪ.ʃən/",
+            "definition": "The security process of verifying the identity of a user before granting system access.",
+            "example_sentence": "Implement two-factor authentication to secure the administrative dashboard."
+          },
+          {
+            "term": "Token",
+            "phonetic": "/ˈtoʊ.kən/",
+            "definition": "A secure digital key generated after successful authentication to access protected API endpoints.",
+            "example_sentence": "Always include the authorization token in your HTTP request headers."
+          }
+        ]
+      },
+      {
+        "topic_id": "B2_T3",
+        "topic_name": "Software Testing & QA/QC",
+        "items": [
+          {
+            "term": "Unit test",
+            "phonetic": "/ˈjuː.nɪt test/",
+            "definition": "A software testing method where individual components or basic functions are tested in isolation.",
+            "example_sentence": "Developers write unit tests to ensure each function works correctly."
+          },
+          {
+            "term": "Integration test",
+            "phonetic": "/ˌɪn.t̬əˈɡreɪ.ʃən test/",
+            "definition": "Testing multiple software modules together as a group to verify their combined functionality.",
+            "example_sentence": "The integration test failed because the API dropped the database connection."
+          },
+          {
+            "term": "Automation test",
+            "phonetic": "/ˌɑː.t̬əˈmeɪ.ʃən test/",
+            "definition": "Using specialized scripts to control the execution of tests and compare outcomes automatically.",
+            "example_sentence": "We run automation tests overnight to check for software regression bugs."
+          },
+          {
+            "term": "Manual test",
+            "phonetic": "/ˈmæn.ju.əl test/",
+            "definition": "The process of evaluating software for defects by hand, without using automated execution tools.",
+            "example_sentence": "The QA team performs a manual test to evaluate the new interface."
+          },
+          {
+            "term": "Bug",
+            "phonetic": "/bʌɡ/",
+            "definition": "An error in a computer program that produces an incorrect or unexpected application result.",
+            "example_sentence": "Please report this visual bug directly to the frontend development team."
+          },
+          {
+            "term": "Defect",
+            "phonetic": "/ˈdiː.fekt/",
+            "definition": "A major flaw in a software system that causes it to behave improperly or fail entirely.",
+            "example_sentence": "The critical defect caused the application to crash upon server startup."
+          },
+          {
+            "term": "Flaky test",
+            "phonetic": "/ˈfleɪ.ki test/",
+            "definition": "An automated test that sometimes passes and sometimes fails without any underlying code changes.",
+            "example_sentence": "We need to investigate and rewrite this flaky test immediately."
+          }
+        ]
+      },
+      {
+        "topic_id": "B2_T4",
+        "topic_name": "Agile/Scrum Framework & Project Management",
+        "items": [
+          {
+            "term": "Sprint",
+            "phonetic": "/sprɪnt/",
+            "definition": "A short, time-boxed period in Agile where a team works to complete specific functional tasks.",
+            "example_sentence": "We plan to deliver the secure login feature by the end of this sprint."
+          },
+          {
+            "term": "Backlog",
+            "phonetic": "/ˈbæk.lɑːɡ/",
+            "definition": "A prioritized, centralized list of work items, features, or bugs that the team needs to address.",
+            "example_sentence": "The product owner will add the new client requirements to the product backlog."
+          },
+          {
+            "term": "Daily Standup",
+            "phonetic": "/ˈdeɪ.li ˈstænd.ʌp/",
+            "definition": "A short daily meeting where team members share progress, plans, and identify potential blockers.",
+            "example_sentence": "Mention any technical blockers during tomorrow morning's daily standup."
+          },
+          {
+            "term": "Retrospective",
+            "phonetic": "/ˌret.rəˈspek.tɪv/",
+            "definition": "A collaborative meeting held at the end of a sprint to reflect on and improve team processes.",
+            "example_sentence": "We discussed ways to improve code reviews during the sprint retrospective."
+          },
+          {
+            "term": "User Story",
+            "phonetic": "/ˈjuː.zɚ ˈstɔːr.i/",
+            "definition": "An informal, general explanation of a software feature written from the perspective of the end-user.",
+            "example_sentence": "This user story describes exactly how a customer will filter their search results."
+          },
+          {
+            "term": "Epic",
+            "phonetic": "/ˈep.ɪk/",
+            "definition": "A large body of agile work that can be broken down into a number of smaller user stories.",
+            "example_sentence": "The payment gateway integration is considered a major epic for this quarter."
+          }
+        ]
+      },
+      {
+        "topic_id": "B2_T5",
+        "topic_name": "Technical Writing - Bug Reports & Task Description",
+        "items": [
+          {
+            "term": "Steps to reproduce",
+            "phonetic": "/steps tə ˌriː.prəˈduːs/",
+            "definition": "A clear, numbered sequence of physical or systematic actions required to trigger a specific bug.",
+            "example_sentence": "Always provide exact steps to reproduce when submitting a professional bug report."
+          },
+          {
+            "term": "Expected behavior",
+            "phonetic": "/ɪkˈspek.tɪd bɪˈheɪ.vjɚ/",
+            "definition": "The correct way the software should function when interacting with it under normal, standard conditions.",
+            "example_sentence": "The expected behavior is that clicking the submit button saves the active form."
+          },
+          {
+            "term": "Actual result",
+            "phonetic": "/ˈæk.tʃu.əl rɪˈzʌlt/",
+            "definition": "What realistically happens or what the user observes when executing the steps during a test cycle.",
+            "example_sentence": "The actual result was a completely blank screen accompanied by a 500 server error."
+          },
+          {
+            "term": "Environment",
+            "phonetic": "/ɪnˈvaɪ.rən.mənt/",
+            "definition": "The specific hardware, operating system, network condition, and browser setup where a bug was observed.",
+            "example_sentence": "Please specify your exact operating system and browser version in the environment section."
+          },
+          {
+            "term": "Severity",
+            "phonetic": "/səˈver.ə.t̬i/",
+            "definition": "A strict measure of how much negative impact a defect has on the overall software functionality.",
+            "example_sentence": "A total system crash is automatically classified as a bug with critical severity."
+          },
+          {
+            "term": "Priority",
+            "phonetic": "/praɪˈɔːr.ə.t̬i/",
+            "definition": "The designated level of urgency assigned to fixing a defect or implementing a specific project task.",
+            "example_sentence": "The engineering team must address high priority bugs before developing any new features."
+          }
+        ]
+      }
+    ],
+    "grammar_lessons": [
+      {
+        "grammar_id": "B2_G1",
+        "grammar_title": "The Passive Voice (Present Perfect & Modals)",
+        "rule": "Subject + has/have been + V3 OR Modal + be + V3",
+        "explanation": "Use complex passives to report bugs that have occurred or state technical actions that must be completed by the team.",
+        "examples": [
+          "The critical bug has been reported to the QA team.",
+          "The user story must be estimated before the next sprint.",
+          "A major defect has been found in the production environment.",
+          "The API authentication token should be refreshed every hour.",
+          "Flaky automated tests must be investigated and resolved immediately."
+        ]
+      },
+      {
+        "grammar_id": "B2_G2",
+        "grammar_title": "Third Conditional (Type 3)",
+        "rule": "If + Past Perfect, would have + Past Participle (V3)",
+        "explanation": "Use the third conditional to discuss hypothetical past situations, especially during sprint retrospectives or root cause analysis.",
+        "examples": [
+          "If we had written unit tests, the application wouldn't have crashed.",
+          "If the testing environment had been correct, the defect would not have occurred.",
+          "We would have finished the sprint epic if the server hadn't failed.",
+          "If I had read the bug report steps, I would have reproduced the issue.",
+          "The authentication token would have worked if you had passed it correctly."
+        ]
+      },
+      {
+        "grammar_id": "B2_G3",
+        "grammar_title": "Relative Clauses (Non-defining)",
+        "rule": "Noun, which/who + clause, ...",
+        "explanation": "Use non-defining relative clauses to add extra, non-essential information about architectural components, tools, or OOP concepts.",
+        "examples": [
+          "Polymorphism, which is a key OOP concept, allows developers to override object methods.",
+          "The daily standup, which happens every morning at nine, keeps the agile team aligned.",
+          "JSON, which stands for JavaScript Object Notation, is heavily used for API data transfer.",
+          "Our Client-Server architecture, which was updated last month, easily handles thousands of requests.",
+          "The extensive integration test, which took two hours to run, finally passed successfully."
+        ]
+      },
+      {
+        "grammar_id": "B2_G4",
+        "grammar_title": "Connectors of Cause and Effect",
+        "rule": "Consequently, As a result, Therefore, Due to",
+        "explanation": "Use these formal connectors to clearly explain the impact of bugs, technical issues, or architectural decisions in technical writing.",
+        "examples": [
+          "The security token expired; consequently, the user authentication process failed entirely.",
+          "Due to a missing JSON parameter, the backend API returned a 400 status code.",
+          "The main database went down. As a result, the client application crashed unexpectedly.",
+          "Encapsulation heavily hides internal data; therefore, it greatly improves system security.",
+          "The product backlog was far too large; as a result, we removed some user stories."
+        ]
+      }
+    ]
+  },
+  {
+    "level": "C1",
+    "level_title": "ADVANCED",
+    "vocabulary_lessons": [
+      {
+        "topic_id": "C1_T1",
+        "topic_name": "System Architecture & Scalability",
+        "items": [
+          {
+            "term": "Monolith",
+            "phonetic": "/ˈmɑː.nə.lɪθ/",
+            "definition": "A unified, single-tiered software architecture where all components share a single, massive codebase.",
+            "example_sentence": "Transitioning from a monolith to microservices requires careful structural planning."
+          },
+          {
+            "term": "Microservices",
+            "phonetic": "/ˌmaɪ.kroʊˈsɜːr.vɪ.sɪz/",
+            "definition": "An architectural style that structures an application as a collection of autonomous, independent services.",
+            "example_sentence": "Microservices allow independent deployment and dynamic scaling of specific features."
+          },
+          {
+            "term": "Load Balancing",
+            "phonetic": "/ˈloʊd ˌbæl.ən.sɪŋ/",
+            "definition": "The methodical distribution of incoming network traffic across multiple backend servers to ensure reliability.",
+            "example_sentence": "Load balancing prevents any single server from becoming totally overwhelmed."
+          },
+          {
+            "term": "Caching",
+            "phonetic": "/ˈkæʃ.ɪŋ/",
+            "definition": "The process of storing frequently accessed data in a temporary storage layer for faster retrieval.",
+            "example_sentence": "Implement caching to significantly reduce the underlying relational database load."
+          },
+          {
+            "term": "Replication",
+            "phonetic": "/ˌrep.lɪˈkeɪ.ʃən/",
+            "definition": "The systematic process of copying data across multiple separate servers to improve data availability.",
+            "example_sentence": "Database replication ensures data redundancy in case of hardware failure."
+          },
+          {
+            "term": "High Availability",
+            "phonetic": "/haɪ əˌveɪ.ləˈbɪl.ə.t̬i/",
+            "definition": "A characteristic of a system ensuring a continuously operational level of performance for long periods.",
+            "example_sentence": "High availability is completely critical for mission-critical enterprise financial applications."
+          },
+          {
+            "term": "Scalability",
+            "phonetic": "/ˌskeɪ.ləˈbɪl.ə.t̬i/",
+            "definition": "The capability of a computational system to handle a growing amount of operational work efficiently.",
+            "example_sentence": "Our new cloud architecture guarantees both vertical and horizontal scalability."
+          }
+        ]
+      },
+      {
+        "topic_id": "C1_T2",
+        "topic_name": "Cloud Computing & DevOps",
+        "items": [
+          {
+            "term": "IaaS",
+            "phonetic": "/ˌaɪ.eɪ.eɪˈes/",
+            "definition": "A cloud computing model providing highly virtualized computing resources and infrastructure over the internet.",
+            "example_sentence": "Amazon Web Services EC2 is a prime example of modern IaaS."
+          },
+          {
+            "term": "PaaS",
+            "phonetic": "/pæs/",
+            "definition": "A cloud platform allowing customers to develop, run, and manage applications without infrastructure complexity.",
+            "example_sentence": "Using PaaS accelerates the deployment of containerized web applications significantly."
+          },
+          {
+            "term": "SaaS",
+            "phonetic": "/sæs/",
+            "definition": "A software distribution model where a third-party provider hosts applications and makes them accessible globally.",
+            "example_sentence": "Many large companies use SaaS for their customer relationship management."
+          },
+          {
+            "term": "Docker",
+            "phonetic": "/ˈdɑː.kɚ/",
+            "definition": "A popular platform designed to help developers seamlessly build, share, and run modern applications in containers.",
+            "example_sentence": "Docker perfectly isolates your application from the underlying host environment."
+          },
+          {
+            "term": "Kubernetes",
+            "phonetic": "/ˌkuː.bɚˈneɪ.tɪz/",
+            "definition": "An open-source system for automating the massive deployment, scaling, and management of containerized applications.",
+            "example_sentence": "Kubernetes orchestrates thousands of containers across our distributed server clusters."
+          },
+          {
+            "term": "CI/CD pipeline",
+            "phonetic": "/ˌsiː.aɪ ˌsiː.diː ˈpaɪp.laɪn/",
+            "definition": "The automated engineering process of continuously integrating code changes and deploying them to production environments.",
+            "example_sentence": "A robust CI/CD pipeline drastically reduces our time to market."
+          },
+          {
+            "term": "Infrastructure as Code",
+            "phonetic": "/ˈɪn.frəˌstrʌk.tʃɚ æz koʊd/",
+            "definition": "The methodical process of managing and provisioning computing infrastructure through machine-readable definition configuration files.",
+            "example_sentence": "We use Infrastructure as Code to automate server provisioning completely."
+          }
+        ]
+      },
+      {
+        "topic_id": "C1_T3",
+        "topic_name": "Cyber Security & Cryptography",
+        "items": [
+          {
+            "term": "Vulnerabilities",
+            "phonetic": "/ˌvʌl.nɚ.əˈbɪl.ə.t̬iz/",
+            "definition": "Inherent weaknesses in an information system that can be maliciously exploited by external threat actors.",
+            "example_sentence": "Urgent security patches fix known vulnerabilities in the operating system."
+          },
+          {
+            "term": "SQL Injection",
+            "phonetic": "/ˌes.kjuːˈel ɪnˈdʒek.ʃən/",
+            "definition": "A malicious code injection technique used to attack data-driven applications through malicious database query statements.",
+            "example_sentence": "Always use parameterized queries to prevent devastating SQL injection attacks."
+          },
+          {
+            "term": "Cross-Site Scripting",
+            "phonetic": "/krɑːs saɪt ˈskrɪp.tɪŋ/",
+            "definition": "A serious security vulnerability where attackers inject malicious client-side scripts into viewed user web pages.",
+            "example_sentence": "Sanitize all user input strictly to mitigate Cross-Site Scripting vulnerabilities."
+          },
+          {
+            "term": "Encryption",
+            "phonetic": "/ɪnˈkrɪp.ʃən/",
+            "definition": "The mathematical process of converting readable information into unintelligible text to prevent unauthorized external access.",
+            "example_sentence": "End-to-end encryption secures corporate messages from eavesdropping during network transmission."
+          },
+          {
+            "term": "Hashing",
+            "phonetic": "/ˈhæʃ.ɪŋ/",
+            "definition": "The cryptographic process of generating a fixed-size string of unique characters from a variable-length input.",
+            "example_sentence": "Cryptographic password hashing ensures user credentials are not stored in plaintext."
+          },
+          {
+            "term": "Firewall",
+            "phonetic": "/ˈfaɪr.wɑːl/",
+            "definition": "A dedicated network security system that comprehensively monitors and controls incoming and outgoing network traffic.",
+            "example_sentence": "The enterprise firewall aggressively blocks unauthorized access from suspicious external networks."
+          },
+          {
+            "term": "DDoS",
+            "phonetic": "/ˈdiː.dɑːs/",
+            "definition": "A massive, malicious attempt to disrupt normal traffic by overwhelming the target with internet requests.",
+            "example_sentence": "A massive DDoS attack brought down the primary web servers completely."
+          },
+          {
+            "term": "Penetration Testing",
+            "phonetic": "/ˌpen.əˈtreɪ.ʃən ˈtes.tɪŋ/",
+            "definition": "An authorized, simulated cyberattack on a computer system performed to evaluate its overall architectural security.",
+            "example_sentence": "Penetration testing reveals critical security flaws before malicious hackers exploit them."
+          }
+        ]
+      },
+      {
+        "topic_id": "C1_T4",
+        "topic_name": "Data Science, AI & Machine Learning",
+        "items": [
+          {
+            "term": "Big Data",
+            "phonetic": "/bɪɡ ˈdeɪ.t̬ə/",
+            "definition": "Extremely large and complex data sets analyzed computationally to reveal patterns, behavioral trends, and associations.",
+            "example_sentence": "Big Data analytics effectively drives our targeted global marketing campaigns."
+          },
+          {
+            "term": "Data Pipeline",
+            "phonetic": "/ˈdeɪ.t̬ə ˈpaɪp.laɪn/",
+            "definition": "A sequential set of automated computing actions extracting, transforming, and loading data from multiple sources.",
+            "example_sentence": "The scalable data pipeline ingests millions of complex records every hour."
+          },
+          {
+            "term": "Neural Networks",
+            "phonetic": "/ˈnʊr.əl ˈnet.wɝːks/",
+            "definition": "Advanced computing mathematical systems vaguely inspired by the biological neural networks constituting complex animal brains.",
+            "example_sentence": "Deep neural networks excel significantly at complex image and speech recognition tasks."
+          },
+          {
+            "term": "Deep Learning",
+            "phonetic": "/diːp ˈlɝː.nɪŋ/",
+            "definition": "A sophisticated subset of machine learning based on artificial neural networks with multiple computational layers.",
+            "example_sentence": "Deep learning models require vast amounts of expensive computational processing power."
+          },
+          {
+            "term": "Generative AI",
+            "phonetic": "/ˈdʒen.ɚ.ə.t̬ɪv eɪ.aɪ/",
+            "definition": "Artificial intelligence highly capable of generating novel text, code, images, or data using generative algorithms.",
+            "example_sentence": "Generative AI is fundamentally revolutionizing how we create digital content today."
+          },
+          {
+            "term": "Large Language Models",
+            "phonetic": "/lɑːrdʒ ˈlæŋ.ɡwɪdʒ ˈmɑː.dəlz/",
+            "definition": "Massive deep learning algorithms that can uniquely recognize, summarize, translate, predict and generate human-like text.",
+            "example_sentence": "Large language models power our highly advanced customer service chatbots autonomously."
+          }
+        ]
+      },
+      {
+        "topic_id": "C1_T5",
+        "topic_name": "Tech Pitching & RFP",
+        "items": [
+          {
+            "term": "Pitching",
+            "phonetic": "/ˈpɪtʃ.ɪŋ/",
+            "definition": "The professional act of presenting a technical solution or business idea persuasively to external stakeholders.",
+            "example_sentence": "Pitching the innovative scalable architecture convinced the board of directors entirely."
+          },
+          {
+            "term": "Request for Proposal",
+            "phonetic": "/rɪˈkwest fɚ prəˈpoʊ.zəl/",
+            "definition": "A formal professional document soliciting comprehensive technical proposals from qualified vendors for complex enterprise projects.",
+            "example_sentence": "We confidently issued a Request for Proposal to evaluate global cloud vendors."
+          },
+          {
+            "term": "Technical proposal",
+            "phonetic": "/ˈtek.nɪ.kəl prəˈpoʊ.zəl/",
+            "definition": "A highly detailed document outlining the proposed technical solutions, project methodology, and system deliverables clearly.",
+            "example_sentence": "Our technical proposal completely addresses all system scalability and security requirements."
+          },
+          {
+            "term": "Cost justification",
+            "phonetic": "/kɑːst ˌdʒʌs.tə.fəˈkeɪ.ʃən/",
+            "definition": "The formal analytical process of rationalizing project expenditures by demonstrating the expected return on investment.",
+            "example_sentence": "The executive team demanded a rigorous cost justification before project approval."
+          },
+          {
+            "term": "Technology stack",
+            "phonetic": "/tekˈnɑː.lə.dʒi stæk/",
+            "definition": "The strategic combination of programming languages, software tools, and frameworks used to build complex applications.",
+            "example_sentence": "Choosing the appropriate technology stack is absolutely vital for long-term maintainability."
+          }
+        ]
+      }
+    ],
+    "grammar_lessons": [
+      {
+        "grammar_id": "C1_G1",
+        "grammar_title": "Inversion for Emphasis (Negative Adverbials)",
+        "rule": "Negative Adverbial + Auxiliary Verb + Subject + Main Verb",
+        "explanation": "Use inversion with negative adverbials to strongly emphasize rigorous security rules, system constraints, or rare architectural failures.",
+        "examples": [
+          "Under no circumstances should you expose the internal database port.",
+          "Rarely does the Kubernetes cluster fail completely during peak traffic.",
+          "Not only is the microservices architecture highly scalable, but it is also resilient.",
+          "Hardly had the DDoS attack started when the automated firewall blocked it.",
+          "Only by implementing end-to-end encryption can we secure the cloud data pipeline."
+        ]
+      },
+      {
+        "grammar_id": "C1_G2",
+        "grammar_title": "Cleft Sentences for Focus",
+        "rule": "It is/was [focus] that/who... OR What [subject] [verb] is [focus]",
+        "explanation": "Use advanced cleft sentences to highlight the most critical technical features, root causes, or solutions during technical pitching.",
+        "examples": [
+          "What the enterprise client desperately needs is a fully automated CI/CD pipeline.",
+          "It was the misconfigured load balancer that caused the unexpected network latency.",
+          "What sets our technical proposal apart is the serverless cloud infrastructure.",
+          "It is Infrastructure as Code that essentially guarantees perfectly consistent server deployments.",
+          "What deep neural networks strictly require is massive computational processing power."
+        ]
+      },
+      {
+        "grammar_id": "C1_G3",
+        "grammar_title": "Participle Clauses for Concise Writing",
+        "rule": "Present Participle (V-ing) or Past Participle (V3) replacing a full dependent clause",
+        "explanation": "Use sophisticated participle clauses to create concise, professional sentences in technical writing and complex system architecture documentation.",
+        "examples": [
+          "Built securely on AWS, the platform effortlessly ensures global high availability.",
+          "Requiring extensive GPU resources, large language models are extremely expensive to train.",
+          "When configured correctly, the web application firewall flawlessly prevents severe SQL injection attacks.",
+          "Using a distributed caching layer, the backend successfully handles millions of concurrent requests.",
+          "Migrating entirely to SaaS, the enterprise significantly reduced its long-term operational overhead."
+        ]
+      },
+      {
+        "grammar_id": "C1_G4",
+        "grammar_title": "Future Perfect and Continuous for Roadmaps",
+        "rule": "Subject + will have + V3 OR Subject + will have been + V-ing",
+        "explanation": "Use these advanced future tenses to confidently project system scalability milestones, technical project completion, or ongoing DevOps roadmaps.",
+        "examples": [
+          "By next financial quarter, we will have migrated the monolith entirely to microservices.",
+          "The automated data pipeline will have processed terabytes of analytics by tomorrow morning.",
+          "By 2026, our engineering team will have been using Docker in production for a decade.",
+          "The extensive penetration tests will have successfully finished before the software deployment starts.",
+          "We will have thoroughly mitigated all critical vulnerabilities by the time the RFP closes."
+        ]
+      }
+    ]
+  },
+  {
+    "level": "C2",
+    "level_title": "MASTERY",
+    "vocabulary_lessons": [
+      {
+        "topic_id": "C2_T25",
+        "topic_name": "IT Governance, Compliance & Standards",
+        "items": [
+          {
+            "term": "IT Governance",
+            "phonetic": "/ˌaɪˈtiː ˈɡʌv.ɚ.nəns/",
+            "definition": "A framework ensuring that organizational information technology strategy aligns strictly with overarching business goals.",
+            "example_sentence": "Good IT governance globally reduces devastating corporate business risks."
+          },
+          {
+            "term": "Compliance",
+            "phonetic": "/kəmˈplaɪ.əns/",
+            "definition": "The act of strictly following governmental laws, industry regulations, and advanced technical security guidelines.",
+            "example_sentence": "The enterprise ensures strict compliance with international software laws."
+          },
+          {
+            "term": "GDPR",
+            "phonetic": "/ˌdʒiː.diː.piːˈɑːr/",
+            "definition": "A strict European Union regulation protecting user data privacy and sensitive personal digital information.",
+            "example_sentence": "Violating GDPR regulations can cost multinational companies millions of dollars."
+          },
+          {
+            "term": "HIPAA",
+            "phonetic": "/ˈhɪp.ə/",
+            "definition": "A United States federal law designed to provide privacy standards to protect medical records.",
+            "example_sentence": "Hospital server architectures must maintain strict HIPAA security standards."
+          },
+          {
+            "term": "ISO/IEC 27001",
+            "phonetic": "/ˌaɪ.esˈoʊ ˌaɪ.iːˈsiː .../",
+            "definition": "An international standard detailing exactly how to manage corporate information security and risk effectively.",
+            "example_sentence": "Our multinational corporation achieved the official ISO/IEC 27001 certification."
+          },
+          {
+            "term": "PCI-DSS",
+            "phonetic": "/ˌpiː.siːˈaɪ ˌdiː.esˈes/",
+            "definition": "A global security standard for organizations that safely handle branded financial credit card information.",
+            "example_sentence": "Cloud payment gateways require PCI-DSS compliance to process transactions."
+          },
+          {
+            "term": "ITIL framework",
+            "phonetic": "/ˈaɪ.tɪl ˈfreɪm.wɝːk/",
+            "definition": "A detailed set of strategic corporate practices for managing and delivering quality IT services.",
+            "example_sentence": "Adopting the complex ITIL framework significantly improved our service delivery."
+          }
+        ]
+      },
+      {
+        "topic_id": "C2_T1",
+        "topic_name": "Tech Ethics & AI Regulation",
+        "items": [
+          {
+            "term": "Tech Ethics",
+            "phonetic": "/tek ˈeθ.ɪks/",
+            "definition": "Moral principles that strictly govern the development and highly responsible use of new technologies.",
+            "example_sentence": "Tech ethics actively prevent the harmful societal misuse of software."
+          },
+          {
+            "term": "Data privacy",
+            "phonetic": "/ˈdeɪ.t̬ə ˈpraɪ.və.si/",
+            "definition": "The fundamental right of citizens to securely control how their personal information is utilized.",
+            "example_sentence": "Maintaining strict data privacy is a fundamental corporate human right."
+          },
+          {
+            "term": "Algorithmic bias",
+            "phonetic": "/ˌæl.ɡəˈrɪð.mɪk ˈbaɪ.əs/",
+            "definition": "Systematic and repeatable errors in computer systems that create unfair and highly discriminatory outcomes.",
+            "example_sentence": "Algorithmic bias in hiring software heavily discriminates against minority populations."
+          },
+          {
+            "term": "Intellectual property",
+            "phonetic": "/ˌɪn.t̬əlˈek.tʃu.əl ˈprɑː.pɚ.t̬i/",
+            "definition": "Exclusive legal rights protecting creations of the mind, including software code and technical inventions.",
+            "example_sentence": "Even open source software projects still retain strict intellectual property."
+          },
+          {
+            "term": "AI safety",
+            "phonetic": "/ˌeɪˈaɪ ˈseɪf.ti/",
+            "definition": "An interdisciplinary scientific field ensuring artificial intelligence systems operate safely without causing human harm.",
+            "example_sentence": "Global AI safety regulations control autonomous vehicle software very strictly."
+          },
+          {
+            "term": "Regulation",
+            "phonetic": "/ˌreɡ.jəˈleɪ.ʃən/",
+            "definition": "A formal governmental rule designed to carefully control technical procedures and modern corporate behaviors.",
+            "example_sentence": "International government regulation heavily limits how companies use facial recognition."
+          }
+        ]
+      },
+      {
+        "topic_id": "C2_T2",
+        "topic_name": "Enterprise Technical Strategy & Vendor Management",
+        "items": [
+          {
+            "term": "Technical Strategy",
+            "phonetic": "/ˈtek.nɪ.kəl ˈstræt̬.ə.dʒi/",
+            "definition": "A comprehensive organizational plan that heavily aligns technology investments with long-term enterprise business goals.",
+            "example_sentence": "Our executive technical strategy focuses deeply on global cloud expansion."
+          },
+          {
+            "term": "Legacy system",
+            "phonetic": "/ˈleɡ.ə.si ˈsɪs.təm/",
+            "definition": "Outdated computing software or hardware that remains actively used despite being historically and technically obsolete.",
+            "example_sentence": "Replacing the bank's legacy system requires hundreds of millions of dollars."
+          },
+          {
+            "term": "Migration",
+            "phonetic": "/maɪˈɡreɪ.ʃən/",
+            "definition": "The complex engineering process of transferring digital enterprise data from one operational environment to another.",
+            "example_sentence": "The international cloud migration finished perfectly without any server downtime."
+          },
+          {
+            "term": "Vendor lock-in",
+            "phonetic": "/ˈven.dɚ lɑːk ɪn/",
+            "definition": "A risky business situation where customers are completely dependent on a single technology service provider.",
+            "example_sentence": "Buying exclusive proprietary software often leads directly to vendor lock-in."
+          },
+          {
+            "term": "Total Cost of Ownership",
+            "phonetic": "/ˈtoʊ.t̬əl kɑːst əv ˈoʊ.nɚ.ʃɪp/",
+            "definition": "A strategic financial estimate determining the direct and indirect lifetime costs of major technological systems.",
+            "example_sentence": "We must calculate the total cost of ownership before signing contracts."
+          },
+          {
+            "term": "Technical Debt",
+            "phonetic": "/ˈtek.nɪ.kəl det/",
+            "definition": "The implied future financial cost of additional rework caused by choosing poor, rapid engineering solutions.",
+            "example_sentence": "Accumulating high technical debt significantly slows down future enterprise software development."
+          }
+        ]
+      },
+      {
+        "topic_id": "C2_T3",
+        "topic_name": "R&D (Research & Development) & Academic Papers",
+        "items": [
+          {
+            "term": "Research & Development",
+            "phonetic": "/rɪˈsɝːtʃ ænd dɪˈvel.əp.mənt/",
+            "definition": "Innovative corporate activities undertaken to design, develop, and significantly improve complex professional technological products.",
+            "example_sentence": "The tech giant invests heavily in advanced R&D software laboratories."
+          },
+          {
+            "term": "Academic Paper",
+            "phonetic": "/ˌæk.əˈdem.ɪk ˈpeɪ.pɚ/",
+            "definition": "A formal written document published in scientific journals detailing highly original computing research findings.",
+            "example_sentence": "The IEEE institute publishes thousands of brilliant academic papers annually."
+          },
+          {
+            "term": "Whitepaper",
+            "phonetic": "/ˈwaɪtˌpeɪ.pɚ/",
+            "definition": "An authoritative informational document issued by organizations to comprehensively promote highly specific technical architectural solutions.",
+            "example_sentence": "The extensive corporate whitepaper details the new secure blockchain protocol."
+          },
+          {
+            "term": "Peer review",
+            "phonetic": "/pɪr rɪˈvjuː/",
+            "definition": "An academic evaluation process where independent experts critically assess a technical paper before global publication.",
+            "example_sentence": "The innovative cryptographic algorithm easily passed the rigorous peer review."
+          },
+          {
+            "term": "Methodology",
+            "phonetic": "/ˌmeθ.əˈdɑː.lə.dʒi/",
+            "definition": "A systematic, theoretical analysis of the strict scientific methods correctly applied to a research field.",
+            "example_sentence": "The academic paper excellently explains the complex machine learning methodology."
+          },
+          {
+            "term": "Abstract",
+            "phonetic": "/ˈæb.strækt/",
+            "definition": "A brief, highly comprehensive summary of a technical research article or in-depth professional scientific paper.",
+            "example_sentence": "Read the detailed abstract to understand the overarching research quickly."
+          }
+        ]
+      },
+      {
+        "topic_id": "C2_T4",
+        "topic_name": "Crisis Management & High-Stakes Negotiation",
+        "items": [
+          {
+            "term": "Crisis Management",
+            "phonetic": "/ˈkraɪ.sɪs ˈmæn.ədʒ.mənt/",
+            "definition": "The strategic organizational process of handling severely disruptive and extremely unexpected technological global emergency events.",
+            "example_sentence": "Excellent crisis management successfully saved the vulnerable corporate database network."
+          },
+          {
+            "term": "Post-mortem",
+            "phonetic": "/ˌpoʊstˈmɔːr.t̬əm/",
+            "definition": "A highly detailed technical report analyzing exactly why a severe corporate system failure unexpectedly occurred.",
+            "example_sentence": "The executive post-mortem report brilliantly explained the global server outage."
+          },
+          {
+            "term": "Negotiation",
+            "phonetic": "/nəˌɡoʊ.ʃiˈeɪ.ʃən/",
+            "definition": "A strategic diplomatic discussion aimed at successfully reaching a mutually beneficial international software enterprise contract.",
+            "example_sentence": "The high-stakes negotiation permanently secured the exclusive corporate software license."
+          },
+          {
+            "term": "Data breach",
+            "phonetic": "/ˈdeɪ.t̬ə briːtʃ/",
+            "definition": "A severe corporate security incident where highly confidential enterprise information is illegally accessed without authorization.",
+            "example_sentence": "The massive international data breach leaked millions of encrypted user passwords."
+          },
+          {
+            "term": "Mitigation",
+            "phonetic": "/ˌmɪt̬.əˈɡeɪ.ʃən/",
+            "definition": "Strategic technical engineering actions taken entirely to heavily reduce the harmful impact of system disasters.",
+            "example_sentence": "Rapid cyber threat mitigation safely isolated the highly dangerous computer virus."
+          },
+          {
+            "term": "Stakeholder",
+            "phonetic": "/ˈsteɪkˌhoʊl.dɚ/",
+            "definition": "A highly influential corporate individual or major group strongly invested in a critical technology project.",
+            "example_sentence": "The chief executive officer is a primary stakeholder in cybersecurity."
+          }
+        ]
+      }
+    ],
+    "grammar_lessons": [
+      {
+        "grammar_id": "C2_G1",
+        "grammar_title": "The Formal Subjunctive",
+        "rule": "Subject + demand/require/suggest + that + Subject + Verb (base form)",
+        "explanation": "Use the formal subjunctive in business negotiations, legal compliance documents, and strict system governance to state mandatory technical requirements.",
+        "examples": [
+          "GDPR explicitly requires that user data remain strictly private.",
+          "The government demands that the tech company explain the data breach.",
+          "The ISO standard recommends that the security policy be updated annually.",
+          "We strongly advise that the legacy system be retired immediately.",
+          "The international contract dictates that the vendor provide 24/7 technical support."
+        ]
+      },
+      {
+        "grammar_id": "C2_G2",
+        "grammar_title": "Mixed Conditionals",
+        "rule": "If + Past Perfect, Subject + would + Verb (base form)",
+        "explanation": "Use mixed conditionals in post-mortem reports to correctly explain how past architectural failures directly cause current system downtime.",
+        "examples": [
+          "If we had prevented the breach, we would not face lawsuits now.",
+          "If the enterprise had audited the code, the software would be safe.",
+          "The server would be online today if we had bought better hardware.",
+          "If they had mitigated the technical debt, development would be much faster.",
+          "If we had avoided vendor lock-in, cloud migration would be very easy today."
+        ]
+      },
+      {
+        "grammar_id": "C2_G3",
+        "grammar_title": "Passive Voice with Reporting Verbs",
+        "rule": "It is + reported/proven/argued + that + Clause",
+        "explanation": "Use this impersonal passive structure when writing authoritative academic papers, scientific abstracts, or objective technical research and development whitepapers.",
+        "examples": [
+          "It is proven that algorithmic bias severely harms minority user groups.",
+          "It is argued that strict AI regulation prevents rapid technological innovation.",
+          "It has been reported that the data breach compromised enterprise security.",
+          "It is widely accepted that technical debt increases long-term software costs.",
+          "It is expected that the new standard will improve global interoperability."
+        ]
+      },
+      {
+        "grammar_id": "C2_G4",
+        "grammar_title": "Advanced Inversion with 'Should' & 'Had'",
+        "rule": "Should + Subject + Verb... / Had + Subject + Past Participle...",
+        "explanation": "Use advanced inversion for highly formal corporate crisis management procedures, strict SLA contracts, and high-stakes international business negotiations.",
+        "examples": [
+          "Should a severe technical crisis occur, the crisis management team must act.",
+          "Had we negotiated the contract better, the total cost would drop.",
+          "Should you face vendor lock-in, consult the enterprise technical strategy guide.",
+          "Had the firewall detected the intrusion, the enterprise data would remain secure.",
+          "Should the legacy system crash, the backup cloud servers will start automatically."
+        ]
+      }
+    ]
+  }
+]

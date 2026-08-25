@@ -1,0 +1,474 @@
+* a078696f document
+*   5f24a5ec Merge remote-tracking branch 'origin/DOC_PA3' into PA5
+|\  
+| * 16579e6b docs: remove obsolete use case images from Module 1
+| * 6a201795 Delete obsolete use-case specification files (UC3, UC4, UC5, UC6, UC7) and their corresponding PDFs. Add a new use-case specification file (UC_Spec.md) for future documentation. Update .DS_Store in the implementation directory.
+| * 64f3d6a0 update Module 1specs
+| * 3891405c update changes.md
+| * 2326dde9 merge UC files into one file, update changes.md
+| * af3763d3 docs: combine spec files of module 4 into ONE SINGLE FILE
+| * 30a362a8 Made some chanegs to module 5 model and specs
+| *   3cc64e00 Merge pull request #35 from mthupham/refactor/pa3-module4-usecases
+| |\  
+| | * 460e7340 docs: refactor Module 4 use cases based on TA feedback
+| |/  
+| * 8e7779da Refactor code structure and optimize performance across multiple modules
+* |   fa087e7f Merge remote-tracking branch 'origin/PA5' into PA5
+|\ \  
+| * | d46f1610 docs: update testcase execution result for TC-PLP-009
+* | | f012482f refactor: update test case titles and structure in reports
+|/ /  
+* |   0a7d3358 Merge branch 'PA5' of https://github.com/mthupham/STUDIFY into PA5
+|\ \  
+| * | e12403ab AISpeaking testcase: finished the remaining tests
+| * | dda233fa update test case on Onboarding and bug report
+| * | acb6fc4f AISpeaking testcase, some testcases haven't been tested
+| * | 5b339e37 update Auth test case and bug report
+* | | 7a4006a6 docs: execute testcases for PersonalizedLearningPath
+* | | 8a507318 docs: testcase execution for PersonalizedLearningPath (5/10 testcase completed)
+|/ /  
+* |   98bb8d1d Merge branch 'PA5' of https://github.com/mthupham/STUDIFY into PA5
+|\ \  
+| * | d8eb3359 fix auth
+* | | 087773ba docs: add test cases for Personalized Learning Path
+|/ /  
+* | ad305b3f Report use case for auth and onboarding
+* | d34cf858 Update StudyGroup.md
+* |   81f229a3 Merge branch 'DOC_PA4' into PA5
+|\ \  
+| * | d9cc0760 docs: update Report.md with appendix and clarify source code reference; add new Report.pdf and gitlog.txt files
+| * | 552a686c Refactor code structure for improved readability and maintainability
+| * | 12fdbeee docs: enhance System Context Diagram and relationships in Report.md for clarity and detail
+| * | ebd2486e Delete outdated change documents for Khanh Linh, Thien Phuoc, Gia Phuc, and Kim Hang to streamline project documentation and remove redundant information.
+| * |   23660aba Merge branch 'UI-studygroup' into DOC_PA4
+| |\ \  
+| * \ \   1956c9d6 Merge branch 'DOC_PA4' of https://github.com/mthupham/STUDIFY into DOC_PA4
+| |\ \ \  
+| | * \ \   0f31dd8b Merge branch 'DOC_PA4' of https://github.com/mthupham/STUDIFY into DOC_PA4
+| | |\ \ \  
+| | * | | | 3c20e219 Update Klinh_AIUsageReport.md
+| * | | | | 35ac553a docs: update final AIUsageReport (.md & export .pdf) for PA4
+| | |/ / /  
+| |/| | |   
+| * | | | 2b0eac2a Merge branch 'DOC_PA4' of https://github.com/mthupham/STUDIFY into DOC_PA4
+| |\| | | 
+| | * | | c2db44cc Update Klinh_AIUsageReport.md
+| | * | | 5d695ec2 Update Klinh_AIUsageReport.md
+| | * | | e713d0e4 Create KhanhLinh.md
+| * | | | 979cb563 docs: add AI usage report for project assignment 4
+| |/ / /  
+| * | |   facf9860 Merge branch 'DOC_PA4' of https://github.com/mthupham/STUDIFY into DOC_PA4
+| |\ \ \  
+| | * | | 8f389219 update file changes
+| * | | | a843b0ab docs: add AI usage report and evidence
+| |/ / /  
+| * | | 07042f2a update AI usage report
+| * | | a25a4168 Added AI usage report and evidences
+| * | | 592dda9e Changed changes.md to fit the template
+| * | | 3e37e7a2 Add AI Usage Report for mthu with detailed usage examples and appendix
+| * | | 56fee1fe Update changes document for pa3
+| * | | 673b0e92 Update changes document for pa3
+| * | | c1c05608 Update AI Usage Report and Changes document for Thien Phuoc
+| * | | 55819dc2 docs: add System Deployment & Level 3 Component Specification Document
+| * | | e3c6d104 docs: remove unused AI usage report evidence files
+| * | | e745e1b8 docs: add AI usage report and evidence for Thiên Phước
+| * | | a9f3fa69 docs: add C4 Level 3 component diagram for frontend and backend authentication and onboarding features
+| * | | 0f4e6bc4 Redo level 2
+| * | | 64e42fe1 Added diagram
+| * | | 0291b4c1 Added Container diagram
+| * | | ae5a0100 C4 Model - Level 1 System Context Diagram
+| * | | cd403606 Create B_TechStack.md
+| * | |   ac096688 Merge remote-tracking branch 'origin' into DOC_PA4
+| |\ \ \  
+| * | | | 44c44416 feat: add new evidence and report files for AI Usage Report
+* | | | | a51b3027 test: add test cases for personalized learning path
+* | | | | 7912e92a fix(TestPlan): update test schedule dates and remove outdated PDF
+* | | | | 13309b95 docs: add test plan document for project assessment
+* | | | | ae1d5885 feat: add comprehensive test plan and test case templates for various features
+| | | | | * 57e9f14a connect API for selecting level
+| | | | | * e12710f7 adding password validation in register and account lock in login
+| | | | | * f57aa147 fix login with google feature
+| | | | | | * 248d3173 Update MemberAssignmentWidgets.tsx
+| | | | | | * 4232ec44 Update package-lock.json
+| | | | | | | * 384bb06e test case for virtual study room
+| | | | | | |/  
+| | | | | | * 863efb17 Merge pull request #41 from mthupham/FixingBugs
+| |_|_|_|_|/| 
+|/| | | | | | 
+| | | | | | * dc41b060 feat: enhance user onboarding and roadmap services; integrate user level retrieval and update onboarding DTO
+| | | | | | *   4e5ecc86 Merge branch 'Fix-FileRepo' into FixingBugs
+| | | | | | |\  
+| | | | | | | * 70ec101f Fixed issue with uploaded by returning only anonymous
+| | | | | | | * 36425a49 Temp branch to fix error
+| |_|_|_|_|_|/  
+|/| | | | | |   
+| | | | | | * 91a62516 feat(ProfilePage): refactor user profile component and migrate to TypeScript; remove old profile.jsx file fix(ResultPlacementTest): update SVG viewBox and improve layout; enhance progress circle rendering fix(App): correct import path for UserProfile component
+| |_|_|_|_|/  
+|/| | | | |   
+| | | | | | * fbcebd4b Temp branch: no fix yet
+| |_|_|_|_|/  
+|/| | | | |   
+* | | | | | aae0cd2c feat(LoginForm): update Google login URL to use environment variable
+* | | | | | d6e691e9 style(auth.controller): format imports and add console logs for frontend URL redirection
+* | | | | | 8ab844fb feat(ai-speaking): enhance speaking analysis with detailed feedback and response structure
+* | | | | | 9cc62f33 feat(vercel): add Vercel configuration for rewrites
+* | | | | |   5223edf9 Merge remote-tracking branch 'origin/Backend_Klinh4' into AI-feature
+|\ \ \ \ \ \  
+| * | | | | | d936a840 Complete F3.3 task assignment and group notifications
+* | | | | | | 895e3381 feat(ai-speaking): add speaking questions, analysis services, and endpoints
+* | | | | | |   27437c14 Merge remote-tracking branch 'origin/Backend_Lkhang2' into UI-studygroup
+|\ \ \ \ \ \ \  
+| |/ / / / / /  
+|/| | | | | /   
+| | |_|_|_|/    
+| |/| | | |     
+| * | | | | fc9dd930 create API for login with google
+| * | | | | 339ce92a create UI and connect API for notification features
+* | | | | |   1901cd95 Merge remote-tracking branch 'Origin/AI-Speaking' into UI-studygroup
+|\ \ \ \ \ \  
+| * | | | | | 8b066e70 update group ts p2
+| * | | | | | e842706f Update useGroupChat.ts
+| * | | | | | d30438b0 update groupchat
+* | | | | | | 25dace2d Merge branch 'AI-Speaking' into UI-studygroup
+|\| | | | | | 
+| * | | | | | 249882d4 Merge remote-tracking branch 'origin' into AI-Speaking
+| |\| | | | | 
+| * | | | | | 25a75853 feat: add Voice Learning Dashboard component with onboarding guard and routing
+* | | | | | | 644a6dd5 feat: enhance group dashboard with dynamic icons and file management
+* | | | | | | 859a2c9f refactor: update group navigation and improve member display logic in BusinessEnglishHub
+* | | | | | |   ff77cbca Merge remote-tracking branch 'origin/UI-FileRepository' into UI-studygroup
+|\ \ \ \ \ \ \  
+| * | | | | | | 07fd82f5 Added more file types to be downloaded rather than just images
+| * | | | | | | 9000769e Made files able to be downloaded
+| * | | | | | | 49acf8f8 Added file repository and shared files viewer
+* | | | | | | | 729167fc refactor: implement server-side data mapping for study groups and add UI rendering for group icons
+* | | | | | | | 6b7b9d12 feat: enhance group and task management features with new repository methods and UI updates
+* | | | | | | |   1114efac Merge remote-tracking branch 'origin/Backend_Klinh4' into UI-studygroup
+|\ \ \ \ \ \ \ \  
+| * | | | | | | | a67fbf15 feat: implement F3.3 task assignment and study schedules
+| * | | | | | | | 895dbe4c update package lock after main merge
+| * | | | | | | | 260d3c33 Merge branch 'main' into Backend_Klinh4
+| |\| | | | | | | 
+| * | | | | | | | 0df9c309 fix reading writing question mapping
+* | | | | | | | |   ebdd3a68 Merge remote-tracking branch 'origin' into UI-studygroup
+|\ \ \ \ \ \ \ \ \  
+| | |_|_|/ / / / /  
+| |/| | | | | | |   
+| * | | | | | | |   30b266c8 Merge branch 'Backend_lkhang' into main
+| |\ \ \ \ \ \ \ \  
+| | |_|/ / / / / /  
+| |/| | | | | | |   
+| | * | | | | | | 33e02d68 update notification
+| * | | | | | | |   fb4239ed Merge pull request #38 from mthupham/UI-studygroup
+| |\ \ \ \ \ \ \ \  
+* | | | | | | | | | 32419fb1 fix: add timestamps to StudyGroup model for better tracking of creation and updates
+* | | | | | | | | | 523984df hotfix: resolve group creation bugs and sync database schema
+| |_|_|_|/ / / / /  
+|/| | | | | | | |   
+* | | | | | | | | 5ea091d1 fix: refactor BASE_URL definition to use API_BASE_URL for better clarity
+* | | | | | | | |   ae3fccfa Merge pull request #40 from mthupham/feat-F3.2-studygroup
+|\ \ \ \ \ \ \ \ \  
+| * | | | | | | | | 35026d58 feat: (F3.2) implement virtual study room module with core group management and workspace features
+* | | | | | | | | | b15b99b1 fix: update BASE_URL to use environment variable for API URL in flashcardService
+* | | | | | | | | | 788ee0f6 fix: correct response data structure in CreateStudyGroupPage component
+|/ / / / / / / / /  
+* | | | | | | | | 5c7ed1eb feat: enhance virtual study room functionality with group management features
+* | | | | | | | | 8e993c1a fix: update CORS configuration and refactor API URL usage in PracticeQuestions component
+* | | | | | | | | f1c2eae9 feat: add database configuration to docker-compose file and update sequelize settings
+| |/ / / / / / /  
+|/| | | | | | |   
+* | | | | | | | dcd38f3f feat: add DeckDetailView component for managing flashcards
+* | | | | | | | a444bdad fix: update property declarations in DTOs to use definite assignment assertion
+* | | | | | | | 02c22a80 feat: add virtual study room feature with group creation and joining functionality
+| |_|_|_|_|/ /  
+|/| | | | | |   
+* | | | | | |   b8e27f04 Merge remote-tracking branch 'origin/Backend_Klinh4' into UI-studygroup
+|\ \ \ \ \ \ \  
+| | |_|/ / / /  
+| |/| | | | |   
+| * | | | | | 361eb485 backup current logic score practice api
+| |/ / / / /  
+* | | | | | d4032d0a feat: add onboarding guard to lesson practice routes and enhance navigation buttons in TheoryDetail component
+* | | | | | ffeba3f1 fix: remove background colors and adjust z-index for better UI consistency
+* | | | | | aa7efc3d feat: enhance lesson detail and roadmap navigation
+* | | | | | 839d02cf Add role property to sample member data in GroupDashboard component
+* | | | | |   3bf2fe51 Merge branch 'Backend_lkhang' into UI-studygroup
+|\ \ \ \ \ \  
+| |/ / / / /  
+|/| / / / /   
+| |/ / / /    
+| * | | | dee753dd create basic chat function
+* | | | |   b25f6644 Merge pull request #36 from mthupham/UI-studygroup
+|\ \ \ \ \  
+| * \ \ \ \   37fcba1e Merge remote-tracking branch 'origin/main' into UI-studygroup
+| |\ \ \ \ \  
+| |/ / / / /  
+|/| | | | |   
+* | | | | |   faaf42dd Merge pull request #34 from mthupham/Backend_lkhang
+|\ \ \ \ \ \  
+| | |/ / / /  
+| |/| | | |   
+| * | | | |   eca87d26 Merge pull request #33 from mthupham/main
+| |\ \ \ \ \  
+| |/ / / / /  
+|/| | | | |   
+* | | | | | 8911c90d Merge branch 'Backend_lkhang' into main
+|\| | | | | 
+| * | | | | 687ceadf add names of lessons into roadmap
+| * | | | |   80ceab6e Merge pull request #29 from mthupham/main
+| |\ \ \ \ \  
+| | | * | | | 1dafee2c Refactor Workspace_Leader component: remove unused Assignment interface and pending assignments section; add TaskModal component for task management
+| | | * | | | 72514b9a feat: add Task Assignment Dashboard component with mock data and SVG icons
+| | | * | | | d561ab85 Refactor Pomodoro feature and UI improvements
+| |_|/ / / /  
+|/| | | | |   
+* | | | | |   b8a9e488 Merge pull request #32 from mthupham/UI-studygroup
+|\ \ \ \ \ \  
+| * | | | | | 7edeac27 feat: add MemberProfileDrawer component with user profile and task management features
+|/ / / / / /  
+* | | | | |   7b8c4f6e Merge pull request #31 from mthupham/UI-studygroup
+|\ \ \ \ \ \  
+| * | | | | | 9d50f586 feat: enhance lesson detail retrieval and UI updates for vocabulary and grammar lessons
+| * | | | | |   fda96a6b Merge branch 'fix/grammar-api-and-ui' into UI-studygroup
+| |\ \ \ \ \ \  
+| | * | | | | | 7b0ba834 fix: resolve grammar API connection and UI route conflicts"
+| |/ / / / / /  
+|/| | | | | |   
+| * | | | | |   0f02ed89 Merge remote-tracking branch 'origin/main' into UI-studygroup
+| |\ \ \ \ \ \  
+| |/ / / / / /  
+|/| | | | | |   
+* | | | | | | 713df8d1 Fixed some UI errors
+| * | | | | | 5b5f94cd Add Workspace Leader and Member components for virtual study room
+| * | | | | | 6e3c7d33 Add Study Group features with Join Group and Study Group Hub components
+| | | | | | | * 92d7b87a Fixed some UI errors
+| |_|_|_|_|_|/  
+|/| | | | | |   
+* | | | | | | 6a967da9 Merge pull request #30 from mthupham/UI-studygroup
+|\| | | | | | 
+| |_|/ / / /  
+|/| | | | |   
+| * | | | | 41e25a92 add mainlayout
+| * | | | | 8ab46327 Add MCP configuration for Figma integration
+|/ / / / /  
+* | | | |   f5d09a75 Merge pull request #28 from mthupham/Backend_Klinh4
+|\ \ \ \ \  
+| * \ \ \ \   676a57a1 Merge branch 'main' into Backend_Klinh4
+| |\ \ \ \ \  
+| |/ / / / /  
+|/| | | | |   
+* | | | | |   8bf8bd52 Merge pull request #27 from mthupham/placement-test-result
+|\ \ \ \ \ \  
+| * \ \ \ \ \   70db1331 Merge remote-tracking branch 'origin/main' into placement-test-result
+| |\ \ \ \ \ \  
+| |/ / / / / /  
+|/| | | | | |   
+* | | | | | |   ff727380 Merge pull request #26 from mthupham/Backend_Klinh4
+|\ \ \ \ \ \ \  
+| | * | | | | | 9db7fdbd Refactor onboarding flow: remove OnboardingFlow component, enhance PlacementTest with timer and submission logic, and add ResultPlacementTest for displaying results and feedback.
+| | | |_|_|/ /  
+| | |/| | | |   
+| | | * | | | c3c6c85a Implement learning streak calculation and setting to profile
+| | |/ / / /  
+| |/| | | |   
+| * | | | |   864da4ef Merge branch 'main' into Backend_Klinh4
+| |\ \ \ \ \  
+| |/ / / / /  
+|/| | | | |   
+* | | | | |   1a1a5f90 Merge pull request #25 from mthupham/Backend_lkhang
+|\ \ \ \ \ \  
+| |_|/ / / /  
+|/| | / / /   
+| | |/ / /    
+| |/| | |     
+| * | | | f74eeac5 fix lesson update
+| * | | | 0607dabf connect Lesson API and Roadmap API and improve userProgress API
+* | | | |   c70280e5 Merge pull request #24 from mthupham/Backend_Klinh4
+|\ \ \ \ \  
+| |_|_|/ /  
+|/| | | |   
+* | | | | 2c1782a2 feat: enhance AI Usage Report template with additional fields for detailed input
+* | | | | 80ef0fc7 feat: add templates for AI Usage Report and Weekly Reports
+* | | | | 6c99a55e Remove unused image files and template documents from the project repository
+| |_|_|/  
+|/| | |   
+| | | * 08dcb1a3 Implement forgot password with Gmail OTP
+| | |/  
+| |/|   
+| * | 5b4d1eee Update profile avatar initial
+| |/  
+| | * d8fe0df2 sync the level shows in roadmap and dashboard
+| |/  
+| *   b1d6450a Merge pull request #23 from mthupham/main
+| |\  
+| |/  
+|/|   
+* | 2e4eae65 docs: publish updated specs and images to main
+* | 1d98fb2e Merge pull request #22 from mthupham/Backend_lkhang
+|\| 
+| * 1396695b sync dashboard page with placement test
+| * f5ea3b61 fix the submit function in placement test
+| * 383f9c0e connect placement test and on boarding API
+* | 41a13478 Merge pull request #21 from mthupham/Backend_lkhang
+|\| 
+| * ed106051 adding pictures to md files
+| *   accfdd86 Merge pull request #20 from mthupham/main
+| |\  
+| * | 65de0213 change directory of dashboard icon
+* | | 8ae768c3 fix: publish updated specs and images to main
+* | | a148355d docs: publish Module 1 specs and images to main
+| |/  
+|/|   
+| | * 868620b5 docs: add new images and update use case specs
+| | * c23fc6c2 fix: update relative paths for images in spec files
+| | * 4c0b318e docs: upload correct images for Module 1
+| | *   e5e80a86 fix: remove incorrect images in Module 1
+| | |\  
+| |_|/  
+|/| |   
+* | | 1d3778d8 fix: delete incorrect UI folder on main
+* | |   42556443 Merge pull request #19 from mthupham/PA3/D/Module_4
+|\ \ \  
+| * | | 1cdda94f docs: add use case specifications and supporting UI screenshots for Module 4
+* | | |   893365f2 Merge pull request #18 from mthupham/Backend_lkhang
+|\ \ \ \  
+| | |/ /  
+| |/| |   
+| * | | 4af62544 update picture with prototype
+| * | | 98df3731 update spec1
+| * | |   2ab1c066 Merge pull request #17 from mthupham/main
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   b4c8eebc docs: add Module 1 specs and UI images
+|\ \ \ \  
+| * | | | 57f4b176 Rename use case
+| * | | | 0a5d86fb Added D. of Module 5
+| * | | | 4c97fbef Merge pull request #16 from mthupham/Backend_lkhang
+| |\| | | 
+| | * | | 4ff66f3b summit PA3 module2
+* | | | | 54b4409e docs: add Module 1 use cases
+| | | | *   60babf6f fix: delete incorrect UI folder
+| | | | |\  
+| | | | | * 4da12b19 change model files position
+| | | | * |   c67f5092 docs: add Module 1 use cases and fix config conflict
+| | | | |\ \  
+| | |_|_|/ /  
+| |/| | | /   
+| | | | |/    
+| * | | | d41546c2 Merge pull request #15 from mthupham/Backend_lkhang
+| |\| | | 
+| | * | |   ca9b1dbc Merge pull request #14 from mthupham/main
+| | |\ \ \  
+| | |/ / /  
+| |/| | |   
+| * | | |   abdb71da Merge pull request #13 from mthupham/PA3/D/Module_4
+| |\ \ \ \  
+| | | |/ /  
+| | |/| |   
+| | * | | da0d7ffd docs: add use-case specifications for Module 4 features (UC1-UC10)
+| |/ / /  
+| * | | b3856064 add use-case specification template
+| * | | c98f65ef add submission folder for store PAs
+|/ / /  
+| * | 49d5f164 update forgot password function and adding specs
+| * | eff4ece7 connect API for user profile (edit profile, connect button, sync user name, changes,...)
+| | * 498904c6 fix errors
+| | *   b4354273 refactor: rewrite placement test api and add new features
+| | |\  
+| |_|/  
+|/| |   
+| | * f2055597 luu tam code BE
+| | | * 10ea9de7 Minor change to text's size
+| | | * df97e624 feat: Add zoom effect to body in base layer (Thêm hiệu ứng zoom để giảm size toàn bộ UI lại)
+| | | * 8d9751b5 feat: Implement onboarding flow with goal setting and placement test
+| |_|/  
+|/| |   
+* | | b1f0dde6 Merge pull request #12 from mthupham/Backend_lkhang
+|\| | 
+| * |   c0d70695 Merge pull request #7 from mthupham/main
+| |\ \  
+| |/ /  
+|/| |   
+* | | 4aae8e6b hotfix: FE-App.tsx & MainLayout.jsx
+* | |   7c742328 Merge pull request #11 from mthupham/PM/BA/UIUX-mthu
+|\ \ \  
+| * \ \   d4aff3cc Merge branch 'main' into PM/BA/UIUX-mthu
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   70abfb3b Merge pull request #10 from mthupham/FE/feat/learning_lesson
+|\ \ \ \  
+| * | | | f5dcde07 Added Practice Lessons
+| * | | | 5cfa618a hotfix: Chỉnh placement của icon ổ khóa
+| * | | | ef479bc2 feat: add LessonPage and LessonCard components, update MainLayout with navigation icons
+|/ / / /  
+| * | | 7d382967 feat: Enhance MainLayout with dynamic SVG icons and improved sidebar navigation
+| * | | 0a73779e Add landing page and user profile components with SVG icons
+|/ / /  
+* | |   7d93e86b Merge pull request #8 from mthupham/PM/BA/UIUX-mthu
+|\ \ \  
+| * | | b88adb20 feat: Enhance implementation templates with detailed checklists and structured tasks
+| * | |   54b80a31 Merge remote-tracking branch 'origin' into PM/BA/UIUX-mthu
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   f3d2d654 Merge branch 'Backend_lkhang' into main
+|\ \ \ \  
+| | |/ /  
+| |/| |   
+| * | | 7eae8520 progress API
+| * | | 5b8c6281 add database
+| * | | 56856aff nối API register/login
+| * | | c9668292 add missing files
+| * | | 0cf1123f update Backend
+* | | | 753c9f21 feat: Add speckit workflow and templates for feature development
+* | | | 04363f54 chore: update dependencies for Tailwind CSS integration
+* | | |   1e288535 Merge pull request #6 from mthupham/FE/roadmap,onboarding
+|\ \ \ \  
+| * \ \ \   4f868629 Merge remote-tracking branch 'origin/Backend_klinh' into FE/roadmap,onboarding
+| |\ \ \ \  
+| | | |_|/  
+| | |/| |   
+| | * | | 08b43112 feat: thêm module placement-test
+* | | | |   6e1fdab7 Merge pull request #4 from mthupham/Backend_lkhang
+|\ \ \ \ \  
+| | |_|/ /  
+| |/| | |   
+| * | | |   c893850b Merge branch 'main' into Backend_lkhang
+| |\ \ \ \  
+| |/ / / /  
+|/| | | |   
+* | | | |   5bb06aa6 Merge branch 'main' of https://github.com/mthupham/STUDIFY
+|\ \ \ \ \  
+| * \ \ \ \   957d41d1 Merge pull request #5 from mthupham/FE/roadmap,onboarding
+| |\ \ \ \ \  
+| | | |/ / /  
+| | |/| | |   
+| | * | | | c062837d feat Designed: Roadmap, ProgressBar, Onboarding (semi)
+| |/ / / /  
+* / / / / a850a75c docs: update FE README to reflect project structure and development guidelines
+|/ / / /  
+* | | |   b0d4d9af Merge pull request #3 from mthupham/feat/Frontend/Authentication
+|\ \ \ \  
+| * | | | a5fcdfac feat: add authentication forms for login and registration
+|/ / / /  
+| * | | 3294da18 update login/register after testing
+| * | | 54915850 update
+| * | | 445a266e user_model
+| |/ /  
+| | * 7416ee50 Add placement test data, update question bank lesson IDs, and create required level test questions
+| | * 83d19c30 Adding questionbank (~ 400 questions in multiple choice and short answers input from users)
+| |/  
+|/|   
+* | 035f02e5 delete redundant module
+* | b79123d5 install and connect database
+|/  
+* cda33cfb chore: reorganize feature directories and add .gitkeep files
+* e0bda92f complete file structure
+*   1becd33d Merge pull request #1 from mthupham/FE-init
+|\  
+| * 79515310 chore: initial project structure and core tech stack setup
+|/  
+* 0ffa3d4d set up framework
+* ac1632d4 Initial commit

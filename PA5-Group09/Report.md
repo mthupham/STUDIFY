@@ -52,6 +52,7 @@
     - [\[Phạm Minh Thư\]](#phạm-minh-thư)
     - [\[Nguyễn Khánh Linh\]](#nguyễn-khánh-linh)
 - [D. Final Submission](#d-final-submission)
+  - [PA1 to PA4 documents](#pa1-to-pa4-documents)
   - [Complete Source Code](#complete-source-code)
   - [AI Usage Evidence](#ai-usage-evidence)
   - [Git History](#git-history)
@@ -427,22 +428,23 @@ I contributed to implementing backend features, designing and working with APIs,
 
 **Edited by:** [Minh Thư]
 
-##PA1 to PA4 documents
+## PA1 to PA4 documents
 
-- **PA1:** [/PA1-Group09]
-- **PA2:** [/PA2-Group09]
-- **PA3:** [/PA3-Group09]
-- **PA4:** [/PA4-Group09]
+- **PA1:** See in folder /PA1-Group09
+- **PA2:** See in folder /PA2-Group09
+- **PA3:** See in folder /PA3-Group09
+- **PA4:** See in folder /PA4-Group09
 
 ## Complete Source Code
-**See in Folder:** [/SourceCode]
+**See in Folder:** /SourceCode
 
 **Folder Structure:** [Click here to view document](./SourceCode/FolderStructure.txt)
 
 ##  AI Usage Evidence
+1. [Click here to view document](./PA2-Group09/D.%20AI%20Usage%20Report/AI_UsageReport.pdf)
+2. [Click here to view document](./PA3-Group09/AI_UsageReport_PA3.pdf)
+3. [Click here to view document](./PA4-Group09/AIUsageReport/AI_UsageReport_PA4.pdf)
 
--  AO
-c 
 ## Git History
 
-[Attach or reference e
+**Git log:** [Click here to view document](./gitlog.txt)

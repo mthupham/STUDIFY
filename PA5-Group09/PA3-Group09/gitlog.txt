@@ -1,0 +1,171 @@
+*   1d98fb2 (HEAD -> main, origin/main, origin/HEAD) Merge pull request #22 from mthupham/Backend_lkhang
+|\  
+| * 1396695 (origin/Backend_lkhang) sync dashboard page with placement test
+| * f5ea3b6 fix the submit function in placement test
+| * 383f9c0 (origin/Backend_Klinh2) connect placement test and on boarding API
+* | 41a1347 Merge pull request #21 from mthupham/Backend_lkhang
+|\| 
+| * ed10605 adding pictures to md files
+| *   accfdd8 Merge pull request #20 from mthupham/main
+| |\  
+| * | 65de021 change directory of dashboard icon
+* | | 8ae768c fix: publish updated specs and images to main
+* | | a148355 docs: publish Module 1 specs and images to main
+| |/  
+|/|   
+| | * c23fc6c (origin/Backend_klinh) fix: update relative paths for images in spec files
+| | * 4c0b318 docs: upload correct images for Module 1
+| | *   e5e80a8 fix: remove incorrect images in Module 1
+| | |\  
+| |_|/  
+|/| |   
+* | | 1d3778d fix: delete incorrect UI folder on main
+* | |   4255644 Merge pull request #19 from mthupham/PA3/D/Module_4
+|\ \ \  
+| * | | 1cdda94 (origin/PA3/D/Module_4) docs: add use case specifications and supporting UI screenshots for Module 4
+* | | |   893365f Merge pull request #18 from mthupham/Backend_lkhang
+|\ \ \ \  
+| | |/ /  
+| |/| |   
+| * | | 4af6254 update picture with prototype
+| * | | 98df373 update spec1
+| * | |   2ab1c06 Merge pull request #17 from mthupham/main
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   b4c8eeb docs: add Module 1 specs and UI images
+|\ \ \ \  
+| * | | | 57f4b17 Rename use case
+| * | | | 0a5d86f Added D. of Module 5
+| * | | | 4c97fbe Merge pull request #16 from mthupham/Backend_lkhang
+| |\| | | 
+| | * | | 4ff66f3 summit PA3 module2
+* | | | | 54b4409 docs: add Module 1 use cases
+| | | | *   60babf6 fix: delete incorrect UI folder
+| | | | |\  
+| | | | | * 4da12b1 change model files position
+| | | | * |   c67f509 docs: add Module 1 use cases and fix config conflict
+| | | | |\ \  
+| | |_|_|/ /  
+| |/| | | /   
+| | | | |/    
+| * | | | d41546c Merge pull request #15 from mthupham/Backend_lkhang
+| |\| | | 
+| | * | |   ca9b1db Merge pull request #14 from mthupham/main
+| | |\ \ \  
+| | |/ / /  
+| |/| | |   
+| * | | |   abdb71d Merge pull request #13 from mthupham/PA3/D/Module_4
+| |\ \ \ \  
+| | | |/ /  
+| | |/| |   
+| | * | | da0d7ff docs: add use-case specifications for Module 4 features (UC1-UC10)
+| |/ / /  
+| * | | b385606 add use-case specification template
+| * | | c98f65e add submission folder for store PAs
+|/ / /  
+| * | 49d5f16 update forgot password function and adding specs
+| * | eff4ece (origin/Backend_gphuc) connect API for user profile (edit profile, connect button, sync user name, changes,...)
+| | * 498904c fix errors
+| | *   b435427 refactor: rewrite placement test api and add new features
+| | |\  
+| |_|/  
+|/| |   
+| | * f205559 luu tam code BE
+| | | * 10ea9de (origin/placement-test) Minor change to text's size
+| | | * df97e62 feat: Add zoom effect to body in base layer (Thêm hiệu ứng zoom để giảm size toàn bộ UI lại)
+| | | * 8d9751b feat: Implement onboarding flow with goal setting and placement test
+| |_|/  
+|/| |   
+* | | b1f0dde Merge pull request #12 from mthupham/Backend_lkhang
+|\| | 
+| * |   c0d7069 Merge pull request #7 from mthupham/main
+| |\ \  
+| |/ /  
+|/| |   
+* | | 4aae8e6 hotfix: FE-App.tsx & MainLayout.jsx
+* | |   7c74232 Merge pull request #11 from mthupham/PM/BA/UIUX-mthu
+|\ \ \  
+| * \ \   d4aff3c (origin/PM/BA/UIUX-mthu) Merge branch 'main' into PM/BA/UIUX-mthu
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   70abfb3 Merge pull request #10 from mthupham/FE/feat/learning_lesson
+|\ \ \ \  
+| * | | | f5dcde0 (origin/FE/feat/learning_lesson) Added Practice Lessons
+| * | | | 5cfa618 hotfix: Chỉnh placement của icon ổ khóa
+| * | | | ef479bc feat: add LessonPage and LessonCard components, update MainLayout with navigation icons
+|/ / / /  
+| * | | 7d38296 feat: Enhance MainLayout with dynamic SVG icons and improved sidebar navigation
+| * | | 0a73779 Add landing page and user profile components with SVG icons
+|/ / /  
+* | |   7d93e86 Merge pull request #8 from mthupham/PM/BA/UIUX-mthu
+|\ \ \  
+| * | | b88adb2 feat: Enhance implementation templates with detailed checklists and structured tasks
+| * | |   54b80a3 Merge remote-tracking branch 'origin' into PM/BA/UIUX-mthu
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   f3d2d65 Merge branch 'Backend_lkhang' into main
+|\ \ \ \  
+| | |/ /  
+| |/| |   
+| * | | 7eae852 progress API
+| * | | 5b8c628 add database
+| * | | 56856af nối API register/login
+| * | | c966829 add missing files
+| * | | 0cf1123 update Backend
+* | | | 753c9f2 feat: Add speckit workflow and templates for feature development
+| | * | 7416ee5 Add placement test data, update question bank lesson IDs, and create required level test questions
+| | * | 83d19c3 Adding questionbank (~ 400 questions in multiple choice and short answers input from users)
+| | | | * 05a70f9 (origin/hotfix/FE/UI-connecting) feat: complete login and signup flow with tailwind v4
+| |_|_|/  
+|/| | |   
+* | | | 04363f5 chore: update dependencies for Tailwind CSS integration
+* | | |   1e28853 Merge pull request #6 from mthupham/FE/roadmap,onboarding
+|\ \ \ \  
+* \ \ \ \   6e1fdab Merge pull request #4 from mthupham/Backend_lkhang
+|\ \ \ \ \  
+| | |/ / /  
+| |/| | |   
+| * | | |   c893850 Merge branch 'main' into Backend_lkhang
+| |\ \ \ \  
+| |/ / / /  
+|/| | | |   
+* | | | |   5bb06aa Merge branch 'main' of https://github.com/mthupham/STUDIFY
+|\ \ \ \ \  
+| * \ \ \ \   957d41d Merge pull request #5 from mthupham/FE/roadmap,onboarding
+| |\ \ \ \ \  
+* | | | | | | a850a75 docs: update FE README to reflect project structure and development guidelines
+|/ / / / / /  
+| | * | | | 3294da1 update login/register after testing
+| | * | | | 5491585 update
+| | * | | | 445a266 user_model
+| | | | | | * 9b96d6e (origin/FE/roadmap,onboarding) temporary commit
+| | | | |_|/  
+| | | |/| |   
+| | | * | | 4f86862 Merge remote-tracking branch 'origin/Backend_klinh' into FE/roadmap,onboarding
+| | |/| | | 
+| |/| | |/  
+| | | |/|   
+| | | * | 08b4311 feat: thêm module placement-test
+| | |/ /  
+| * / / c062837 feat Designed: Roadmap, ProgressBar, Onboarding (semi)
+|/ / /  
+* | |   b0d4d9a Merge pull request #3 from mthupham/feat/Frontend/Authentication
+|\ \ \  
+| |_|/  
+|/| |   
+| * | a5fcdfa (origin/feat/Frontend/Authentication) feat: add authentication forms for login and registration
+|/ /  
+* | 035f02e delete redundant module
+* | b79123d install and connect database
+|/  
+* cda33cf (origin/Backend) chore: reorganize feature directories and add .gitkeep files
+* e0bda92 complete file structure
+*   1becd33 Merge pull request #1 from mthupham/FE-init
+|\  
+| * 7951531 (origin/FE-init) chore: initial project structure and core tech stack setup
+|/  
+* 0ffa3d4 set up framework
+* ac1632d Initial commit

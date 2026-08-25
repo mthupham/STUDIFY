@@ -25,7 +25,7 @@
 - [Appendix: Gitlog](#appendix-gitlog)
 
 # A: Revised Project Plan (2nd Submission)
-[Click here to view the Changes.pdf](./changes.pdf)
+[Click here to view the Changes.pdf](./changes.md)
 
 [Project Plan](./A.ProjectPlanChanges/projectplan.pdf)
 
@@ -214,26 +214,46 @@ flowchart LR
     Member --> UC7
 
     %% Include / Extend Relationships
-    UC1 -.->|"<<include>>"| UC1a
-    UC3 -.->|"<<include>>"| UC3a
-    UC4 -.->|"<<include>>"| UC4a
+    UC1 -.->|&lt;&lt;include&gt;&gt;| UC1a
+    UC3 -.->|&lt;&lt;include&gt;&gt;| UC3a
+    UC4 -.->|&lt;&lt;include&gt;&gt;| UC4a
+
 ```
 ### 4. Study Utilities Use-Case Model
 ``` mermaid
 flowchart LR
     User((User))
 
-    subgraph System["Module 4: Study Utilities"]
+    subgraph System["Module 4: Other Utilities"]
         direction TB
         
-        UC1(["M4-UC1: Use Pomodoro Timer"])
-        UC2(["M4-UC2: Create Flashcard"])
-        UC3(["M4-UC3: Study Flashcards"])
+        UC1(["Use Pomodoro Timer"])
+        
+        UC2(["Create Flashcard"])
+        UC2_1(["Enter Flashcard Manually"])
+        UC2_2(["Create Flashcard from Highlighted Text"])
+        UC2_3(["Write Explanation"])
+        UC2_4(["Add Tags"])
+
+        UC3(["Study Flashcards"])
+        UC3_1(["Filter Flashcards by Tag"])
+        UC3_2(["Flip Card to View Explanation"])
+        UC3_3(["Mark Study Status"])
     end
 
     User --- UC1
     User --- UC2
     User --- UC3
+
+    UC2_1 --> UC2
+    UC2_2 --> UC2
+
+    UC2 -.->|include| UC2_3
+    UC2_4 -.->|extend| UC2
+
+    UC3_1 -.->|extend| UC3
+    UC3 -.->|include| UC3_2
+    UC3 -.->|include| UC3_3
 ```
 
 ### 5. AI Speaking Assistant Use-Case Model
@@ -245,26 +265,26 @@ flowchart LR
 
     %% System Boundary
     subgraph AI_Speaking_Assistant ["AI Speaking Assistant"]
-        UC5(("UC5: Practice Speaking with AI"))
-        UC51(("UC5.1: Speech Recognition"))
-        UC52(("UC5.2: Generate AI Reply"))
-        UC53(("UC5.3: Evaluate Performance"))
-        UC54(("UC5.4: Provide Improvement Guidance"))
+        UC51(("UC5.1: Speech recognition"))
+        UC52(("UC5.2: Generate appropriate reply"))
+        UC53(("UC5.3: Evaluate performance on specific criteria"))
+        UC54(("UC5.4: Provide guidance on how to improve"))
     end
 
-    %% Primary Actor Interactions
-    Learner --> UC5
+    %% Primary Interactions
+    Learner --> UC51
+    Learner --> UC52
 
-    %% Include Relationships 
-    UC5 -. "<<include>>" .-> UC51
-    UC5 -. "<<include>>" .-> UC52
-    UC5 -. "<<include>>" .-> UC53
-
-    %% Extend Relationship 
-    UC54 -. "<<extend>>" .-> UC53
+    %% Relationships
+    UC52 -.->|&lt;&lt;include&gt;&gt;| UC51
+    UC53 -.->|&lt;&lt;include&gt;&gt;| UC51
+    UC54 -.->|&lt;&lt;extend&gt;&gt;| UC53
 
     %% Secondary Actor Interactions
-    UC5 --> AI
+    UC51 --> AI
+    UC52 --> AI
+    UC53 --> AI
+    UC54 --> AI
 ```
 
 # D. Use-Case Specification
