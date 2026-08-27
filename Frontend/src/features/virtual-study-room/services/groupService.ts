@@ -10,6 +10,7 @@ export interface GroupMemberUser {
   name: string;
   email: string;
   avatar: string | null;
+  level?: string;
 }
 
 export interface GroupMember {

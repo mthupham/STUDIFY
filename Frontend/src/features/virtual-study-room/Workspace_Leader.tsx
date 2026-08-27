@@ -455,7 +455,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
           m.user?.name ?? "U",
         )}&background=random`,
       email: m.user?.email ?? "",
-      level: "INTERMEDIATE" as const,
+      level: (m.user?.level || "INTERMEDIATE") as "FLUENT" | "ADVANCED" | "INTERMEDIATE",
       lessons: 0,
       streak: 0,
       score: 0,
@@ -505,7 +505,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
                   member.name,
                 )}&background=random`,
-              level: "INTERMEDIATE",
+              level: (member.level || "INTERMEDIATE") as "FLUENT" | "ADVANCED" | "INTERMEDIATE",
               email: member.email,
               lessons: 0,
               streak: 0,

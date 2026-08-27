@@ -158,6 +158,7 @@ export class GroupService {
         name: m.user?.name ?? `User #${m.userId}`,
         email: m.user?.email ?? '',
         avatar: m.user?.avatar ?? null,
+        level: m.user?.currentLevel ?? 'INTERMEDIATE',
         role: m.role,
         joinedAt: m.joinedAt,
       })),
@@ -281,6 +282,7 @@ export class GroupService {
           name: m.user?.name ?? `User #${m.userId}`,
           email: m.user?.email ?? '',
           avatar: m.user?.avatar ?? null,
+          level: m.user?.currentLevel ?? 'INTERMEDIATE',
           role: m.role,
           joinedAt: m.joinedAt,
         })),
@@ -327,6 +329,7 @@ export class GroupService {
                   name: m.user.name,
                   email: m.user.email,
                   avatar: m.user.avatar ?? null,
+                  level: m.user.currentLevel ?? 'INTERMEDIATE',
                 }
               : null,
           })),

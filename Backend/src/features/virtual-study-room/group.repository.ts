@@ -111,7 +111,7 @@ export class GroupRepository {
       include: [
         {
           model: User,
-          attributes: ['id', 'name', 'email', 'avatar'],
+          attributes: ['id', 'name', 'email', 'avatar', 'currentLevel'],
         },
       ],
       order: [['joinedAt', 'ASC']],
@@ -143,7 +143,7 @@ export class GroupRepository {
           include: [
             {
               model: User,
-              attributes: ['id', 'name', 'email', 'avatar'],
+              attributes: ['id', 'name', 'email', 'avatar', 'currentLevel'],
             },
           ],
         },
@@ -168,7 +168,7 @@ export class GroupRepository {
           include: [
             {
               model: User,
-              attributes: ['id', 'name', 'email', 'avatar'],
+              attributes: ['id', 'name', 'email', 'avatar', 'currentLevel'],
             },
           ],
         },

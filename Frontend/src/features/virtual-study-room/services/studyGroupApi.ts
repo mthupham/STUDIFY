@@ -42,6 +42,7 @@ export interface GroupMemberDto {
   name: string;
   email: string;
   avatar: string | null;
+  level?: string;
   role: GroupRole;
   joinedAt: string;
 }
