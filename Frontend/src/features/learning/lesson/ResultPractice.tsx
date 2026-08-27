@@ -20,10 +20,15 @@ const ReadingResultView: React.FC<{ items: QuestionResultItem[] }> = ({ items })
   const [filter, setFilter] = useState<"all" | "correct" | "incorrect">("all");
 
   const stats = useMemo(() => {
-    const correct = items.filter((q) => q.status === "correct").length;
-    const incorrect = items.filter((q) => q.status === "incorrect").length;
-    const accuracy = items.length > 0 ? Math.round((correct / items.length) * 100) : 0;
-    return { total: items.length, correct, incorrect, accuracy };
+    const gradedItems = items.filter(
+      (q) => q.status === "correct" || q.status === "incorrect",
+    );
+    const correct = gradedItems.filter((q) => q.status === "correct").length;
+    const incorrect = gradedItems.filter((q) => q.status === "incorrect").length;
+    const accuracy = gradedItems.length > 0
+      ? Math.round((correct / gradedItems.length) * 100)
+      : 0;
+    return { total: gradedItems.length, correct, incorrect, accuracy };
   }, [items]);
 
   const filtered = useMemo(() => {
@@ -158,6 +163,10 @@ const WritingResultView: React.FC<{ items: QuestionResultItem[] }> = ({ items })
           <p className="mt-1 text-sm text-slate-500">
             Compare your answers with the sample responses below. There is no automatic grading for writing — assess your own understanding.
           </p>
+          <div className="mt-5 inline-flex flex-col items-center rounded-2xl border border-amber-200 bg-amber-50 px-5 py-3">
+            <span className="text-2xl font-black text-amber-700">{items.length}</span>
+            <span className="text-xs font-semibold text-amber-800">All Questions</span>
+          </div>
         </div>
         <div className="mt-6 flex items-center gap-3 rounded-2xl bg-amber-50/60 border border-amber-200 px-5 py-4">
           <svg className="h-5 w-5 shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -211,7 +220,8 @@ export const ResultPractice: React.FC = () => {
   const navigate = useNavigate();
 
   const result = location.state?.result;
-  const skill: "reading" | "writing" = location.state?.skill ?? "reading";
+  const skill: "reading" | "writing" =
+    result?.skill ?? location.state?.skill ?? "reading";
 
   const practiceResults: QuestionResultItem[] = useMemo(() => {
     if (!result?.testDetails) return [];
@@ -226,6 +236,16 @@ export const ResultPractice: React.FC = () => {
       status: item.status as ResultStatus,
     }));
   }, [result]);
+
+  const readingResults = useMemo(
+    () => practiceResults.filter((item) => item.type === "multiple-choice"),
+    [practiceResults],
+  );
+
+  const writingResults = useMemo(
+    () => practiceResults.filter((item) => item.type === "written"),
+    [practiceResults],
+  );
 
   if (!result) {
     return (
@@ -257,9 +277,9 @@ export const ResultPractice: React.FC = () => {
         </div>
 
         {skill === "reading" ? (
-          <ReadingResultView items={practiceResults} />
+          <ReadingResultView items={readingResults} />
         ) : (
-          <WritingResultView items={practiceResults} />
+          <WritingResultView items={writingResults} />
         )}
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center pt-4">

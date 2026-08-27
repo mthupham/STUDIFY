@@ -67,6 +67,7 @@ async submitPractice(
 ) {
   return this.lessonService.submitPractice(
     lessonId,
+    dto.skill,
     dto.answers,
     req.user.id,
   );
