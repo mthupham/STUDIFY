@@ -245,7 +245,12 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
             {messages.map((msg) => (
               <div key={msg.id} className="flex items-start gap-3.5 group">
                 <img
-                  src={msg.sender?.avatar || "https://via.placeholder.com/40"}
+                  src={
+                    msg.sender?.avatar ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      msg.sender?.name || "U",
+                    )}&background=random`
+                  }
                   alt={msg.sender?.name || "Member avatar"}
                   className="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-100 shadow-sm"
                 />
