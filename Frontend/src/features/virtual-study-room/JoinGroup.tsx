@@ -14,10 +14,13 @@ export default function JoinGroupPage() {
 
   // Hàm xử lý chỉ cho phép nhập tối đa 6 ký tự số và tự động định dạng
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  // Loại bỏ ký tự đặc biệt, chỉ giữ lại chữ cái, số và dấu gạch ngang (-), đồng thời viết hoa
-  const cleanCode = e.target.value.replace(/[^a-zA-Z0-9-]/g, "").toUpperCase();
-  setAccessCode(cleanCode);
-};
+    const cleanCode = e.target.value
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .toUpperCase()
+      .slice(0, 6);
+
+    setAccessCode(cleanCode);
+  };
 
   // Định dạng hiển thị mã dạng "XXX-XXX"
   const formattedCode =
@@ -31,81 +34,75 @@ export default function JoinGroupPage() {
   >("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (accessCode.length !== 6) {
-    setMessage("Please enter all 6 digits.");
-    setMessageType("error");
-    return;
-  }
-
-  if (!token) {
-    setMessage("Your session has expired. Please log in again.");
-    setMessageType("error");
-    return;
-  }
-
-  try {
-    setMessage("");
-    setMessageType("");
-
-    const response = await axios.post(
-      `${apiBaseUrl}/groups/join`,
-      {
-        code: accessCode,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-
-    setMessage(
-      response.data?.message ||
-        "Successfully joined the study group!",
-    );
-    setMessageType("success");
-
-    const joinedGroup = response.data?.data?.group;
-
-    setTimeout(() => {
-      navigate(
-        joinedGroup?.id
-          ? `/study-groups/${joinedGroup.id}/workspace-member`
-          : "/study-groups",
-      );
-    }, 1000);
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const backendMessage = error.response?.data?.message;
-
-      if (status === 404) {
-        setMessage("Invalid group access code.");
-      } else if (status === 409) {
-        setMessage(
-          "You are already a member of this study group.",
-        );
-      } else if (status === 401) {
-        setMessage(
-          "Your session has expired. Please log in again.",
-        );
-      } else if (Array.isArray(backendMessage)) {
-        setMessage(backendMessage.join(", "));
-      } else {
-        setMessage(
-          backendMessage ||
-            "Something went wrong. Please try again.",
-        );
-      }
-    } else {
-      setMessage("Something went wrong. Please try again.");
+    if (accessCode.length !== 6) {
+      setMessage("Please enter all 6 digits.");
+      setMessageType("error");
+      return;
     }
 
-    setMessageType("error");
-  }
-};
+    if (!token) {
+      setMessage("Your session has expired. Please log in again.");
+      setMessageType("error");
+      return;
+    }
+
+    try {
+      setMessage("");
+      setMessageType("");
+
+      const response = await axios.post(
+        `${apiBaseUrl}/groups/join`,
+        {
+          code: accessCode,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setMessage(
+        response.data?.message || "Successfully joined the study group!",
+      );
+      setMessageType("success");
+
+      const joinedGroup = response.data?.data?.group;
+
+      setTimeout(() => {
+        navigate(
+          joinedGroup?.id
+            ? `/study-groups/${joinedGroup.id}/workspace-member`
+            : "/study-groups",
+        );
+      }, 1000);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        const backendMessage = error.response?.data?.message;
+
+        if (status === 404) {
+          setMessage("Invalid group access code.");
+        } else if (status === 409) {
+          setMessage("You are already a member of this study group.");
+        } else if (status === 401) {
+          setMessage("Your session has expired. Please log in again.");
+        } else if (Array.isArray(backendMessage)) {
+          setMessage(backendMessage.join(", "));
+        } else {
+          setMessage(
+            backendMessage || "Something went wrong. Please try again.",
+          );
+        }
+      } else {
+        setMessage("Something went wrong. Please try again.");
+      }
+
+      setMessageType("error");
+    }
+  };
 
   const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
   const { token } = useAuthStore();
