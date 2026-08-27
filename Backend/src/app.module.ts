@@ -49,7 +49,7 @@ import { SpeakingModule } from './features/ai-speaking/speaking/speaking.module'
     FlashcardModule,
     NotificationModule,
     FileUploadModule,
-    //SpeakingModule,
+    SpeakingModule,
   ],
 })
 export class AppModule {}
