@@ -1,10 +1,14 @@
 import React, { useState, useRef } from "react";
-import { uploadFiles } from "../services/fileService";
+import { uploadFiles, type UploadResponse } from "../services/fileService";
 
 interface FileUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpload: (files: File[], type: "image" | "file" | "folder") => void;
+  onUpload: (
+    files: File[],
+    type: "image" | "file" | "folder",
+    uploadedFiles: UploadResponse["files"],
+  ) => void;
   groupId?: string;
 }
 
@@ -74,7 +78,7 @@ export const FileUploadModal: React.FC<FileUploadModalProps> = ({
       });
 
       if (response.success) {
-        onUpload(files, type);
+        onUpload(files, type, response.files);
         setUploading(false);
         setUploadProgress(0);
         onClose();
