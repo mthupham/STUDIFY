@@ -124,10 +124,6 @@ export class PlacementTestService implements OnModuleInit {
       );
     }
 
-
-    // Đánh dấu hoàn thành onboarding
-    await this.userService.markOnboardingComplete(userId);
-
     // BỔ SUNG: Tính toán tỷ lệ phần trăm và đưa ra lời phê động y chang trong hình thiết kế
     const percentage = parseFloat(((totalCorrect / questions.length) * 100).toFixed(2));
     let feedbackTitle = 'KEEP TRYING!';
@@ -153,8 +149,7 @@ export class PlacementTestService implements OnModuleInit {
       answersDetail: questionDetails,
     } as any);
 
-    await this.userService.markOnboardingComplete(userId);
-    await this.userService.setCurrentLevel(userId, assignedLevel);
+    await this.userService.chooseLevelManually(userId, assignedLevel);
 
     return {
       status: 'success',
@@ -181,17 +176,8 @@ export class PlacementTestService implements OnModuleInit {
    * Đọc nội dung lesson từ file lesson.json (không dùng bảng DB).
    */
   async getMyRoadmap(userId: number) {
-    // 1. Tìm kết quả level từ User trước, fallback kết quả placement test mới nhất của user
-    const user = await this.userService.getUserById(userId);
-    let userLevel = user?.currentLevel;
-
-    if (!userLevel) {
-      const latestResult = await this.resultModel.findOne({
-        where: { userId },
-        order: [['createdAt', 'DESC']],
-      });
-      userLevel = latestResult?.levelAssigned || 'A1';
-    }
+    const currentLevel = await this.userService.getCurrentLevel(userId);
+    const userLevel = currentLevel || 'A1';
 
     // 2. Tìm dữ liệu level tương ứng trong lesson.json
     const levelGroupData = this.lessonData.find(

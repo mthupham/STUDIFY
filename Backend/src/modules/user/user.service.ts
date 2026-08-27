@@ -18,8 +18,37 @@ export class UserService {
     const user = await this.findByEmail(email);
     if (!user) throw new BadRequestException('User not found.');
 
+    if (user.lockUntil && new Date() < user.lockUntil) {
+      const secondsLeft = Math.ceil((user.lockUntil.getTime() - Date.now()) / 1000);
+      throw new UnauthorizedException(
+        `Account temporarily locked due to too many failed attempts. Try again in ${secondsLeft} seconds.`,
+      );
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) throw new UnauthorizedException('Invalid password.');
+
+    if (!isMatch) {
+      const attempts = user.failedLoginAttempts + 1;
+
+      if (attempts >= 5) {
+        await user.update({
+          failedLoginAttempts: 0,
+          lockUntil: new Date(Date.now() + 60 * 1000),
+        });
+        throw new UnauthorizedException(
+          'Too many failed login attempts. Account locked for 1 minute.',
+        );
+      }
+
+      await user.update({ failedLoginAttempts: attempts });
+      throw new UnauthorizedException(
+        `Invalid password. ${5 - attempts} attempt(s) remaining before lockout.`,
+      );
+    }
+
+    if (user.failedLoginAttempts > 0 || user.lockUntil) {
+      await user.update({ failedLoginAttempts: 0, lockUntil: null });
+    }
 
     return user;
   }
@@ -122,6 +151,17 @@ export class UserService {
       password: '',  
       provider: 'google',
     } as any);
+    return user;
+  }
+
+  async chooseLevelManually(userId: number, level: string) {
+    const user = await this.userModel.findByPk(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    await user.update({
+      currentLevel: level,
+      hasCompletedOnboarding: true,
+    });
     return user;
   }
 }

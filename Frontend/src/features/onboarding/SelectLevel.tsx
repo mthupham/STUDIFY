@@ -62,11 +62,9 @@ export default function SelectLevel() {
   const handleChoose = async (level: string) => {
     if (!user) return navigate("/onboarding", { replace: true });
 
-    console.log("SelectLevel: user clicked", level, { user, token });
-
-    // If there's no token, still update local session so user flow continues.
+    // Nếu không có token, vẫn cập nhật local session để luồng tiếp tục (trường hợp hiếm, token bị mất)
     if (!token) {
-      const updatedUser = { ...user, assignedLevel: level, hasCompletedOnboarding: true };
+      const updatedUser = { ...user, currentLevel: level, hasCompletedOnboarding: true };
       setAuthSession(updatedUser, "");
       navigate("/dashboard", { replace: true });
       return;
@@ -76,15 +74,14 @@ export default function SelectLevel() {
     setError(null);
     try {
       const { data } = await axios.patch(
-        `${API_BASE}/user/profile`,
-        { assignedLevel: level, hasCompletedOnboarding: true },
+        `${API_BASE}/user/select-level`,
+        { level },
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
-      const updatedUser = data?.data || { ...user, assignedLevel: level, hasCompletedOnboarding: true };
-      setAuthSession(updatedUser, token ?? "");
+      const updatedUser = data?.data || { ...user, currentLevel: level, hasCompletedOnboarding: true };
+      setAuthSession(updatedUser, token);
 
-      // Navigate to dashboard after selecting level
       navigate("/dashboard", { replace: true });
     } catch (err) {
       const msg = axios.isAxiosError(err) ? err.response?.data?.message : null;

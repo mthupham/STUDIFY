@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { PlacementTestResult } from '../../../models/placement_test_result.model';
 import { UserProgress } from '../../../models/user_progress.model';
 import { UserService } from '../../../modules/user/user.service';
+import { UserService } from '../../../modules/user/user.service';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -24,7 +25,7 @@ export class RoadmapService {
     private resultModel: typeof PlacementTestResult,
     @InjectModel(UserProgress)
     private progressModel: typeof UserProgress,
-    private userService: UserService,
+    private readonly userService: UserService,
   ) {
     const filePath = path.join(process.cwd(), 'database', 'data', 'lesson.json');
     if (fs.existsSync(filePath)) {
@@ -81,20 +82,13 @@ export class RoadmapService {
 }
 
   async getRoadmapForUser(userId: number) {
-    // 1. Lấy level của user từ bảng User trước, nếu không có hoặc là mặc định thì xem placement test
-    const user = await this.userService.getUserById(userId);
-    let rawLevel = user?.currentLevel;
+    // 1. Lấy level hiện tại trực tiếp từ bảng User (Single Source of Truth)
+    const currentLevel = await this.userService.getCurrentLevel(userId);
 
-    if (!rawLevel) {
-      const latestResult = await this.resultModel.findOne({
-        where: { userId },
-        order: [['createdAt', 'DESC']],
-      });
-      rawLevel = latestResult?.levelAssigned || 'BEGINNER';
-    }
-
-    const assignedLevel = LEVEL_MAP[rawLevel] || 'A1';
-    const assignedIndex = LEVELS.indexOf(assignedLevel); 
+    // Fallback nếu user chưa có level thì mặc định là BEGINNER
+    const rawLevel = currentLevel || 'BEGINNER'; 
+    const assignedLevel = LEVEL_MAP[rawLevel.toUpperCase()] || rawLevel; 
+    const assignedIndex = LEVELS.indexOf(assignedLevel) !== -1 ? LEVELS.indexOf(assignedLevel) : 0;
 
     // 2. Lấy toàn bộ tiến độ thật của user, map theo lessonId để tra cứu nhanh
     const progressRecords = await this.progressModel.findAll({

@@ -1,6 +1,9 @@
 import { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import PlacementTest from "./PlacementTest";
+import { useAuthStore } from "../auth/store/useAuthStore";
+import SelectLevel from './SelectLevel';
 
 export default function OnboardingGoalSetting() {
   const navigate = useNavigate();
@@ -10,16 +13,46 @@ export default function OnboardingGoalSetting() {
     null,
   );
   const [showActualTest, setShowActualTest] = useState(false);
+  const token = useAuthStore((s) => s.token);
+  const [showSelectLevel, setShowSelectLevel] = useState(false);
+  const [savingPace, setSavingPace] = useState(false);
+  const [paceError, setPaceError] = useState<string | null>(null);
 
   // Xử lý chọn mục tiêu thời gian ở Bước 1
-  const handleSelectPace = (hours: number | string) => {
+  const handleSelectPace = async (hours: number | string) => {
     setSelectedPace(hours);
-    setStep(2);
+    setPaceError(null);
+
+    const numericHours = typeof hours === "string" ? parseInt(hours, 10) : hours;
+    const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+
+    if (!token || !numericHours) {
+      setStep(2);
+      return;
+    }
+
+    setSavingPace(true);
+    try {
+      await axios.patch(
+        `${API_BASE}/user/onboarding`,
+        { weeklyStudyHours: numericHours },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      setStep(2);
+    } catch (err) {
+      setPaceError("Không thể lưu lựa chọn. Vui lòng thử lại.");
+    } finally {
+      setSavingPace(false);
+    }
   };
 
   // Khởi chạy bài kiểm tra thật sự (Khi nhấn "No, I want to take a placement test")
   const handleStartTest = () => {
     setShowActualTest(true);
+  };
+
+  const handleManualSelect = () => {
+    setShowSelectLevel(true);
   };
 
   // Hoàn thành thủ công hoặc hoàn thành bài test
@@ -29,6 +62,10 @@ export default function OnboardingGoalSetting() {
   };
 
   // Nếu người dùng chọn làm bài kiểm tra thật, nhường toàn bộ giao diện cho component PlacementTest
+  if (showSelectLevel) {
+    return <SelectLevel />;
+  }
+
   if (showActualTest) {
     return (
       <PlacementTest
@@ -231,7 +268,7 @@ export default function OnboardingGoalSetting() {
             <div className="w-full flex flex-col gap-4">
               {/* Option: Yes (Chọn thủ công) */}
               <button
-                onClick={() => handleCompleteOnboarding({ manualSelect: true })}
+                onClick={handleManualSelect}
                 className="w-full p-5 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl flex items-center gap-4 text-left transition-all focus:outline-none focus:ring-2 focus:ring-sky-700 group"
               >
                 {/* Icon Wrapper (Blue theme) */}
