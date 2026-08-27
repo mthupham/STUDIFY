@@ -19,7 +19,12 @@ import { PlacementTestQuestion } from '@/models/placement_test_question.model';
 import { Message } from '@/models/message.model';
 import { StudyGroup } from '../models/study_group.model';
 import { GroupMember } from '../models/group_member.model';
+import { Deck } from '../models/deck.model';
+import { Flashcard } from '../models/flashcard.model';
 import { Notification } from '../models/notification.model';
+import { GroupTask } from '../models/group_task.model';
+import { GroupSchedule } from '../models/group_schedule.model';
+import { RepositoryFile } from '../models/repository_file.model';
 
 export const sequelizeConfig = (
   configService: ConfigService,
@@ -54,9 +59,13 @@ export const sequelizeConfig = (
     Message,
     StudyGroup,
     GroupMember,
-    Notification
+    Deck,
+    Flashcard,
+    Notification,
+    GroupTask,
+    GroupSchedule,
+    RepositoryFile,
   ],
-  sync: { force: false, alter: true },
   autoLoadModels: true,
   synchronize: true,
   logging: false,

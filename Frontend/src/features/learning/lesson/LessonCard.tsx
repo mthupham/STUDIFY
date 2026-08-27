@@ -72,10 +72,6 @@ export const LessonCard: React.FC<LessonProps> = ({
         <span className={statusTextStyle}>{statusText}</span>
       </header>
 
-      <p className="m-0 mt-2 text-slate-600 text-sm leading-relaxed">
-        {description}
-      </p>
-
       {status === "ongoing" && (
         <div
           className="mt-2 w-full h-1.5 rounded-full bg-indigo-50 overflow-hidden"
@@ -90,34 +86,6 @@ export const LessonCard: React.FC<LessonProps> = ({
           />
         </div>
       )}
-
-      <div className="mt-2 text-slate-500 text-xs font-semibold inline-flex items-center gap-1.5">
-        <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4">
-          <rect
-            x="4"
-            y="5"
-            width="16"
-            height="14"
-            rx="2"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          />
-          <path
-            d="M8 9H16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M8 13H13"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </svg>
-        <span>Number of question</span>
-      </div>
     </article>
   );
 };

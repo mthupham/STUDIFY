@@ -77,7 +77,11 @@ private questionBankData: any[] = [];
       .find((question: any) => question.question_id === questionId);
   }
 
-  async getLessonQuestions(lessonId: string) {
+async getLessonQuestions(
+  lessonId: string,
+  // skill?: 'reading' | 'writing',
+  skill: 'reading' | 'writing' = 'reading',
+) {
     const lessonInfo = this.findLessonById(lessonId);
     if (!lessonInfo) {
       throw new NotFoundException(`Không tìm thấy bài học với ID: ${lessonId}`);
@@ -98,26 +102,47 @@ private questionBankData: any[] = [];
       );
     }
 
-    const questions = [
-      ...(questionBank.reading_questions || []).map((question: any) => ({
-        id: question.question_id,
-        type: 'multiple-choice' as const,
-        question: question.question_text,
-        options: question.options || [],
-      })),
-      ...(questionBank.writing_questions || []).map((question: any) => ({
-        id: question.question_id,
-        type: 'written' as const,
-        question: question.question_text,
-      })),
-    ];
+    // const questions = [
+    //   ...(questionBank.reading_questions || []).map((question: any) => ({
+    //     id: question.question_id,
+    //     type: 'multiple-choice' as const,
+    //     question: question.question_text,
+    //     options: question.options || [],
+    //   })),
+    //   ...(questionBank.writing_questions || []).map((question: any) => ({
+    //     id: question.question_id,
+    //     type: 'written' as const,
+    //     question: question.question_text,
+    //   })),
+    // ];
+    let questions: any[] = [];
 
-    return {
-      success: true,
-      lessonId,
-      topic: questionBank.topic,
-      questions,
-    };
+if (skill === 'writing') {
+  questions = (questionBank.writing_questions || []).map(
+    (question: any) => ({
+      id: question.question_id,
+      type: 'written' as const,
+      question: question.question_text,
+    }),
+  );
+} else {
+  questions = (questionBank.reading_questions || []).map(
+    (question: any) => ({
+      id: question.question_id,
+      type: 'multiple-choice' as const,
+      question: question.question_text,
+      options: question.options || [],
+    }),
+  );
+}
+
+   return {
+  success: true,
+  lessonId,
+  skill,
+  topic: questionBank.topic,
+  questions,
+};
   }
 
   private getAllLessonIdsInLevel(level: string): string[] {
@@ -449,7 +474,7 @@ return {
         const currentIndex = LEVELS.indexOf(currentLevel);
         if (currentLevel === level && currentIndex >= 0 && currentIndex < LEVELS.length - 1) {
           newLevel = LEVELS[currentIndex + 1];
-          await this.userService.setCurrentLevel(userId, newLevel);
+          // await this.userService.setCurrentLevel(userId, newLevel); // Disabled: Level-up is now explicitly triggered by the frontend button
           leveledUp = true;
         }
       }

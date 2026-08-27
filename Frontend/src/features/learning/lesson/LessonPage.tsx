@@ -24,19 +24,25 @@ interface SkillSection {
   lessons: LessonProps[];
 }
 
-function buildSections(apiLessons: ApiLesson[]): SkillSection[] {
+function buildSections(
+  apiLessons: ApiLesson[],
+  completedPracticeIds: string[]
+): SkillSection[] {
   const vocab = apiLessons.filter((l) => l.type === "VOCABULARY");
-  const grammar = apiLessons.filter((l) => l.type === "GRAMMAR");
 
-  // Trong mỗi nhóm: bài đầu tiên CHƯA hoàn thành sẽ là "ongoing" (mở khóa),
-  // các bài chưa hoàn thành sau đó vẫn "locked" cho tới khi bài trước xong.
-  const toLessonProps = (list: ApiLesson[]): LessonProps[] => {
+  const toLessonProps = (
+    list: ApiLesson[],
+    skill: "reading" | "writing"
+  ): LessonProps[] => {
     let unlockedOne = false;
     return list.map((lesson) => {
       let status: LessonStatus = "locked";
       let statusText = "LOCKED";
 
-      if (lesson.isCompleted) {
+      const skillLessonId = `${lesson.lessonId}_${skill}`;
+      const isPracticeCompleted = completedPracticeIds.includes(skillLessonId);
+
+      if (isPracticeCompleted) {
         status = "completed";
         statusText = "COMPLETED";
       } else if (!unlockedOne) {
@@ -58,25 +64,25 @@ function buildSections(apiLessons: ApiLesson[]): SkillSection[] {
     });
   };
 
-  const vocabProps = toLessonProps(vocab);
-  const grammarProps = toLessonProps(grammar);
+  const readingProps = toLessonProps(vocab, "reading");
+  const writingProps = toLessonProps(vocab, "writing");
   const countDone = (list: LessonProps[]) =>
     list.filter((l) => l.status === "completed").length;
 
   return [
     {
-      id: "vocabulary",
+      id: "reading",
       title: "Reading skill",
-      completedText: `${countDone(vocabProps)}/${vocabProps.length} completed`,
+      completedText: `${countDone(readingProps)}/${readingProps.length} completed`,
       icon: "book",
-      lessons: vocabProps,
+      lessons: readingProps,
     },
     {
-      id: "grammar",
+      id: "writing",
       title: "Writing skill",
-      completedText: `${countDone(grammarProps)}/${grammarProps.length} completed`,
+      completedText: `${countDone(writingProps)}/${writingProps.length} completed`,
       icon: "pen",
-      lessons: grammarProps,
+      lessons: writingProps,
     },
   ];
 }
@@ -84,11 +90,15 @@ function buildSections(apiLessons: ApiLesson[]): SkillSection[] {
 export default function LessonPage() {
   const navigate = useNavigate();
   const token = useAuthStore((s) => s.token);
+  const user = useAuthStore((s) => s.user);
+  const setAuthSession = useAuthStore((s) => s.setAuthSession);
 
   const [sections, setSections] = useState<SkillSection[]>([]);
   const [level, setLevel] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
   useEffect(() => {
     let cancelled = false;
@@ -97,13 +107,11 @@ export default function LessonPage() {
       setLoading(true);
       setError(null);
       try {
-        // 1. Lấy level hiện tại của user từ Roadmap
         const { data: roadmap } = await axios.get(`${API_BASE}/roadmap`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const assignedLevel = roadmap.assignedLevel || "A1";
 
-        // 2. Lấy danh sách lesson thật của level đó
         const { data: lessonRes } = await axios.get(
           `${API_BASE}/learning/lessons`,
           {
@@ -112,9 +120,22 @@ export default function LessonPage() {
           },
         );
 
+        // Fetch vocabulary progress to identify completed practices (e.g. A1_T1_reading, A1_T1_writing)
+        const { data: progressRes } = await axios.get(
+          `${API_BASE}/progress/level/${assignedLevel}/lessons`,
+          {
+            params: { type: "vocabulary" },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const completedPracticeIds = (progressRes || [])
+          .filter((p: any) => p.isCompleted)
+          .map((p: any) => p.lessonId);
+
         if (!cancelled) {
           setLevel(assignedLevel);
-          setSections(buildSections(lessonRes.data || []));
+          setSections(buildSections(lessonRes.data || [], completedPracticeIds));
         }
       } catch (err) {
         if (!cancelled) setError("Không thể tải danh sách bài học.");
@@ -137,9 +158,10 @@ export default function LessonPage() {
     };
   }, [token]);
 
-  const handleLessonClick = (lessonId?: string) => {
+  const handleLessonClick = (lessonId?: string, skill?: string) => {
     if (!lessonId) return;
-    navigate(`/lessons/practice/${lessonId}`);
+
+    navigate(`/lessons/practice/${lessonId}?skill=${skill ?? "reading"}`);
   };
 
   const handleTheoryReview = () => {
@@ -149,6 +171,42 @@ export default function LessonPage() {
     }
     navigate("/lessons");
   };
+
+  const handleNextLevel = async () => {
+    if (!level || !token) return;
+    const currentIndex = LEVELS.indexOf(level.toUpperCase());
+    if (currentIndex === -1 || currentIndex >= LEVELS.length - 1) {
+      navigate("/roadmap");
+      return;
+    }
+    const nextLevel = LEVELS[currentIndex + 1];
+
+    try {
+      const { data } = await axios.patch(
+        `${API_BASE}/user/select-level`,
+        { level: nextLevel },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const updatedUser = data?.data || { ...user, currentLevel: nextLevel };
+      setAuthSession(updatedUser, token);
+      navigate("/roadmap");
+    } catch (err) {
+      console.error("Failed to select next level:", err);
+      navigate("/roadmap");
+    }
+  };
+
+  // Điều kiện: Kiểm tra tất cả các bài học trong mọi kỹ năng đều đã ở trạng thái "completed"
+  const isAllCompleted =
+    sections.length > 0 &&
+    sections.every(
+      (sec) =>
+        sec.lessons.length > 0 &&
+        sec.lessons.every((l) => l.status === "completed"),
+    );
 
   if (loading) {
     return (
@@ -174,11 +232,25 @@ export default function LessonPage() {
             <h1 className="!text-slate-900 !text-3xl !md:text-[42px] !font-semibold !leading-tight !tracking-tight !m-0">
               Lesson
             </h1>
-            {level && (
-              <span className="rounded-full bg-blue-100 text-blue-700 text-sm font-bold px-4 py-1.5">
-                Level {level}
-              </span>
-            )}
+
+            <div className="flex items-center gap-3">
+              {/* Nút chỉ hiển thị khi VÀ CHỈ KHI hoàn thành tất cả các bài học */}
+              {isAllCompleted && (
+                <button
+                  type="button"
+                  onClick={handleNextLevel}
+                  className="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold rounded-full shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                >
+                  <span>Level Completed! Continue to next level here</span>
+                </button>
+              )}
+
+              {level && (
+                <span className="rounded-full bg-blue-100 text-blue-700 text-sm font-bold px-4 py-1.5">
+                  Level {level}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -247,7 +319,7 @@ export default function LessonPage() {
                         )}
                         <LessonCard
                           {...lesson}
-                          onClick={() => handleLessonClick(lesson.id)}
+                          onClick={() => handleLessonClick(lesson.id, section.id)}
                         />
                       </div>
                     ))}

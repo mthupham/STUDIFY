@@ -8,7 +8,10 @@ import type {
   ApiResponse,
 } from '../types/flashcard';
 
-const BASE_URL = 'http://localhost:3000/api/v1/flashcards';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
+const BASE_URL = `${API_BASE_URL}/api/v1/flashcards`;
 
 const getAuthHeaders = (): Record<string, string> => {
   const token =

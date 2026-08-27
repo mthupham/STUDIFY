@@ -1,28 +1,96 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuthStore } from "../../auth/store/useAuthStore";
-import ProgressBar from "../../../components/ProgressBar";
 import { useNavigate } from "react-router-dom";
+import MemberTaskWidget from "./MemberTaskWidget";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
-export default function Dashboard() {
+// --- TYPES & INTERFACES ---
+export interface TaskNode {
+  id: string | number;
+  label: string;
+  status: "locked" | "unlocked" | "completed" | string;
+  type: "vocabulary" | "grammar" | string;
+}
+
+export interface RoadmapView {
+  level: string;
+  nodes: TaskNode[];
+}
+
+export interface RoadmapMetrics {
+  lessons?: string;
+}
+
+export interface RoadmapData {
+  assignedLevel?: string;
+  levelTitle?: string;
+  views?: RoadmapView[];
+  metrics?: RoadmapMetrics;
+}
+
+export interface MotivationItem {
+  quote: string;
+  author: string;
+}
+
+// --- DANH SÁCH MOTIVATION QUOTES ---
+const MOTIVATION_LIST: MotivationItem[] = [
+  {
+    quote: "You're making incredible progress. Your consistency is paying off, keep up the momentum!",
+    author: "Keep Going"
+  },
+  {
+    quote: "Every small step counts. Practice a little every day to master your skills!",
+    author: "Daily Focus"
+  },
+  {
+    quote: "Learning is a marathon, not a sprint. Stay focused and enjoy the journey!",
+    author: "Growth Mindset"
+  },
+  {
+    quote: "Consistency is the key to mastery. You are closer to your target today!",
+    author: "Action Goal"
+  },
+  {
+    quote: "Mistakes are proof that you are trying. Keep pushing forward!",
+    author: "Persist & Win"
+  }
+];
+
+export default function Dashboard(): React.JSX.Element {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
 
-  const [roadmap, setRoadmap] = useState(null); // { assignedLevel, levelTitle, views, metrics }
-  const [loadingRoadmap, setLoadingRoadmap] = useState(true);
-  const [roadmapError, setRoadmapError] = useState(null);
+  const [roadmap, setRoadmap] = useState<RoadmapData | null>(null);
+  const [loadingRoadmap, setLoadingRoadmap] = useState<boolean>(true);
+  const [roadmapError, setRoadmapError] = useState<string | null>(null);
+
+  // State cho khối Motivation riêng biệt
+  const [motivationIndex, setMotivationIndex] = useState<number>(0);
+
+  // Chọn ngẫu nhiên 1 câu khi load trang
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * MOTIVATION_LIST.length);
+    setMotivationIndex(randomIndex);
+  }, []);
+
+  const handleNextMotivation = (): void => {
+    setMotivationIndex((prev) => (prev + 1) % MOTIVATION_LIST.length);
+  };
+
+  const currentMotivation = MOTIVATION_LIST[motivationIndex];
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadRoadmap() {
+    async function loadRoadmap(): Promise<void> {
       setLoadingRoadmap(true);
       setRoadmapError(null);
       try {
-        const { data } = await axios.get(`${API_BASE}/roadmap`, {
+        const { data } = await axios.get<RoadmapData>(`${API_BASE}/roadmap`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!cancelled) {
@@ -39,7 +107,7 @@ export default function Dashboard() {
       }
     }
 
-    const handleLessonCompleted = () => {
+    const handleLessonCompleted = (): void => {
       if (token) {
         void loadRoadmap();
       }
@@ -56,13 +124,11 @@ export default function Dashboard() {
     };
   }, [token]);
 
-  // Lấy danh sách bài học thật từ level hiện tại (thay cho firstChapter/realTasks cũ)
   const currentView = roadmap?.views?.find(
-    (v) => v.level === roadmap.assignedLevel,
+    (v) => v.level === roadmap.assignedLevel
   );
-  const realTasks = currentView?.nodes ?? [];
+  const realTasks: TaskNode[] = currentView?.nodes ?? [];
 
-  // Tách "12/60" thành số để tính % cho vòng tròn tiến độ
   let progressPercent = 0;
   if (roadmap?.metrics?.lessons) {
     const [done, total] = roadmap.metrics.lessons.split("/").map(Number);
@@ -72,9 +138,9 @@ export default function Dashboard() {
   }
 
   return (
-    /* MAIN CONTENT CANVAS: Toàn bộ vùng hiển thị chính của Dashboard */
     <div className="inline-flex min-h-[1088px] w-full max-w-[1536px] flex-col items-start justify-start gap-8 px-8 pb-32 pt-8 font-['Inter',_sans-serif]">
-      {/* WELCOME SECTION: Banner chào mừng người dùng lấy từ AuthStore */}
+
+      {/* WELCOME BANNER */}
       <div className="relative flex w-full flex-col items-start justify-start overflow-hidden rounded-2xl bg-gradient-to-r from-sky-700 to-blue-600 p-8 shadow-lg">
         <div className="absolute right-4 top-2 pointer-events-none opacity-25">
           <svg
@@ -92,24 +158,21 @@ export default function Dashboard() {
         </div>
 
         <div className="relative z-10 flex w-full max-w-[672px] flex-col items-start justify-start gap-2">
-          <h2
-            className="text-3xl font-bold leading-10"
-            style={{ color: "#FFFFFF" }}
-          >
-            Welcome back,{" "}
-            <span className="font-bold">{user?.name || "Student"}</span>! 👋
+          <h2 className="!text-3xl font-bold !leading-10 !text-white">
+            Welcome back, <span className="!font-bold">{user?.name || "Student"}</span>!
           </h2>
-          <p className="text-lg font-normal leading-7 text-white opacity-90">
-            You're making incredible progress. Your consistency is paying off,
-            keep up the momentum!
+          <p className="text-base font-normal leading-6 text-white opacity-90">
+            Ready to tackle today's learning goals? Stay consistent and keep moving forward.
           </p>
         </div>
       </div>
 
       {/* BENTO GRID LAYOUT */}
       <div className="grid w-full grid-cols-1 gap-6 items-start lg:grid-cols-12">
-        {/* LEFT COLUMN */}
+
+        {/* LEFT COLUMN (8 cols) */}
         <div className="flex flex-col gap-6 lg:col-span-8">
+
           {/* MASTERY PROGRESS CARD */}
           <div className="flex flex-col gap-8 rounded-2xl border border-slate-300 bg-slate-50 p-8 shadow-sm">
             <div className="flex w-full items-start justify-between">
@@ -121,7 +184,6 @@ export default function Dashboard() {
                   Mastery Progress
                 </h3>
               </div>
-              {/* Badge level lấy từ kết quả placement test thật */}
               <span className="rounded-full bg-sky-700 px-4 py-1.5 text-sm font-bold text-white">
                 {loadingRoadmap
                   ? "..."
@@ -184,6 +246,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
+              {/* Progress Donut */}
               <div className="relative flex h-36 w-36 items-center justify-center">
                 <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
                   <circle
@@ -219,7 +282,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* TODAY'S STUDY PLAN: hiển thị bài học thật từ level hiện tại */}
+          {/* TODAY'S STUDY PLAN */}
           <div className="flex flex-col gap-6 rounded-2xl border border-slate-300 bg-slate-50 p-8 shadow-sm">
             <div className="flex w-full items-center justify-between">
               <h3 className="text-2xl font-semibold text-gray-900">
@@ -229,17 +292,11 @@ export default function Dashboard() {
                 type="button"
                 onClick={() => navigate("/dashboard/pomodoro")}
                 className="
-    cursor-pointer
-    flex items-center gap-2
-    rounded-lg px-3 py-2
-    font-medium text-sky-700
-    transition-all duration-200
-    hover:bg-sky-50
-    hover:text-sky-800
-    hover:shadow-sm
-    hover:-translate-y-0.5
-    active:scale-95
-  "
+                  cursor-pointer flex items-center gap-2 rounded-lg px-3 py-2
+                  font-medium text-sky-700 transition-all duration-200
+                  hover:bg-sky-50 hover:text-sky-800 hover:shadow-sm
+                  hover:-translate-y-0.5 active:scale-95
+                "
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -259,9 +316,7 @@ export default function Dashboard() {
 
             <div className="flex flex-col gap-3 w-full">
               {loadingRoadmap && (
-                <p className="text-sm text-gray-500">
-                  Đang tải lộ trình học...
-                </p>
+                <p className="text-sm text-gray-500">Đang tải lộ trình học...</p>
               )}
               {roadmapError && (
                 <p className="text-sm text-rose-700">{roadmapError}</p>
@@ -272,17 +327,15 @@ export default function Dashboard() {
               {realTasks.map((node) => (
                 <div
                   key={node.id}
-                  className={`flex items-center justify-between rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition ${
-                    node.status === "locked" ? "opacity-60" : ""
-                  }`}
+                  className={`flex items-center justify-between rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition ${node.status === "locked" ? "opacity-60" : ""
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <div
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                        node.type === "vocabulary"
-                          ? "bg-blue-100"
-                          : "bg-emerald-100"
-                      }`}
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${node.type === "vocabulary"
+                        ? "bg-blue-100"
+                        : "bg-emerald-100"
+                        }`}
                     >
                       <span className="text-xs font-bold">
                         {node.type === "vocabulary" ? "V" : "G"}
@@ -319,67 +372,56 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: giữ nguyên mock, chưa có API thật cho phần này */}
+        {/* RIGHT COLUMN (4 cols) */}
         <div className="flex flex-col gap-6 lg:col-span-4">
-          <div className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-slate-300 bg-slate-50 p-6 shadow-sm">
-            <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-emerald-300/10"></div>
-            <div className="flex items-center gap-2">
-              <div className="text-emerald-800">
+
+          {/* KHỐI DAILY MOTIVATION RÊNG BIỆT */}
+          <div className="flex flex-col gap-4 rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50/60 p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">💡</span>
+                <h3 className="text-lg font-bold text-amber-900">
+                  Daily Motivation
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={handleNextMotivation}
+                className="flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold text-amber-800 transition hover:bg-amber-100/80 active:scale-95"
+                title="Đổi câu truyền động lực khác"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="22"
-                  viewBox="0 0 20 22"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
                   fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <path
-                    d="M14 20V18H18V8H4V12H2V4C2 3.45 2.19583 2.97917 2.5875 2.5875C2.97917 2.19583 3.45 2 4 2H5V0H7V2H15V0H17V2H18C18.55 2 19.0208 2.19583 19.4125 2.5875C19.8042 2.97917 20 3.45 20 4V18C20 18.55 19.8042 19.0208 19.4125 19.4125C19.0208 19.8042 18.55 20 18 20H14ZM7 22L5.6 20.6L8.175 18H0V16H8.175L5.6 13.4L7 12L12 17L7 22ZM4 6H18V4H4V6ZM4 6V4V6Z"
-                    fill="#006C49"
-                  />
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
                 </svg>
-              </div>
-              <h3 className="text-sm font-bold tracking-wide text-gray-700 uppercase">
-                GROUP DEADLINES
-              </h3>
+                Next
+              </button>
             </div>
 
-            <div className="flex flex-col gap-2 rounded-xl border border-emerald-800/10 bg-emerald-300/20 p-4">
-              <h4 className="text-base font-bold text-emerald-900">
-                Peer Review Session
-              </h4>
-              <p className="text-sm text-emerald-900/80 leading-5">
-                Critique the 'Annual Report' drafts with your cohort.
-              </p>
+            <blockquote className="border-l-4 border-amber-400 pl-3.5 text-sm italic leading-relaxed text-slate-700">
+              "{currentMotivation.quote}"
+            </blockquote>
 
-              <div className="mt-2 flex items-center justify-between border-t border-emerald-800/10 pt-3">
-                <div className="flex items-center gap-1 text-xs font-bold text-emerald-800">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="10"
-                    viewBox="0 0 10 10"
-                    fill="none"
-                  >
-                    <path
-                      d="M6.65 7.35L7.35 6.65L5.5 4.8V2.5H4.5V5.2L6.65 7.35ZM5 10C4.30833 10 3.65833 9.86875 3.05 9.60625C2.44167 9.34375 1.9125 8.9875 1.4625 8.5375C1.0125 8.0875 0.65625 7.55833 0.39375 6.95C0.13125 6.34167 0 5.69167 0 5C0 4.30833 0.13125 3.65833 0.39375 3.05C0.65625 2.44167 1.0125 1.9125 1.4625 1.4625C1.9125 1.0125 2.44167 0.65625 3.05 0.39375C3.65833 0.13125 4.30833 0 5 0C5.69167 0 6.34167 0.13125 6.95 0.39375C7.55833 0.65625 8.0875 1.0125 8.5375 1.4625C8.9875 1.9125 9.34375 2.44167 9.60625 3.05C9.86875 3.65833 10 4.30833 10 5C10 5.69167 9.86875 6.34167 9.60625 6.95C9.34375 7.55833 8.9875 8.0875 8.5375 8.5375C8.0875 8.9875 7.55833 9.34375 6.95 9.60625C6.34167 9.86875 5.69167 10 5 10ZM5 9C6.10833 9 7.05208 8.61042 7.83125 7.83125C8.61042 7.05208 9 6.10833 9 5C9 3.89167 8.61042 2.94792 7.83125 2.16875C7.05208 1.38958 6.10833 1 5 1C3.89167 1 2.94792 1.38958 2.16875 2.16875C1.38958 2.94792 1 3.89167 1 5C1 6.10833 1.38958 7.05208 2.16875 7.83125C2.94792 8.61042 3.89167 9 5 9Z"
-                      fill="#006C49"
-                    />
-                  </svg>
-                  <span>Today, 4:00 PM</span>
-                </div>
-                <span className="rounded bg-emerald-800 px-2 py-0.5 text-xs font-bold text-white">
-                  Urgent
-                </span>
-              </div>
+            <div className="flex items-center justify-end">
+              <span className="text-xs font-semibold text-amber-700">
+                — {currentMotivation.author}
+              </span>
             </div>
           </div>
 
-          <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white shadow-sm">
-            <span className="text-sm italic text-gray-400">
-              Motivation Content Placeholder
-            </span>
-          </div>
+          {/* MEMBER TASK WIDGET */}
+          <MemberTaskWidget />
         </div>
+
       </div>
     </div>
   );

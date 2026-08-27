@@ -3,10 +3,10 @@ import LandingPage from "./features/landing page/LandingPage";
 import LoginForm from "./features/auth/components/LoginForm";
 import RegisterForm from "./features/auth/components/RegisterForm";
 import ForgotPasswordForm from "./features/auth/components/ForgotPasswordForm";
-import MainLayout from "./layouts/MainLayout.jsx";
-import DashboardPage from "./features/learning/dashboard/DashboardPage.jsx";
+import MainLayout from "./layouts/MainLayout.tsx";
+import DashboardPage from "./features/learning/dashboard/DashboardPage";
 import RoadmapPage from "./features/learning/roadmap/RoadmapPage.jsx";
-import UserProfile from "./features/user-profile/profile.jsx";
+import UserProfile from "./features/user-profile/profile";
 import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
 import Result from "./features/onboarding/ResultPlacementTest";
 import { useAuthStore } from "./features/auth/store/useAuthStore";
@@ -19,8 +19,7 @@ import ResultPractice from "./features/learning/lesson/ResultPractice";
 import StudyGroupHub from "./features/virtual-study-room/StudyGroup";
 import JoinGroup from "./features/virtual-study-room/JoinGroup.tsx";
 import NewGroup from "./features/virtual-study-room/CreateNewGroup.tsx";
-import MemberWorkspace from "./features/virtual-study-room/Workspace_Member";
-import LeaderWorkspace from "./features/virtual-study-room/Workspace_Leader";
+import WorkspaceRouter from "./features/virtual-study-room/WorkspaceRouter";
 import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo.tsx";
 import RepositoryUpload from "./features/virtual-study-room/RepositoryUpload.tsx";
 import TaskAssignmentDashboard from "./features/virtual-study-room/TaskAssignment.tsx";
@@ -30,6 +29,12 @@ import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidg
 
 import FlashcardLibrary from "./features/flashcard/flashcard-decks";
 import DeckDetailView from "./features/flashcard/flashcard-detail-view.tsx";
+
+import VoiceLearningDashboard from "./features/ai-speaking/AISpeakingDashboard.tsx";
+
+//test chat
+import ChatTestLobby from "./features/virtual-study-room/ChatTestLobby.tsx";
+
 
 import GoogleSucessPage from "./features/auth/components/GoogleSucessPage.tsx";
 
@@ -53,6 +58,16 @@ function App() {
     <BrowserRouter>
       <FloatingPomodoroWidget />
       <Routes>
+
+        //chat test
+        <Route
+          path="/chat-test-lobby"
+          element={
+            <MainLayout>
+              <ChatTestLobby />
+            </MainLayout>
+          }
+        />
 
         <Route path="/auth/google/success" element={<GoogleSucessPage />} />
         <Route path="/" element={<LandingPage />} />
@@ -143,15 +158,15 @@ function App() {
           }
         />
         <Route
-  path="/lessons/practice/result"
-  element={
-    <OnboardingGuard>
-      <MainLayout>
-        <ResultPractice />
-      </MainLayout>
-    </OnboardingGuard>
-  }
-/>
+          path="/lessons/practice/result"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <ResultPractice />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
         <Route
           path="/lessons/practice/:lessonId"
           element={
@@ -162,7 +177,7 @@ function App() {
             </OnboardingGuard>
           }
         />
-        
+
         <Route
           path="/study-groups"
           element={
@@ -195,29 +210,29 @@ function App() {
         />
 
         <Route
-          path="/study-groups/workspace-member"
+          path="/study-groups/:groupId/workspace-member"
           element={
             <OnboardingGuard>
               <MainLayout>
-                <MemberWorkspace />
+                <WorkspaceRouter />
               </MainLayout>
             </OnboardingGuard>
           }
         />
 
         <Route
-          path="/study-groups/workspace-leader"
+          path="/study-groups/:groupId/workspace-leader"
           element={
             <OnboardingGuard>
               <MainLayout>
-                <LeaderWorkspace />
+                <WorkspaceRouter />
               </MainLayout>
             </OnboardingGuard>
           }
         />
 
         <Route
-          path="/study-groups/workspace-leader/edit-group"
+          path="/study-groups/:groupId/workspace-leader/edit-group"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -228,7 +243,7 @@ function App() {
         />
 
         <Route
-          path="/study-groups/workspace-leader/repository"
+          path="/study-groups/:groupId/workspace-leader/repository"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -238,7 +253,7 @@ function App() {
           }
         />
         <Route
-          path="/study-groups/workspace-leader/task-assignment"
+          path="/study-groups/:groupId/workspace-leader/task-assignment"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -246,6 +261,18 @@ function App() {
               </MainLayout>
             </OnboardingGuard>
           }
+        />
+        <Route
+          path="/study-groups/workspace-member"
+          element={<Navigate to="/study-groups/1/workspace-member" replace />}
+        />
+        <Route
+          path="/study-groups/workspace-leader"
+          element={<Navigate to="/study-groups/1/workspace-leader" replace />}
+        />
+        <Route
+          path="/study-groups/workspace-leader/task-assignment"
+          element={<Navigate to="/study-groups" replace />}
         />
         <Route
           path="/dashboard/pomodoro"
@@ -275,6 +302,17 @@ function App() {
             <OnboardingGuard>
               <MainLayout>
                 <DeckDetailView />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/ai-speaking"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <VoiceLearningDashboard />
               </MainLayout>
             </OnboardingGuard>
           }

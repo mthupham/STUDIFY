@@ -25,7 +25,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Patch('onboarding')
   async updateOnboarding(@Req() req, @Body() dto: UpdateOnboardingDto) {
-    const user = await this.userService.updateOnboarding(req.user.id, dto.weeklyStudyHours);
+    const user = await this.userService.updateOnboarding(req.user.id, dto.weeklyStudyHours, dto.currentLevel);
     return { message: 'Onboarding pace updated', data: user };
   }
 
