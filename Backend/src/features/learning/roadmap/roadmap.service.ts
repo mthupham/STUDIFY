@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { PlacementTestResult } from '../../../models/placement_test_result.model';
 import { UserProgress } from '../../../models/user_progress.model';
 import { UserService } from '../../../modules/user/user.service';
-import { UserService } from '../../../modules/user/user.service';
 import * as path from 'path';
 import * as fs from 'fs';
 
