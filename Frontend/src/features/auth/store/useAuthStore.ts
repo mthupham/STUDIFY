@@ -7,6 +7,7 @@ interface User {
   email: string;
   role?: string;
   hasCompletedOnboarding?: boolean;
+  currentLevel?: string;
 }
 
 interface AuthResponse {

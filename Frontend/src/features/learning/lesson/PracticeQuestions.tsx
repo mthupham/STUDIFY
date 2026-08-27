@@ -109,22 +109,6 @@ export const PracticeQuestions: React.FC = () => {
     setCurrentQuestionIndex((prev) => Math.min(prev + 1, questions.length - 1));
   };
 
-  const handleSubmitAnswer = () => {
-    const answer = answers[currentQuestion.id]?.trim();
-
-    if (!answer) {
-      showNotification(
-        "error",
-        "Please enter or select an answer before submitting.",
-      );
-      return;
-    }
-
-    console.log(currentQuestion.id, answer);
-
-    showNotification("success", "Answer submitted successfully.");
-  };
-
   const handleFinish = async () => {
     const unanswered = questions.filter(
       (q) => !answers[q.id] || answers[q.id].trim() === "",
@@ -175,10 +159,26 @@ export const PracticeQuestions: React.FC = () => {
 
       showNotification("success", "Practice submitted successfully.");
 
+      // Mark this practice skill as completed in the database
+      if (lessonId) {
+        await fetch(
+          `${API_URL}/progress/lesson/${lessonId}_${skill}/complete?type=vocabulary`,
+          {
+            method: "POST",
+            headers: {
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+          }
+        ).catch((err) => {
+          console.error("Failed to mark practice complete:", err);
+        });
+      }
+
       setTimeout(() => {
         navigate("/lessons/practice/result", {
           state: {
             result: data,
+            skill,
           },
         });
       }, 800);
@@ -315,34 +315,6 @@ export const PracticeQuestions: React.FC = () => {
                   className="min-h-[220px] w-full rounded-2xl border border-slate-200 bg-[#f9fbff] px-4 py-4 text-base text-slate-700 outline-none ring-0 transition focus:border-[#4f6ef7] focus:bg-white"
                   placeholder="Type your answer here..."
                 />
-
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
-                  <button
-                    type="button"
-                    onClick={handleSubmitAnswer}
-                    className="rounded-2xl bg-[#4f6ef7] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(79,110,247,0.24)] transition hover:bg-[#3f5fe0]"
-                  >
-                    Submit Answer
-                  </button>
-                  <button
-                    type="button"
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-4 w-4 stroke-current"
-                      fill="none"
-                      strokeWidth="1.8"
-                    >
-                      <path
-                        d="M10 4.5a3 3 0 0 1 4.24 0l.88.88a3 3 0 0 1 .9 1.85l.07.36a2 2 0 0 0 1.4 1.53l.35.13a2 2 0 0 1 1.2 2.3l-.36 1.6a2 2 0 0 1-1.1 1.35l-.47.24a2 2 0 0 0-1.03 1.82v.74a1 1 0 0 1-1.62.78l-1.24-1.02a2 2 0 0 0-2.5 0l-1.24 1.02A1 1 0 0 1 8.5 18.4v-.74a2 2 0 0 0-1.03-1.82l-.47-.24a2 2 0 0 1-1.1-1.35l-.36-1.6a2 2 0 0 1 1.2-2.3l.35-.13a2 2 0 0 0 1.4-1.53l.07-.36a3 3 0 0 1 .9-1.85l.88-.88Z"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    Get Hint
-                  </button>
-                </div>
               </div>
             )}
 

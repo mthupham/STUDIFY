@@ -3,12 +3,6 @@ import axios from "axios";
 import { useAuthStore } from "../auth/store/useAuthStore";
 import { NavLink } from "react-router-dom";
 
-const userData = {
-  language: "English",
-  level: "B2 LEVEL",
-  progress: 90, // %
-};
-
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
@@ -21,16 +15,46 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [name, setName] = useState<string>(profileName);
   const [email, setEmail] = useState<string>(profileEmail);
+  const [level, setLevel] = useState<string>(user?.currentLevel || "A1");
+  const [progress, setProgress] = useState<number>(0);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
+  const loadRoadmap = async () => {
+    if (!token) return;
+    try {
+      const { data } = await axios.get(`${apiBaseUrl}/roadmap`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (data) {
+        const currentLvl = data.assignedLevel || "A1";
+        setLevel(currentLvl);
+
+        if (data.metrics?.lessons) {
+          const [completed, total] = data.metrics.lessons.split("/").map(Number);
+          const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+          setProgress(percent);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load user level & progress from roadmap:", err);
+    }
+  };
+
   useEffect(() => {
     setName(profileName);
     setEmail(profileEmail);
-  }, [profileName, profileEmail]);
+    setLevel(user?.currentLevel || "A1");
+  }, [profileName, profileEmail, user?.currentLevel]);
+
+  useEffect(() => {
+    void loadRoadmap();
+  }, [token]);
 
   const handleSaveProfile = async () => {
     if (!token) {
@@ -48,6 +72,7 @@ export default function ProfilePage() {
     setMessage("");
 
     try {
+      // 1. Update Profile (Name & Email)
       const { data } = await axios.patch(
         `${apiBaseUrl}/user/profile`,
         {
@@ -61,10 +86,28 @@ export default function ProfilePage() {
         }
       );
 
-      const updatedUser = data?.data || user;
+      let updatedUser = data?.data || user;
+
+      // 2. Update Level if it has changed
+      if (level !== user?.currentLevel) {
+        const { data: levelData } = await axios.patch(
+          `${apiBaseUrl}/user/select-level`,
+          { level },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (levelData?.data) {
+          updatedUser = levelData.data;
+        }
+      }
+
       setAuthSession(updatedUser, token);
       setMessage("Profile updated successfully.");
       setIsEditing(false);
+      void loadRoadmap();
     } catch (err) {
       const apiMessage = axios.isAxiosError(err) ? err.response?.data?.message : null;
       setError(
@@ -101,7 +144,7 @@ export default function ProfilePage() {
                 </h1>
                 <p className="text-sm font-medium text-slate-500">{profileEmail}</p>
                 <span className="mt-2 inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-                  Learner • {userData.level}
+                  Learner • {level} LEVEL
                 </span>
               </div>
             </div>
@@ -113,6 +156,7 @@ export default function ProfilePage() {
                   onClick={() => {
                     setName(profileName);
                     setEmail(profileEmail);
+                    setLevel(user?.currentLevel || "A1");
                     setError("");
                     setMessage("");
                     setIsEditing(true);
@@ -152,6 +196,7 @@ export default function ProfilePage() {
                       setMessage("");
                       setName(profileName);
                       setEmail(profileEmail);
+                      setLevel(user?.currentLevel || "A1");
                     }}
                     className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all"
                   >
@@ -248,6 +293,31 @@ export default function ProfilePage() {
                 )}
               </div>
 
+              {/* Level Field */}
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  Current Level
+                </label>
+                {isEditing ? (
+                  <select
+                    value={level}
+                    onChange={(e) => setLevel(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 bg-white"
+                  >
+                    <option value="A1">A1 - Beginner</option>
+                    <option value="A2">A2 - Elementary</option>
+                    <option value="B1">B1 - Intermediate</option>
+                    <option value="B2">B2 - Upper Intermediate</option>
+                    <option value="C1">C1 - Advanced</option>
+                    <option value="C2">C2 - Proficient</option>
+                  </select>
+                ) : (
+                  <div className="w-full rounded-xl border border-slate-100 bg-slate-50/80 px-4 py-3 text-sm font-semibold text-slate-800">
+                    {level} LEVEL
+                  </div>
+                )}
+              </div>
+
               {/* Language Field */}
               <div className="space-y-2">
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -270,7 +340,7 @@ export default function ProfilePage() {
                     <line x1="2" y1="12" x2="22" y2="12" />
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                   </svg>
-                  <span>{userData.language}</span>
+                  <span>English</span>
                 </div>
               </div>
             </div>
@@ -306,18 +376,18 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center text-sm">
                   <span className="font-medium text-slate-600">Current Level</span>
-                  <span className="font-extrabold text-blue-600">{userData.level}</span>
+                  <span className="font-extrabold text-blue-600">{level} LEVEL</span>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between items-center text-xs font-semibold">
                     <span className="text-slate-500">Overall Completion</span>
-                    <span className="text-blue-600">{userData.progress}%</span>
+                    <span className="text-blue-600">{progress}%</span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
                     <div
                       className="h-full rounded-full bg-blue-600 transition-all duration-500 ease-out"
-                      style={{ width: `${userData.progress}%` }}
+                      style={{ width: `${progress}%` }}
                     />
                   </div>
                 </div>

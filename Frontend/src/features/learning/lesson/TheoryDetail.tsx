@@ -3,6 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuthStore } from "../../auth/store/useAuthStore";
 
+// ----------------------------------------------------------------------
+// Constants & TypeScript Interfaces
+// ----------------------------------------------------------------------
+
 const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 const VALID_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -40,73 +44,71 @@ interface LessonDetailData {
   pairedLessons: PairedLesson[];
 }
 
-// ----------------------------------------------------
-// Reusable Component: VocabularySection
-// ----------------------------------------------------
+// ----------------------------------------------------------------------
+// Sub-component: VocabularySection
+// Minimalist white & blue layout for vocabulary items
+// ----------------------------------------------------------------------
 const VocabularySection: React.FC<{ vocabulary: VocabularyLesson }> = ({
   vocabulary,
 }) => {
-
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 text-emerald-600 dark:text-emerald-400 rounded-xl flex justify-center items-center shadow-sm border border-emerald-100/50">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-5 h-5 fill-none stroke-current stroke-2"
-            >
-              <path d="M4 6.5C4 5.7 4.7 5 5.5 5H10.5C11.3 5 12 5.7 12 6.5V18H5.5C4.7 18 4 17.3 4 16.5V6.5Z M12 6.5C12 5.7 12.7 5 13.5 5H18.5C19.3 5 20 5.7 20 6.5V16.5C20 17.3 19.3 18 18.5 18H12V6.5Z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-slate-900 font-bold text-lg leading-snug">
-              Vocabulary Topic
-            </h3>
-            <p className="text-slate-500 text-sm font-medium">
-              {vocabulary.topic_name}
-            </p>
-          </div>
+    <div className="flex flex-col gap-4">
+      {/* Topic Header */}
+      <div className="flex items-center gap-2.5">
+        <div className="w-7 h-7 rounded-md border border-blue-200 flex justify-center items-center text-blue-600 bg-blue-50/50">
+          <svg
+            viewBox="0 0 24 24"
+            className="w-4 h-4 fill-none stroke-current stroke-2"
+          >
+            <path d="M4 6.5C4 5.7 4.7 5 5.5 5H10.5C11.3 5 12 5.7 12 6.5V18H5.5C4.7 18 4 17.3 4 16.5V6.5Z M12 6.5C12 5.7 12.7 5 13.5 5H18.5C19.3 5 20 5.7 20 6.5V16.5C20 17.3 19.3 18 18.5 18H12V6.5Z" />
+          </svg>
+        </div>
+        <div>
+          <span className="text-[10px] uppercase font-bold text-blue-600 tracking-wider block">
+            Vocabulary Topic
+          </span>
+          <h3 className="text-slate-900 font-bold text-base leading-tight">
+            {vocabulary.topic_name}
+          </h3>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
+      {/* Vocabulary Items Grid */}
+      <div className="grid grid-cols-1 gap-3">
         {vocabulary.items.map((item, idx) => (
           <div
             key={idx}
-            className="p-5 bg-white/70 border border-slate-200/60 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md group"
+            className="p-4 border border-slate-200 rounded-xl transition-all hover:border-blue-300 bg-white"
           >
-            <div className="flex items-center justify-between gap-3 mb-3">
-              <p className="text-slate-900 text-base font-bold group-hover:text-blue-600 transition-colors">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <span className="text-slate-900 font-bold text-sm">
                 {item.term}
-              </p>
-              <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
-                {String(idx + 1).padStart(2, "0")}
+              </span>
+              <span className="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 font-medium">
+                #{String(idx + 1).padStart(2, "0")}
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="p-3.5 bg-slate-50 rounded-xl flex flex-col gap-1 border border-slate-100">
-                <span className="text-slate-400 text-[10px] font-black uppercase tracking-wider">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+              <div className="p-2.5 rounded-lg border border-slate-100 bg-slate-50/50">
+                <span className="text-slate-400 font-bold uppercase text-[9px] block mb-0.5">
                   Phonetic
                 </span>
-                <span className="text-slate-700 font-mono text-sm font-semibold">
-                  {item.phonetic}
-                </span>
+                <span className="text-slate-700 font-mono">{item.phonetic}</span>
               </div>
-              <div className="p-3.5 bg-slate-50 rounded-xl flex flex-col gap-1 border border-slate-100">
-                <span className="text-slate-400 text-[10px] font-black uppercase tracking-wider">
+              <div className="p-2.5 rounded-lg border border-slate-100 bg-slate-50/50">
+                <span className="text-slate-400 font-bold uppercase text-[9px] block mb-0.5">
                   Definition
                 </span>
-                <span className="text-slate-700 text-sm">
+                <span className="text-slate-700 leading-snug">
                   {item.definition}
                 </span>
               </div>
-              <div className="p-3.5 bg-slate-50 rounded-xl flex flex-col gap-1 border border-slate-100">
-                <span className="text-slate-400 text-[10px] font-black uppercase tracking-wider">
+              <div className="p-2.5 rounded-lg border border-slate-100 bg-slate-50/50">
+                <span className="text-slate-400 font-bold uppercase text-[9px] block mb-0.5">
                   Example
                 </span>
-                <span className="text-slate-600 text-sm italic">
+                <span className="text-slate-600 italic leading-snug">
                   "{item.example_sentence}"
                 </span>
               </div>
@@ -118,43 +120,44 @@ const VocabularySection: React.FC<{ vocabulary: VocabularyLesson }> = ({
   );
 };
 
-// ----------------------------------------------------
-// Reusable Component: GrammarSection
-// ----------------------------------------------------
+// ----------------------------------------------------------------------
+// Sub-component: GrammarSection
+// Clean rule structure with blue accent line
+// ----------------------------------------------------------------------
 const GrammarSection: React.FC<{ grammar: GrammarLesson }> = ({ grammar }) => {
   return (
-    <div className="flex flex-col gap-5 mt-6 pt-6 border-t border-slate-100">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 text-orange-600 dark:text-orange-400 rounded-xl flex justify-center items-center shadow-sm border border-orange-100/50">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-5 h-5 fill-none stroke-current stroke-2"
-            >
-              <path
-                d="M4 16.5V20h3.5L18 9.5L14.5 6L4 16.5Z"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-slate-900 font-bold text-lg leading-snug">
-              Grammar Topic
-            </h3>
-            <p className="text-slate-500 text-sm font-medium">
-              {grammar.grammar_title}
-            </p>
-          </div>
+    <div className="flex flex-col gap-4 mt-2 pt-6 border-t border-slate-100">
+      {/* Section Header */}
+      <div className="flex items-center gap-2.5">
+        <div className="w-7 h-7 rounded-md border border-blue-200 flex justify-center items-center text-blue-600 bg-blue-50/50">
+          <svg
+            viewBox="0 0 24 24"
+            className="w-4 h-4 fill-none stroke-current stroke-2"
+          >
+            <path
+              d="M4 16.5V20h3.5L18 9.5L14.5 6L4 16.5Z"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <div>
+          <span className="text-[10px] uppercase font-bold text-blue-600 tracking-wider block">
+            Grammar Topic
+          </span>
+          <h3 className="text-slate-900 font-bold text-base leading-tight">
+            {grammar.grammar_title}
+          </h3>
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-indigo-50/40 to-violet-50/20 border border-indigo-100/50 rounded-2xl p-5 md:p-6 flex flex-col gap-5 shadow-sm">
+      {/* Grammar Card */}
+      <div className="border border-slate-200 rounded-xl p-4 flex flex-col gap-4 bg-white">
         {grammar.rule && (
-          <div className="border-l-4 border-indigo-500 pl-4 py-1">
-            <span className="text-indigo-600 text-[10px] font-black uppercase tracking-wider block mb-1">
-              Rule
+          <div className="border-l-2 border-blue-600 pl-3 py-0.5">
+            <span className="text-blue-600 text-[10px] font-bold uppercase tracking-wider block mb-0.5">
+              Rule Formula
             </span>
-            <p className="text-slate-900 text-base font-bold font-mono">
+            <p className="text-slate-900 text-sm font-mono font-semibold">
               {grammar.rule}
             </p>
           </div>
@@ -162,10 +165,10 @@ const GrammarSection: React.FC<{ grammar: GrammarLesson }> = ({ grammar }) => {
 
         {grammar.explanation && (
           <div>
-            <span className="text-slate-400 text-[10px] font-black uppercase tracking-wider block mb-1">
+            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block mb-1">
               Explanation
             </span>
-            <p className="text-slate-700 text-sm leading-relaxed">
+            <p className="text-slate-700 text-xs leading-relaxed">
               {grammar.explanation}
             </p>
           </div>
@@ -173,19 +176,19 @@ const GrammarSection: React.FC<{ grammar: GrammarLesson }> = ({ grammar }) => {
 
         {grammar.examples && grammar.examples.length > 0 && (
           <div>
-            <span className="text-slate-400 text-[10px] font-black uppercase tracking-wider block mb-2">
-              Examples
+            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block mb-2">
+              Key Examples
             </span>
-            <ul className="grid grid-cols-1 gap-2">
+            <ul className="flex flex-col gap-1.5">
               {grammar.examples.map((example, idx) => (
                 <li
                   key={idx}
-                  className="flex items-start gap-3 bg-white/60 p-3 rounded-xl border border-indigo-50/20 text-slate-700 text-sm"
+                  className="flex items-center gap-2 p-2 rounded-lg border border-slate-100 text-slate-700 text-xs bg-slate-50/50"
                 >
-                  <span className="w-5 h-5 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xs font-bold shrink-0">
+                  <span className="w-4 h-4 text-blue-600 font-bold text-[10px] flex items-center justify-center border border-blue-200 rounded bg-white">
                     {idx + 1}
                   </span>
-                  <span className="font-medium pt-0.5">{example}</span>
+                  <span className="font-medium">{example}</span>
                 </li>
               ))}
             </ul>
@@ -196,71 +199,103 @@ const GrammarSection: React.FC<{ grammar: GrammarLesson }> = ({ grammar }) => {
   );
 };
 
-// ----------------------------------------------------
-// Reusable Component: LessonSection
-// ----------------------------------------------------
-const LessonSection: React.FC<{
+// ----------------------------------------------------------------------
+// Sub-component: LessonSection
+// Lesson container featuring practice route handlers
+// ----------------------------------------------------------------------
+interface LessonSectionProps {
   lesson: PairedLesson;
+  level: string;
   isCurrent: boolean;
   onNavigateToLesson: (index: number) => void;
-}> = ({ lesson, isCurrent, onNavigateToLesson }) => {
+}
+
+const LessonSection: React.FC<LessonSectionProps> = ({
+  lesson,
+  level,
+  isCurrent,
+  onNavigateToLesson,
+}) => {
   const navigate = useNavigate();
+
+  // Practice route pattern: /lessons/practice/{LEVEL}_T{INDEX}?skill={skill}
+  const formattedTargetId = `${level.toUpperCase()}_T${lesson.lessonIndex}`;
+
+  const handlePracticeNavigation = (skill: "writing" | "reading") => {
+    navigate(`/lessons/practice/${formattedTargetId}?skill=${skill}`);
+  };
+
   return (
     <section
       id={`lesson-section-${lesson.lessonIndex}`}
       onClick={() => {
         if (!isCurrent) onNavigateToLesson(lesson.lessonIndex);
       }}
-      className={`w-full p-6 md:p-8 rounded-3xl border transition-all duration-500 flex flex-col gap-6 relative ${
+      className={`w-full p-6 rounded-2xl border transition-all duration-300 flex flex-col gap-6 relative ${
         isCurrent
-          ? "bg-white border-blue-500 shadow-[0_20px_50px_rgba(59,130,246,0.12)] ring-1 ring-blue-500/50 scale-[1.01]"
-          : "bg-white/50 border-slate-200/80 hover:border-slate-300 shadow-sm opacity-60 hover:opacity-90 scale-100 cursor-pointer"
+          ? "border-blue-600 ring-1 ring-blue-600/20 bg-white shadow-sm"
+          : "border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-300 bg-white cursor-pointer"
       }`}
     >
+      {/* Active Indicator Badge */}
       {isCurrent && (
-        <span className="absolute -top-3 left-6 px-4 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full text-white text-[10px] font-black uppercase tracking-wider shadow-md">
-          Current Lesson Topic
+        <span className="absolute -top-3 left-6 px-3 py-0.5 bg-blue-600 text-white rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm">
+          Active Lesson
         </span>
       )}
 
+      {/* Header */}
       <header className="flex justify-between items-center pb-3 border-b border-slate-100">
-        <div className="flex items-center gap-3">
-          <span className="text-xl md:text-2xl font-black text-slate-800">
+        <div className="flex items-center gap-2.5">
+          <h2 className="text-xl font-bold text-slate-900">
             Lesson {lesson.lessonIndex}
-          </span>
+          </h2>
           {lesson.isCompleted && (
-            <span className="flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-700 px-2.5 py-0.5 rounded-full text-[10px] font-bold">
+            <span className="text-blue-700 bg-blue-50 border border-blue-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full">
               ✓ Completed
             </span>
           )}
         </div>
       </header>
 
+      {/* Theory Content */}
       <VocabularySection vocabulary={lesson.vocabulary} />
       <GrammarSection grammar={lesson.grammar} />
-      <button
-        type="button"
-        onClick={() => navigate(`/lessons/practice/writing/${lesson.lessonIndex}`)}
-        className="px-4 py-2 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-xl text-xs font-bold transition-all border border-orange-200/50 flex items-center gap-1.5 cursor-pointer shadow-sm"
-      >
-        Practice Writing Exercises
-        <span aria-hidden="true">→</span>
-      </button>
-      <button
-        type="button"
-        onClick={() => navigate(`/lessons/practice/reading/${lesson.lessonIndex}`)}
-        className="px-4 py-2 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-xl text-xs font-bold transition-all border border-orange-200/50 flex items-center gap-1.5 cursor-pointer shadow-sm"
-      >
-        Practice Reading Exercises
-        <span aria-hidden="true">→</span>
-      </button>
+
+      {/* Practice Navigation Buttons */}
+      <div className="flex flex-wrap items-center gap-3 pt-2">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePracticeNavigation("writing");
+          }}
+          className="flex-1 min-w-[180px] px-4 py-2.5 bg-white hover:bg-blue-600 hover:text-white text-blue-600 border border-blue-600 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.99]"
+        >
+          <span>Practice Writing</span>
+          <span aria-hidden="true">→</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePracticeNavigation("reading");
+          }}
+          className="flex-1 min-w-[180px] px-4 py-2.5 bg-white hover:bg-blue-600 hover:text-white text-blue-600 border border-blue-600 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.99]"
+        >
+          <span>Practice Reading</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
     </section>
   );
 };
 
-// ----------------------------------------------------
-// Main Controller Component: LessonDetail (TheoryPage)
-// ----------------------------------------------------
+// ----------------------------------------------------------------------
+// Main Controller Component: LessonDetail
+// Fully harmonized with MainLayout (sticky top offset to top-[70px])
+// ----------------------------------------------------------------------
 export default function LessonDetail() {
   const { lessonId, level, lessonIndex } = useParams<{
     lessonId?: string;
@@ -276,7 +311,7 @@ export default function LessonDetail() {
   const [error, setError] = useState<string | null>(null);
   const [completing, setCompleting] = useState(false);
 
-  // 1. Redirect if using legacy route pattern '/lessons/theory/:lessonId'
+  // 1. Redirect legacy URL format '/lessons/theory/:lessonId'
   useEffect(() => {
     if (lessonId) {
       const parts = lessonId.split("_");
@@ -293,11 +328,11 @@ export default function LessonDetail() {
     }
   }, [lessonId, navigate]);
 
-  // 2. Fetch the level lessons from the backend
+  // 2. Fetch lesson list data based on level
   useEffect(() => {
     let cancelled = false;
 
-    async function load() {
+    async function loadLessons() {
       if (!level || lessonId) return;
       if (!VALID_LEVELS.includes(level.toUpperCase())) {
         setError(`Level ${level} does not exist.`);
@@ -331,13 +366,13 @@ export default function LessonDetail() {
       }
     }
 
-    load();
+    loadLessons();
     return () => {
       cancelled = true;
     };
   }, [level, lessonId, token]);
 
-  // 3. Handle invalid index redirect
+  // 3. Fallback redirect for out-of-bounds lesson indices
   useEffect(() => {
     if (!loading && data && level && lessonIndex) {
       const idx = parseInt(lessonIndex, 10);
@@ -348,12 +383,11 @@ export default function LessonDetail() {
     }
   }, [lessonIndex, data, loading, level, navigate]);
 
-  // 4. Scroll to current lesson
+  // 4. Smooth auto-scroll behavior to target lesson index
   useEffect(() => {
     if (!loading && data && lessonIndex) {
       const idx = parseInt(lessonIndex, 10);
       if (!isNaN(idx)) {
-        // Run scroll in timeout to ensureDOM nodes are drawn
         const timer = setTimeout(() => {
           const element = document.getElementById(`lesson-section-${idx}`);
           if (element) {
@@ -365,7 +399,7 @@ export default function LessonDetail() {
     }
   }, [lessonIndex, loading, data]);
 
-  // 5. Handle mark paired lesson as completed
+  // 5. Handle marking lesson completed
   const handleMarkComplete = async () => {
     if (!level || !lessonIndex || !data) return;
     const idx = parseInt(lessonIndex, 10);
@@ -379,7 +413,6 @@ export default function LessonDetail() {
     const grammarId = currentLesson.grammar.grammar_id;
 
     try {
-      // Execute completion for both components in parallel
       await Promise.all([
         axios.post(`${API_BASE}/progress/lesson/${vocabId}/complete`, null, {
           params: { type: "vocabulary" },
@@ -391,7 +424,6 @@ export default function LessonDetail() {
         }),
       ]);
 
-      // Instantly update local state to render updated complete status
       setData((prev) => {
         if (!prev) return prev;
         const nextPaired = prev.pairedLessons.map((l) =>
@@ -400,7 +432,6 @@ export default function LessonDetail() {
         return { ...prev, pairedLessons: nextPaired };
       });
 
-      // Dispatch event to synchronize state with sidebar and roadmap
       window.dispatchEvent(
         new CustomEvent("lesson-completed", {
           detail: { lessonId: vocabId, lessonType: "vocabulary" },
@@ -418,14 +449,13 @@ export default function LessonDetail() {
     }
   };
 
+  // Loading Screen
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-[#faf8ff] flex items-center justify-center p-8">
+      <div className="w-full min-h-[60vh] flex items-center justify-center p-8">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin" />
-          <p className="text-slate-500 text-base font-semibold">
-            Loading lessons...
-          </p>
+          <div className="w-8 h-8 rounded-full border-2 border-slate-200 border-t-blue-600 animate-spin" />
+          <p className="text-slate-500 text-xs font-medium">Loading lessons...</p>
         </div>
       </div>
     );
@@ -434,31 +464,19 @@ export default function LessonDetail() {
   const normalizedLevel = level?.toUpperCase() || "";
   const isInvalidLevel = !VALID_LEVELS.includes(normalizedLevel);
 
+  // Error Screen
   if (error || !data || isInvalidLevel) {
     return (
-      <div className="w-full min-h-screen bg-[#faf8ff] flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 text-center flex flex-col items-center gap-5">
-          <div className="w-16 h-16 bg-rose-50 text-rose-600 rounded-2xl flex justify-center items-center shadow-inner">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-8 h-8 fill-none stroke-current stroke-2"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 8v4M12 16h.01" strokeLinecap="round" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="text-slate-900 text-xl font-bold mb-1">
-              Level Not Found
-            </h2>
-            <p className="text-slate-500 text-sm leading-relaxed">
-              {error || `Level "${level}" could not be found or is invalid.`}
-            </p>
-          </div>
+      <div className="w-full min-h-[60vh] flex items-center justify-center p-6">
+        <div className="max-w-md w-full border border-slate-200 rounded-2xl p-8 text-center flex flex-col items-center gap-4 bg-white shadow-sm">
+          <h2 className="text-slate-900 text-lg font-bold">Level Not Found</h2>
+          <p className="text-slate-500 text-xs leading-relaxed">
+            {error || `Level "${level}" could not be found or is invalid.`}
+          </p>
           <button
             type="button"
             onClick={() => navigate("/roadmap")}
-            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md transition-all cursor-pointer"
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer"
           >
             Go to Roadmap
           </button>
@@ -472,28 +490,16 @@ export default function LessonDetail() {
 
   if (numLessons === 0) {
     return (
-      <div className="w-full min-h-screen bg-[#faf8ff] flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 text-center flex flex-col items-center gap-5">
-          <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-2xl flex justify-center items-center shadow-inner">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-8 h-8 fill-none stroke-current stroke-2"
-            >
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20M4 19.5V5A2.5 2.5 0 0 1 6.5 2.5H20V17" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="text-slate-900 text-xl font-bold mb-1">
-              No Lessons
-            </h2>
-            <p className="text-slate-500 text-sm leading-relaxed">
-              No paired lessons are available in this level currently.
-            </p>
-          </div>
+      <div className="w-full min-h-[60vh] flex items-center justify-center p-6">
+        <div className="max-w-md w-full border border-slate-200 rounded-2xl p-8 text-center flex flex-col items-center gap-4 bg-white shadow-sm">
+          <h2 className="text-slate-900 text-lg font-bold">No Lessons Available</h2>
+          <p className="text-slate-500 text-xs leading-relaxed">
+            No paired lessons are available for this level currently.
+          </p>
           <button
             type="button"
             onClick={() => navigate("/roadmap")}
-            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md transition-all cursor-pointer"
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer"
           >
             Go to Roadmap
           </button>
@@ -514,84 +520,85 @@ export default function LessonDetail() {
   };
 
   return (
-    <div className="w-full min-h-screen p-4 md:p-8 flex flex-col gap-6 max-w-5xl mx-auto pb-28">
-      {/* 1. Sticky Navigation Bar */}
-      <div className="sticky top-4 z-[9999] bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
+    <div className="w-full max-w-4xl mx-auto flex flex-col gap-6 text-slate-800 pb-16">
+      {/* 
+        Sticky Control Toolbar:
+        Positioned at top-[70px] to dock cleanly right beneath MainLayout's 70px Header 
+      */}
+      <div className="sticky top-[70px] z-40 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-xl p-3 flex items-center justify-between shadow-sm transition-all">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => navigate("/roadmap")}
-            className="px-3 py-2 hover:bg-slate-100 rounded-xl text-slate-600 font-semibold text-sm transition-colors flex items-center gap-1 cursor-pointer"
+            className="px-2.5 py-1.5 hover:bg-slate-100 rounded-lg text-slate-600 font-medium text-xs transition-colors flex items-center gap-1 cursor-pointer"
             type="button"
           >
             ← Roadmap
           </button>
           <span className="h-4 w-px bg-slate-200" />
-          <h1 className="!text-slate-900 !text-lg !font-bold">Theory Review</h1>
+          <h1 className="!text-slate-900 !text-sm !font-bold">Theory Review</h1>
         </div>
 
-        {/* Mid Navigation Controls */}
-        <div className="flex items-center gap-3">
+        {/* Pagination Controls */}
+        <div className="flex items-center gap-2">
           <button
             type="button"
             disabled={isFirstLesson}
             onClick={() => navigateToLesson(currentIdx - 1)}
-            className="p-2 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-slate-600 transition-colors cursor-pointer"
+            className="p-1.5 hover:bg-slate-100 disabled:opacity-30 rounded-md text-slate-600 transition-colors cursor-pointer text-xs"
             aria-label="Previous Lesson"
           >
             ◀
           </button>
-          <span className="text-slate-700 font-bold text-sm tracking-wide bg-slate-100 px-3 py-1.5 rounded-xl">
-            Lesson {currentIdx} / {numLessons}
+          <span className="text-slate-700 font-medium text-xs font-mono bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-md">
+            {currentIdx} / {numLessons}
           </span>
           <button
             type="button"
             disabled={isLastLesson}
             onClick={() => navigateToLesson(currentIdx + 1)}
-            className="p-2 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent rounded-lg text-slate-600 transition-colors cursor-pointer"
+            className="p-1.5 hover:bg-slate-100 disabled:opacity-30 rounded-md text-slate-600 transition-colors cursor-pointer text-xs"
             aria-label="Next Lesson"
           >
             ▶
           </button>
         </div>
 
-        {/* Header Mark Complete Button */}
+        {/* Completion Action Button */}
         <button
           type="button"
           onClick={handleMarkComplete}
           disabled={completing || activeLesson.isCompleted}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-sm cursor-pointer ${
             activeLesson.isCompleted
-              ? "bg-emerald-50 border border-emerald-200 text-emerald-700 cursor-default"
-              : "bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-60"
+              ? "bg-slate-100 border border-slate-200 text-slate-500 cursor-default"
+              : "bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
           }`}
         >
           {activeLesson.isCompleted
             ? "✓ Completed"
             : completing
               ? "Saving..."
-              : "Mark as Complete"}
+              : "Mark Complete"}
         </button>
       </div>
 
-      {/* 2. Banner Header */}
-      <div className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 rounded-3xl shadow-lg p-6 md:p-10 flex flex-col justify-center items-center text-center text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] opacity-10" />
-        <div className="z-10 flex flex-col items-center gap-3">
-          <span className="px-4 py-1.5 bg-emerald-800/80 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-700/30">
-            Level {data.level}
-          </span>
-          <h2 className="!text-slate-900 !text-lg !font-bold !text-white">
-            {data.level_title}
-          </h2>
-        </div>
+      {/* Minimalist Title Section */}
+      <div className="w-full border-b border-slate-200 pb-4 flex flex-col items-start gap-1.5">
+        <span className="px-2 py-0.5 border border-blue-600 text-blue-600 rounded text-[10px] font-mono font-bold tracking-wide uppercase">
+          Level {data.level}
+        </span>
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+          {data.level_title}
+        </h2>
       </div>
 
-      {/* 3. Paired Lessons Sequence List */}
-      <div className="w-full flex flex-col gap-8">
+      {/* Paired Lessons Sequence List */}
+      <div className="w-full flex flex-col gap-6">
         {pairedLessons.map((lesson) => (
           <LessonSection
             key={lesson.lessonIndex}
             lesson={lesson}
+            level={level ?? "A1"}
             isCurrent={lesson.lessonIndex === currentIdx}
             onNavigateToLesson={navigateToLesson}
           />

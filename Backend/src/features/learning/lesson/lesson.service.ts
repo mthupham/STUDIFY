@@ -472,7 +472,7 @@ return {
         const currentIndex = LEVELS.indexOf(currentLevel);
         if (currentLevel === level && currentIndex >= 0 && currentIndex < LEVELS.length - 1) {
           newLevel = LEVELS[currentIndex + 1];
-          await this.userService.setCurrentLevel(userId, newLevel);
+          // await this.userService.setCurrentLevel(userId, newLevel); // Disabled: Level-up is now explicitly triggered by the frontend button
           leveledUp = true;
         }
       }

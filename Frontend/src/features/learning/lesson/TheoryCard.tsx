@@ -33,7 +33,6 @@ export const TheoryCard: React.FC<TheoryCardProps> = ({ onReview }) => {
       </h3>
 
       <footer className="mt-1.5 border-t border-slate-100 pt-4 flex items-center justify-between text-slate-500 text-xs font-semibold">
-        <span>Time</span>
         <button
           onClick={onReview}
           type="button"
