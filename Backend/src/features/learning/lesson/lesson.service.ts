@@ -495,15 +495,45 @@ return {
         const nextLessonInfo = this.findLessonById(nextLessonId);
         const nextLessonName = nextLessonInfo?.lesson?.topic_name || nextLessonId;
         const nextLessonTitle = `Lesson ${currentIndexInLevel + 2} - ${nextLessonName}`;
+      // ===== Kiểm tra unlock theo CẶP lesson (vocab + grammar cùng index), khớp đúng RoadmapService =====
+      const levelData = this.lessonData.find((l) => l.level.toUpperCase() === level.toUpperCase());
+      if (levelData) {
+        const vocabLessons = levelData.vocabulary_lessons || [];
+        const grammarLessons = levelData.grammar_lessons || [];
+        const numPairs = Math.min(vocabLessons.length, grammarLessons.length);
 
-        // Gọi hàm tạo record vào bảng Notifications (hàm này tuỳ thuộc vào NotificationService của bạn)
-        await this.notificationService.createLessonUnlockedNotification(
-          userId,
-          nextLessonId,
-          nextLessonTitle
-        );
+        // Tìm vị trí cặp chứa lessonId vừa được đánh dấu hoàn thành
+        const vocabIndex = vocabLessons.findIndex((v: any) => v.topic_id === lessonId);
+        const pairIndex = vocabIndex !== -1
+          ? vocabIndex
+          : grammarLessons.findIndex((g: any) => g.grammar_id === lessonId);
+
+        if (pairIndex !== -1 && pairIndex < numPairs) {
+          const vocabId = vocabLessons[pairIndex].topic_id;
+          const grammarId = grammarLessons[pairIndex].grammar_id;
+
+          const [vocabProgress, grammarProgress] = await Promise.all([
+            this.progressModel.findOne({ where: { userId, lessonId: vocabId } }),
+            this.progressModel.findOne({ where: { userId, lessonId: grammarId } }),
+          ]);
+
+          const isPairFullyCompleted =
+            (vocabProgress?.isCompleted || false) && (grammarProgress?.isCompleted || false);
+
+          // Chỉ báo unlock khi CẢ CẶP hiện tại đã xong hoàn toàn VÀ còn cặp kế tiếp
+          if (isPairFullyCompleted && pairIndex < numPairs - 1) {
+            const nextLessonLabel = `Lesson ${pairIndex + 2}`;
+
+            await this.notificationService.createLessonUnlockedNotification(
+              userId,
+              `${level}_L${pairIndex + 2}`, // khớp id dạng RoadmapService đang dùng (vd "A1_L2")
+              nextLessonLabel,
+            );
+          }
+        }
       }
-      // ==========================================
+      // ===== HẾT PHẦN FIX =====
+      }
 
       return {
         success: true,
