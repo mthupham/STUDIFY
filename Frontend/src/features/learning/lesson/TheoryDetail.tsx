@@ -413,16 +413,14 @@ export default function LessonDetail() {
     const grammarId = currentLesson.grammar.grammar_id;
 
     try {
-      await Promise.all([
-        axios.post(`${API_BASE}/progress/lesson/${vocabId}/complete`, null, {
-          params: { type: "vocabulary" },
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.post(`${API_BASE}/progress/lesson/${grammarId}/complete`, null, {
-          params: { type: "grammar" },
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
+      await axios.post(`${API_BASE}/progress/lesson/${vocabId}/complete`, null, {
+        params: { type: "vocabulary" },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await axios.post(`${API_BASE}/progress/lesson/${grammarId}/complete`, null, {
+        params: { type: "grammar" },
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       setData((prev) => {
         if (!prev) return prev;
@@ -520,13 +518,10 @@ export default function LessonDetail() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col gap-6 text-slate-800 pb-16">
-      {/* 
-        Sticky Control Toolbar:
-        Positioned at top-[70px] to dock cleanly right beneath MainLayout's 70px Header 
-      */}
-      <div className="sticky top-[70px] z-40 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-xl p-3 flex items-center justify-between shadow-sm transition-all">
-        <div className="flex items-center gap-2">
+    <div className="w-full min-h-screen p-4 md:p-8 flex flex-col gap-6 max-w-5xl mx-auto pb-28">
+      {/* 1. Sticky Navigation Bar */}
+      <div className="sticky top-4 z-30 bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-md">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/roadmap")}
             className="px-2.5 py-1.5 hover:bg-slate-100 rounded-lg text-slate-600 font-medium text-xs transition-colors flex items-center gap-1 cursor-pointer"
