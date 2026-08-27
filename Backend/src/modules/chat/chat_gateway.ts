@@ -69,18 +69,26 @@ export class ChatGateway implements OnGatewayInit {
       @MessageBody()
       payload: { groupId?: string; senderId?: number; text?: string },
     ) {
-      if (!payload.groupId || !payload.senderId || !payload.text) {
-        return { error: 'groupId, senderId and text are required' };
+      const senderId = Number(client.data.user?.id);
+      const text = payload.text?.trim();
+
+      if (!payload.groupId || !senderId || !text) {
+        return { error: 'Authenticated user, groupId and text are required' };
       }
 
-      const savedMessage = await this.chatService.create({
-        groupId: payload.groupId,
-        senderId: payload.senderId,
-        text: payload.text,
-      });
+      try {
+        const savedMessage = await this.chatService.create({
+          groupId: payload.groupId,
+          senderId,
+          text,
+        });
 
-      this.server.to(payload.groupId).emit('newMessage', savedMessage);
-      return savedMessage;
+        this.server.to(payload.groupId).emit('newMessage', savedMessage);
+        return savedMessage;
+      } catch (error) {
+        console.error('Unable to save chat message:', error);
+        return { error: 'Unable to save chat message' };
+      }
     }
 
     @SubscribeMessage('message')

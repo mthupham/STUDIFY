@@ -17,6 +17,7 @@ export interface UploadResponse {
   message: string;
   files: Array<{
     name: string;
+    storedName: string;
     url: string;
     uploadedBy: string;
     uploadedAt: string;
@@ -125,4 +126,16 @@ export const deleteFile = async (
     `${API_URL}/api/files/${groupId}/${encodedFileName}`
   );
   return response.data;
+};
+
+export const openFile = (
+  groupId: string,
+  storedFileName: string,
+): void => {
+  const encodedFileName = encodeURIComponent(storedFileName);
+  window.open(
+    `${API_URL}/api/files/download-file/${groupId}/${encodedFileName}?inline=true`,
+    '_blank',
+    'noopener,noreferrer',
+  );
 };
