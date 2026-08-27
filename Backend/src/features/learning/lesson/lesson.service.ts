@@ -416,7 +416,7 @@ return {
 }
 
   async markLessonComplete(lessonId: string, lessonType: 'VOCABULARY' | 'GRAMMAR', userId: number) {
-    const [record] = await this.progressModel.findOrCreate({
+    const [record, created] = await this.progressModel.findOrCreate({
       where: { userId, lessonId },
       defaults: {
         userId,
@@ -426,6 +426,8 @@ return {
         completedAt: new Date(),
       } as any,
     });
+
+    const componentBecameCompleted = created || !record.isCompleted;
 
     if (!record.isCompleted) {
       await record.update({ isCompleted: true, completedAt: new Date() });
@@ -455,14 +457,44 @@ return {
       // ==========================================
       // ĐOẠN CODE THÊM MỚI: TẠO THÔNG BÁO UNLOCK
       // ==========================================
-      const currentIndexInLevel = allLessonIds.indexOf(lessonId);
+      const levelData = this.lessonData.find(
+        (item) => item.level.toUpperCase() === level.toUpperCase(),
+      );
+      const vocabLessons = levelData?.vocabulary_lessons || [];
+      const grammarLessons = levelData?.grammar_lessons || [];
+      const currentIndexInLevel = Array.from(
+        { length: Math.min(vocabLessons.length, grammarLessons.length) },
+        (_, index) => index,
+      ).find(
+        (index) =>
+          vocabLessons[index].topic_id === lessonId ||
+          grammarLessons[index].grammar_id === lessonId,
+      ) ?? -1;
+      const completedCurrentPair = currentIndexInLevel >= 0
+        ? await this.progressModel.count({
+            where: {
+              userId,
+              lessonId: [
+                vocabLessons[currentIndexInLevel].topic_id,
+                grammarLessons[currentIndexInLevel].grammar_id,
+              ],
+              isCompleted: true,
+            },
+          })
+        : 0;
       // Kiểm tra nếu bài hiện tại không phải bài cuối cùng của level
-      if (currentIndexInLevel >= 0 && currentIndexInLevel < allLessonIds.length - 1) {
-        const nextLessonId = allLessonIds[currentIndexInLevel + 1];
+      if (
+        componentBecameCompleted &&
+        completedCurrentPair === 2 &&
+        currentIndexInLevel >= 0 &&
+        currentIndexInLevel < Math.min(vocabLessons.length, grammarLessons.length) - 1
+      ) {
+        const nextLessonId = vocabLessons[currentIndexInLevel + 1].topic_id;
         
         // Lấy tên của bài học tiếp theo để hiển thị ra thông báo cho đẹp
         const nextLessonInfo = this.findLessonById(nextLessonId);
-        const nextLessonTitle = nextLessonInfo?.lesson?.topic_name || nextLessonInfo?.lesson?.grammar_title || nextLessonId;
+        const nextLessonName = nextLessonInfo?.lesson?.topic_name || nextLessonId;
+        const nextLessonTitle = `Lesson ${currentIndexInLevel + 2} - ${nextLessonName}`;
 
         // Gọi hàm tạo record vào bảng Notifications (hàm này tuỳ thuộc vào NotificationService của bạn)
         await this.notificationService.createLessonUnlockedNotification(

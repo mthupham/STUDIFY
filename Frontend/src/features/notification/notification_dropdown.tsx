@@ -31,10 +31,18 @@ export default function NotificationDropdown() {
         headers: { Authorization: `Bearer ${token}` },
       });
       
-      const rawData = data.data || data;
-      const notifs: Notification[] = Array.isArray(rawData) ? rawData : [];
+      const responseData = data.data || data;
+      const notifs: Notification[] = Array.isArray(responseData)
+        ? responseData
+        : Array.isArray(responseData?.notifications)
+          ? responseData.notifications
+          : [];
       setNotifications(notifs);
-      setUnreadCount(notifs.filter((n) => !n.isRead).length);
+      setUnreadCount(
+        typeof responseData?.unreadCount === "number"
+          ? responseData.unreadCount
+          : notifs.filter((n) => !n.isRead).length,
+      );
     } catch (error) {
       console.error("Lỗi khi tải thông báo:", error);
     } finally {
@@ -46,11 +54,20 @@ export default function NotificationDropdown() {
   useEffect(() => {
     fetchNotifications(); // Lần đầu tiên
 
+    const handleLessonCompleted = () => {
+      fetchNotifications();
+    };
+
+    window.addEventListener("lesson-completed", handleLessonCompleted);
+
     const intervalId = setInterval(() => {
       fetchNotifications();
     }, 30000); // 30s
 
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("lesson-completed", handleLessonCompleted);
+    };
   }, [token]);
 
   // Đóng dropdown khi click ra ngoài
@@ -129,7 +146,7 @@ export default function NotificationDropdown() {
 
       {/* Bảng Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-[340px] md:w-[380px] origin-top-right rounded-2xl bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] ring-1 ring-slate-200 z-50 overflow-hidden flex flex-col">
+        <div className="absolute right-0 top-full mt-2 w-[340px] md:w-[380px] origin-top-right rounded-2xl bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] ring-1 ring-slate-200 z-[300] overflow-hidden flex flex-col">
           <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-5 py-3">
             <h3 className="font-semibold text-slate-900">Notifications</h3>
             {unreadCount > 0 && (

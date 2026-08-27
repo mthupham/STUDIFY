@@ -1,13 +1,30 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
+import * as path from 'path';
+import * as fs from 'fs';
 import { UserProgress, LessonType } from '../../models/user_progress.model';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
-export class ProgressService {
+export class ProgressService implements OnModuleInit {
+  private lessonData: any[] = [];
+
   constructor(
     @InjectModel(UserProgress) private progressModel: typeof UserProgress,
+    private readonly notificationService: NotificationService,
   ) {}
+
+  onModuleInit() {
+    const filePath = path.resolve(
+      __dirname,
+      '../../../database/data/lesson.json',
+    );
+
+    if (fs.existsSync(filePath)) {
+      this.lessonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    }
+  }
 
   // Trả về đúng lessonType value sau khi normalize
   private validateType(lessonType: string): string {
@@ -22,10 +39,12 @@ export class ProgressService {
   async completeLesson(userId: number, lessonId: string, lessonType: string) {
     const type = this.validateType(lessonType);
 
-    const [progress] = await this.progressModel.findOrCreate({
+    const [progress, created] = await this.progressModel.findOrCreate({
       where: { userId, lessonId, lessonType: type },
       defaults: { userId, lessonId, lessonType: type, isCompleted: true, completedAt: new Date() } as any,
     });
+
+    const becameCompleted = created || !progress.isCompleted;
 
     if (!progress.isCompleted) {
       progress.isCompleted = true;
@@ -33,11 +52,75 @@ export class ProgressService {
       await progress.save();
     }
 
+    if (becameCompleted) {
+      await this.createNextLessonUnlockedNotification(userId, lessonId);
+    }
+
     return { success: true, message: 'Đã đánh dấu hoàn thành bài học.' };
   }
 
   // Tính % hoàn thành trong một level (levelId là string như "A1", "B2")
   // Dùng prefix matching trên lessonId thay vì join DB
+  private async createNextLessonUnlockedNotification(
+    userId: number,
+    completedLessonId: string,
+  ) {
+    const level = completedLessonId.split('_')[0]?.toUpperCase();
+    const levelData = this.lessonData.find(
+      (item) => item.level?.toUpperCase() === level,
+    );
+
+    if (!levelData) return;
+
+    const vocabularyLessons = levelData.vocabulary_lessons || [];
+    const grammarLessons = levelData.grammar_lessons || [];
+    const pairedLessonCount = Math.min(
+      vocabularyLessons.length,
+      grammarLessons.length,
+    );
+    const currentIndex = Array.from(
+      { length: pairedLessonCount },
+      (_, index) => index,
+    ).find(
+      (index) =>
+        vocabularyLessons[index].topic_id === completedLessonId ||
+        grammarLessons[index].grammar_id === completedLessonId,
+    );
+
+    if (currentIndex === undefined || currentIndex >= pairedLessonCount - 1) {
+      return;
+    }
+
+    const completedPairCount = await this.progressModel.count({
+      where: {
+        userId,
+        lessonId: [
+          vocabularyLessons[currentIndex].topic_id,
+          grammarLessons[currentIndex].grammar_id,
+        ],
+        isCompleted: true,
+      },
+    });
+
+    if (completedPairCount !== 2) return;
+
+    const nextIndex = currentIndex + 1;
+    const nextVocabulary = vocabularyLessons[nextIndex];
+    const nextGrammar = grammarLessons[nextIndex];
+    const nextLessonName = [
+      nextVocabulary.topic_name,
+      nextGrammar.grammar_title,
+    ]
+      .filter(Boolean)
+      .join(' & ');
+
+    await this.notificationService.createLessonUnlockedNotification(
+      userId,
+      `${level}_L${nextIndex + 1}`,
+      `Lesson ${nextIndex + 1} - ${nextLessonName}`,
+    );
+  }
+
   async getLevelProgress(userId: number, levelId: string, lessonType: string) {
     const type = this.validateType(lessonType);
     const prefix = `${levelId.toUpperCase()}_`;
@@ -78,4 +161,4 @@ export class ProgressService {
       completedAt: p.completedAt,
     }));
   }
-}
+}
