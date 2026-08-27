@@ -3,8 +3,8 @@ import LandingPage from "./features/landing page/LandingPage";
 import LoginForm from "./features/auth/components/LoginForm";
 import RegisterForm from "./features/auth/components/RegisterForm";
 import ForgotPasswordForm from "./features/auth/components/ForgotPasswordForm";
-import MainLayout from "./layouts/MainLayout.jsx";
-import DashboardPage from "./features/learning/dashboard/DashboardPage.jsx";
+import MainLayout from "./layouts/MainLayout.tsx";
+import DashboardPage from "./features/learning/dashboard/DashboardPage";
 import RoadmapPage from "./features/learning/roadmap/RoadmapPage.jsx";
 import UserProfile from "./features/user-profile/profile";
 import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
@@ -158,15 +158,15 @@ function App() {
           }
         />
         <Route
-  path="/lessons/practice/result"
-  element={
-    <OnboardingGuard>
-      <MainLayout>
-        <ResultPractice />
-      </MainLayout>
-    </OnboardingGuard>
-  }
-/>
+          path="/lessons/practice/result"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <ResultPractice />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
         <Route
           path="/lessons/practice/:lessonId"
           element={
@@ -177,7 +177,7 @@ function App() {
             </OnboardingGuard>
           }
         />
-        
+
         <Route
           path="/study-groups"
           element={
