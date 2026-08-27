@@ -7,6 +7,12 @@ import type { StudyGroup } from "./services/groupService";
 import { FileViewerModal, type FileItem } from "./Modal/FileViewerModal";
 import { FileUploadModal } from "./Modal/FileUploadModal";
 import { CreatePollModal } from "./Modal/CreatePollModal";
+import { EmojiPicker } from "./components/EmojiPicker";
+import {
+  ChatMessageContent,
+  createFileChatMessage,
+} from "./components/ChatMessageContent";
+import { openFile, type UploadResponse } from "./services/fileService";
 
 interface BusinessEnglishHubProps {
   groupId: number;
@@ -107,6 +113,7 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
   const [showFileViewer, setShowFileViewer] = useState(false);
   const [showFileUpload, setShowFileUpload] = useState(false);
   const [showCreatePoll, setShowCreatePoll] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [sharedFiles, setSharedFiles] = useState<FileItem[]>([]);
 
   const [groupName, setGroupName] = useState(groupData.name);
@@ -139,7 +146,8 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
     }
   }, [showFileViewer, fetchSharedFiles]);
 
-  const { messages, sendMessage, currentUserId } = useGroupChat(stringGroupId);
+  const { messages, sendMessage, currentUserId, connected, error: chatError } =
+    useGroupChat(stringGroupId);
 
   // Fetch real group detail and members from backend
   useEffect(() => {
@@ -167,11 +175,12 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
   }, [numericGroupId]);
 
   // --- Handlers ---
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
-    sendMessage(inputMessage);
-    setInputMessage("");
+    if (await sendMessage(inputMessage)) {
+      setInputMessage("");
+    }
   };
 
   const handleCopyCode = () => {
@@ -183,8 +192,20 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
     }, 2000);
   };
 
-  const handleFileUpload = (_files: File[], _type: "image" | "file" | "folder") => {
+  const handleFileUpload = (
+    _files: File[],
+    _type: "image" | "file" | "folder",
+    uploadedFiles: UploadResponse["files"],
+  ) => {
     fetchSharedFiles();
+    uploadedFiles.forEach((file) => {
+      void sendMessage(createFileChatMessage(file));
+    });
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    setInputMessage((current) => `${current}${emoji}`);
+    setShowEmojiPicker(false);
   };
 
   const handleCreatePoll = (question: string, options: string[]) => {
@@ -271,7 +292,7 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
 
                   {msg.text && (
                     <div className="text-gray-800 text-sm leading-relaxed bg-slate-50 p-3 rounded-2xl rounded-tl-none border border-slate-100">
-                      {msg.text}
+                      <ChatMessageContent text={msg.text} groupId={stringGroupId} />
                     </div>
                   )}
                 </div>
@@ -302,7 +323,7 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
                 className="w-full bg-transparent p-2 text-gray-800 placeholder-gray-400 text-sm focus:outline-none resize-none"
               />
               <div className="flex justify-between items-center px-2 pt-1">
-                <div className="flex items-center gap-1">
+                <div className="relative flex items-center gap-1">
                   <button 
                     onClick={() => setShowCreatePoll(true)}
                     className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors"
@@ -341,7 +362,14 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
                       />
                     </svg>
                   </button>
-                  <button className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors">
+                  <button
+                    type="button"
+                    onMouseDown={(event) => event.stopPropagation()}
+                    onClick={() => setShowEmojiPicker((current) => !current)}
+                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors"
+                    title="Add Emoji"
+                    aria-expanded={showEmojiPicker}
+                  >
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -356,10 +384,15 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
                       />
                     </svg>
                   </button>
+                  <EmojiPicker
+                    isOpen={showEmojiPicker}
+                    onClose={() => setShowEmojiPicker(false)}
+                    onSelect={handleEmojiSelect}
+                  />
                 </div>
                 <button
                   onClick={handleSendMessage}
-                  disabled={!inputMessage.trim()}
+                  disabled={!inputMessage.trim() || !connected}
                   className="px-4 py-2 bg-sky-700 hover:bg-sky-800 disabled:opacity-50 text-white font-medium text-sm rounded-xl transition-all flex items-center gap-2"
                 >
                   Send
@@ -378,6 +411,9 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
                   </svg>
                 </button>
               </div>
+              {chatError && (
+                <p className="px-2 pb-1 pt-2 text-xs text-red-600">{chatError}</p>
+              )}
             </div>
           </div>
         </section>
@@ -446,7 +482,7 @@ export const BusinessEnglishHub: React.FC<BusinessEnglishHubProps> = ({
                 sharedFiles.slice(0, 5).map((file) => (
                   <div
                     key={file.id}
-                    onClick={() => file.url && window.open(file.url, "_blank")}
+                    onClick={() => openFile(stringGroupId, file.name)}
                     className="p-2 rounded-lg hover:bg-slate-200/50 flex items-center gap-3 cursor-pointer transition-colors"
                   >
                     <div className="text-sky-700">

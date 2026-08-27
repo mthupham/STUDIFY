@@ -371,8 +371,8 @@ export const VoiceLearningDashboard: React.FC = () => {
               
               <p className="text-sm text-gray-600 text-center">
                 {isRecording
-                  ? '🎤 Recording active... Speak clearly into your microphone.'
-                  : 'Click "Start Listening" to speak your answer.'}
+                  ? 'Recording active... Speak clearly into your microphone.'
+                  : 'Click "Start Talking" to speak your answer.'}
               </p>
 
               {errorMessage && (

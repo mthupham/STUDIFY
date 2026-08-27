@@ -10,6 +10,13 @@ import { changeMemberRole, removeMember } from "./services/groupService";
 import type { StudyGroup, GroupMember } from "./services/groupService";
 import { studyGroupApi } from "./services/studyGroupApi";
 import { ALL_ICONS } from "./components/groupIcons";
+import { EmojiPicker } from "./components/EmojiPicker";
+import { FileUploadModal } from "./Modal/FileUploadModal";
+import {
+  ChatMessageContent,
+  createFileChatMessage,
+} from "./components/ChatMessageContent";
+import type { UploadResponse } from "./services/fileService";
 
 // ==========================================
 // 1. TYPES & INTERFACES
@@ -467,6 +474,8 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   // State khởi tạo từ groupData
   const [groupName, setGroupName] = useState(groupData?.name || "Study Group");
@@ -475,7 +484,7 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
   );
   const [inviteCode, setInviteCode] = useState(groupData.code ?? "");
 
-  const { messages, sendMessage, currentUserId } = useGroupChat(
+  const { messages, sendMessage, currentUserId, connected, error: chatError } = useGroupChat(
     String(groupId),
   );
 
@@ -566,11 +575,27 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
   };
 
   // --- Handlers ---
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
-    sendMessage(inputMessage);
-    setInputMessage("");
+    if (await sendMessage(inputMessage)) {
+      setInputMessage("");
+    }
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    setInputMessage((current) => `${current}${emoji}`);
+    setShowEmojiPicker(false);
+  };
+
+  const handleFileUpload = (
+    _files: File[],
+    _type: "image" | "file" | "folder",
+    uploadedFiles: UploadResponse["files"],
+  ) => {
+    uploadedFiles.forEach((file) => {
+      void sendMessage(createFileChatMessage(file));
+    });
   };
 
   const handleCopyCode = () => {
@@ -708,7 +733,10 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
 
                   {msg.text && (
                     <div className="text-gray-800 text-sm leading-relaxed bg-slate-50 p-3.5 rounded-2xl rounded-tl-none border border-slate-100">
-                      {msg.text}
+                      <ChatMessageContent
+                        text={msg.text}
+                        groupId={String(groupId)}
+                      />
                     </div>
                   )}
                 </div>
@@ -739,8 +767,13 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
                 className="w-full bg-transparent p-2 text-gray-800 placeholder-gray-400 text-sm focus:outline-none resize-none"
               />
               <div className="flex justify-between items-center px-2 pt-1">
-                <div className="flex items-center gap-1">
-                  <button className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors">
+                <div className="relative flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowFileUpload(true)}
+                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors"
+                    title="Upload Files"
+                  >
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -755,7 +788,14 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
                       />
                     </svg>
                   </button>
-                  <button className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors">
+                  <button
+                    type="button"
+                    onMouseDown={(event) => event.stopPropagation()}
+                    onClick={() => setShowEmojiPicker((current) => !current)}
+                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-slate-200/60 rounded-lg transition-colors"
+                    title="Add Emoji"
+                    aria-expanded={showEmojiPicker}
+                  >
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -770,10 +810,15 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
                       />
                     </svg>
                   </button>
+                  <EmojiPicker
+                    isOpen={showEmojiPicker}
+                    onClose={() => setShowEmojiPicker(false)}
+                    onSelect={handleEmojiSelect}
+                  />
                 </div>
                 <button
                   onClick={handleSendMessage}
-                  disabled={!inputMessage.trim()}
+                  disabled={!inputMessage.trim() || !connected}
                   className="px-4 py-2 bg-sky-700 hover:bg-sky-800 disabled:opacity-50 text-white font-medium text-sm rounded-xl transition-all flex items-center gap-2"
                 >
                   Send
@@ -792,6 +837,9 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
                   </svg>
                 </button>
               </div>
+              {chatError && (
+                <p className="px-2 pb-1 pt-2 text-xs text-red-600">{chatError}</p>
+              )}
             </div>
           </div>
         </section>
@@ -967,6 +1015,12 @@ export const GroupDashboard: React.FC<GroupDashboardProps> = ({
         groupId={groupId}
         token={token ?? ""}
         onGroupUpdated={onGroupUpdated}
+      />
+      <FileUploadModal
+        isOpen={showFileUpload}
+        onClose={() => setShowFileUpload(false)}
+        onUpload={handleFileUpload}
+        groupId={String(groupId)}
       />
     </div>
   );

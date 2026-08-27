@@ -12,6 +12,7 @@ import {
   Res,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -254,6 +255,7 @@ export class FileUploadController {
       message: `Successfully uploaded ${uploadedFiles.length} file(s)`,
       files: uploadedFiles.map((file) => ({
         name: file.name,
+        storedName: file.path.split('/').pop() || file.name,
         url: file.url,
         uploadedBy: username,
         uploadedAt: new Date(),
@@ -299,6 +301,7 @@ export class FileUploadController {
     @Param('groupId') groupId: string,
     @Param('fileName') fileName: string,
     @Res() res: Response,
+    @Query('inline') inline?: string,
   ) {
     const decodedFileName = decodeURIComponent(fileName);
     const path = `groups/${groupId}/files/${decodedFileName}`;
@@ -375,10 +378,10 @@ export class FileUploadController {
       result.contentType || mimeMap[ext] || 'application/octet-stream';
 
     res.setHeader('Content-Type', contentType);
-    // Explicitly set Attachment with clean filename
+    const disposition = inline === 'true' ? 'inline' : 'attachment';
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename="${encodeURIComponent(cleanFileName)}"`,
+      `${disposition}; filename="${encodeURIComponent(cleanFileName)}"`,
     );
     res.setHeader('Content-Length', result.data.length);
     res.send(result.data);
