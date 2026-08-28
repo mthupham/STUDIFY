@@ -1,10 +1,15 @@
+import dns from 'dns';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
+  // Prefer IPv4 to avoid IPv6 connection issues in deployment environments
+  dns.setDefaultResultOrder('ipv4first');
+
   const app = await NestFactory.create(AppModule);
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -15,6 +20,7 @@ async function bootstrap() {
       },
     }),
   );
+
   app.enableCors({
     origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
@@ -32,7 +38,9 @@ async function bootstrap() {
 
   const logger = new Logger('Bootstrap');
   const port = Number(process.env.PORT ?? 3000);
+
   await app.listen(port, '0.0.0.0');
+
   logger.log(`Server started on port ${port}`);
   logger.log(`Swagger docs available at /api`);
 }

@@ -32,8 +32,28 @@ export default function StudyGroupHub() {
         if (!cancelled) setLoading(false);
       });
 
+    // Listen for external group updates (e.g., icon changed) and refresh list
+    const onGroupUpdated = (ev: Event) => {
+      try {
+        const custom = ev as CustomEvent;
+        if (!custom?.detail) return;
+        // If groupId present we can selectively refresh; for now reload full list
+        studyGroupApi
+          .getMyGroups()
+          .then((items) => {
+            if (!cancelled) setGroups(items);
+          })
+          .catch(() => {});
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    window.addEventListener("study-group-updated", onGroupUpdated as EventListener);
+
     return () => {
       cancelled = true;
+      window.removeEventListener("study-group-updated", onGroupUpdated as EventListener);
     };
   }, []);
 

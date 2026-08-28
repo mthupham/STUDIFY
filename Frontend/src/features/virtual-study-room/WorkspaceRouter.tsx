@@ -118,6 +118,25 @@ export default function WorkspaceRouter() {
       return;
     }
     fetchGroupDetail();
+
+    // Listen for external updates to this group (e.g., icon/name changed)
+    const onGroupUpdated = (ev: Event) => {
+      try {
+        const custom = ev as CustomEvent;
+        if (!custom?.detail) return;
+        const { groupId: updatedId } = custom.detail;
+        if (Number(updatedId) === numericGroupId) {
+          fetchGroupDetail();
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    window.addEventListener("study-group-updated", onGroupUpdated as EventListener);
+    return () => {
+      window.removeEventListener("study-group-updated", onGroupUpdated as EventListener);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, numericGroupId]);
 

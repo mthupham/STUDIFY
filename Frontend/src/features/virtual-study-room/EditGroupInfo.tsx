@@ -342,6 +342,21 @@ export const EditGroupSettings: React.FC = () => {
         message: "Saved group settings successfully!",
       });
 
+      // Notify other parts of the app that this group was updated
+      try {
+        window.dispatchEvent(
+          new CustomEvent("study-group-updated", {
+            detail: {
+              groupId: numericGroupId,
+              icon: activeIconId,
+              name: groupName.trim(),
+            },
+          }),
+        );
+      } catch (e) {
+        console.warn("Could not dispatch study-group-updated event", e);
+      }
+
       timerRef.current = setTimeout(() => {
         setNotification(null);
         navigate(`/study-groups/${numericGroupId}/workspace-leader`);

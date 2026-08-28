@@ -1,4 +1,3 @@
-
 import {
   Injectable,
   InternalServerErrorException,
@@ -21,33 +20,34 @@ export class MailService {
       this.configService.get<string>('GMAIL_USER');
 
     const gmailAppPassword =
-      this.configService.get<string>(
-        'GMAIL_APP_PASSWORD',
+      this.configService.get<string>('GMAIL_APP_PASSWORD');
+
+    if (!gmailUser || !gmailAppPassword) {
+      this.logger.warn(
+        'Gmail is not configured. Forgot password email is temporarily disabled.',
       );
 
-  if (!gmailUser || !gmailAppPassword) {
-  this.logger.warn(
-    'Gmail is not configured. Forgot password email is temporarily disabled.',
-  );
+      this.gmailUser = '';
 
-  this.gmailUser = '';
+      this.transporter = nodemailer.createTransport({
+        jsonTransport: true,
+      });
 
-  this.transporter = nodemailer.createTransport({
-    jsonTransport: true,
-  });
+      return;
+    }
 
-  return;
-}
     this.gmailUser = gmailUser;
 
-    this.transporter =
-      nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: gmailUser,
-          pass: gmailAppPassword,
-        },
-      });
+    this.transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: gmailUser,
+        pass: gmailAppPassword,
+      },
+    });
   }
 
   async sendResetOtp(
