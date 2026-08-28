@@ -121,44 +121,87 @@ export class ProgressService implements OnModuleInit {
     );
   }
 
-  async getLevelProgress(userId: number, levelId: string, lessonType: string) {
-    const type = this.validateType(lessonType);
-    const prefix = `${levelId.toUpperCase()}_`;
+  async getLevelProgress(userId: number, levelId: string) {
+    const levelKey = levelId.toUpperCase();
 
-    const allInLevel = await this.progressModel.findAll({
+    // Get total lessons from lesson data (JSON file) - this reflects the full curriculum
+    const levelData = this.lessonData.find(
+      (item) => item.level?.toUpperCase() === levelKey
+    );
+
+    if (!levelData) {
+      throw new BadRequestException(`Level ${levelId} not found in curriculum data`);
+    }
+
+    // Get total lessons from both vocabulary and grammar
+    const vocabLessons = (levelData.vocabulary_lessons || []).length;
+    const grammarLessons = (levelData.grammar_lessons || []).length;
+    const totalLessons = vocabLessons + grammarLessons;
+
+    // Get completed lessons from database (both types)
+    const prefix = `${levelKey}_`;
+    const completedLessons = await this.progressModel.count({
       where: {
         userId,
-        lessonType: type,
         lessonId: { [Op.like]: `${prefix}%` },
+        isCompleted: true,
       },
     });
 
-    const totalLessons = allInLevel.length;
-    const completedLessons = allInLevel.filter((p) => p.isCompleted).length;
     const percent = totalLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100);
 
-    return { levelId, lessonType: type, totalLessons, completedLessons, percent };
+    return { levelId, totalLessons, completedLessons, percent };
   }
 
   // Lấy danh sách lesson trong một level kèm trạng thái hoàn thành
-  async getLessonsWithStatus(userId: number, levelId: string, lessonType: string) {
-    const type = this.validateType(lessonType);
-    const prefix = `${levelId.toUpperCase()}_`;
+  async getLessonsWithStatus(userId: number, levelId: string) {
+    const levelKey = levelId.toUpperCase();
 
+    // Get all lessons from curriculum data
+    const levelData = this.lessonData.find(
+      (item) => item.level?.toUpperCase() === levelKey
+    );
+
+    if (!levelData) {
+      throw new BadRequestException(`Level ${levelId} not found in curriculum data`);
+    }
+
+    // Get all lesson IDs from both vocabulary and grammar
+    const vocabLessons = (levelData.vocabulary_lessons || []).map(l => ({
+      lessonId: l.topic_id,
+      lessonType: 'vocabulary'
+    }));
+    const grammarLessons = (levelData.grammar_lessons || []).map(l => ({
+      lessonId: l.grammar_id,
+      lessonType: 'grammar'
+    }));
+
+    const allLessons = [...vocabLessons, ...grammarLessons];
+
+    // Get progress records for these lessons
     const progresses = await this.progressModel.findAll({
       where: {
         userId,
-        lessonType: type,
-        lessonId: { [Op.like]: `${prefix}%` },
+        lessonId: allLessons.map(l => l.lessonId),
       },
       raw: true,
     });
 
-    return progresses.map((p) => ({
-      lessonId: p.lessonId,
-      lessonType: p.lessonType,
-      isCompleted: p.isCompleted,
-      completedAt: p.completedAt,
+    // Create a map for quick lookup
+    const progressMap = new Map(
+      progresses.map(p => [p.lessonId, { 
+        isCompleted: p.isCompleted, 
+        completedAt: p.completedAt,
+        lessonType: p.lessonType
+      }])
+    );
+
+    // Return all lessons with their status
+    return allLessons.map(({ lessonId, lessonType }) => ({
+      lessonId,
+      lessonType,
+      isCompleted: progressMap.get(lessonId)?.isCompleted || false,
+      completedAt: progressMap.get(lessonId)?.completedAt || null,
     }));
   }
 }
