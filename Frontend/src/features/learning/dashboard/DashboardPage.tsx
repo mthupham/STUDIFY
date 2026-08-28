@@ -30,6 +30,13 @@ export interface RoadmapData {
   metrics?: RoadmapMetrics;
 }
 
+export interface LevelProgress {
+  levelId: string;
+  totalLessons: number;
+  completedLessons: number;
+  percent: number;
+}
+
 export interface MotivationItem {
   quote: string;
   author: string;
@@ -65,6 +72,7 @@ export default function Dashboard(): React.JSX.Element {
   const token = useAuthStore((state) => state.token);
 
   const [roadmap, setRoadmap] = useState<RoadmapData | null>(null);
+  const [progressPercent, setProgressPercent] = useState<number>(0);
   const [loadingRoadmap, setLoadingRoadmap] = useState<boolean>(true);
   const [roadmapError, setRoadmapError] = useState<string | null>(null);
 
@@ -93,8 +101,18 @@ export default function Dashboard(): React.JSX.Element {
         const { data } = await axios.get<RoadmapData>(`${API_BASE}/roadmap`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        let currentLevelProgress = 0;
+        if (data.assignedLevel) {
+          const { data: progress } = await axios.get<LevelProgress>(
+            `${API_BASE}/progress/level/${data.assignedLevel}`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          currentLevelProgress = progress.percent;
+        }
+
         if (!cancelled) {
           setRoadmap(data);
+          setProgressPercent(currentLevelProgress);
         }
       } catch (err) {
         if (!cancelled) {
@@ -128,14 +146,7 @@ export default function Dashboard(): React.JSX.Element {
     (v) => v.level === roadmap.assignedLevel
   );
   const realTasks: TaskNode[] = currentView?.nodes ?? [];
-
-  let progressPercent = 0;
-  if (roadmap?.metrics?.lessons) {
-    const [done, total] = roadmap.metrics.lessons.split("/").map(Number);
-    if (total > 0) {
-      progressPercent = Math.round((done / total) * 100);
-    }
-  }
+  const activeTask = realTasks.find((task) => task.status === "active");
 
   return (
     <div className="inline-flex min-h-[1088px] w-full max-w-[1536px] flex-col items-start justify-start gap-8 px-8 pb-32 pt-8 font-['Inter',_sans-serif]">
@@ -215,7 +226,7 @@ export default function Dashboard(): React.JSX.Element {
                       Active Lesson
                     </span>
                     <span className="text-base font-medium text-gray-900">
-                      {realTasks[0]?.label || "—"}
+                      {activeTask?.label || realTasks[0]?.label || "—"}
                     </span>
                   </div>
                 </div>

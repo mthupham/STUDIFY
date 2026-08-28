@@ -442,6 +442,10 @@ export default function LessonDetail() {
           detail: { lessonId: grammarId, lessonType: "grammar" },
         }),
       );
+
+      if (idx < data.pairedLessons.length) {
+        navigate(`/lesson/${level}/${idx + 1}`);
+      }
     } catch (err) {
       setError("Failed to mark lesson complete. Please try again.");
     } finally {

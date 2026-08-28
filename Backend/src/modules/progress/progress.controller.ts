@@ -27,23 +27,21 @@ export class ProgressController {
     return await this.progressService.completeLesson(req.user.id, lessonId, this.validateType(type));
   }
 
-  // GET /progress/level/A1?type=vocabulary
+  // GET /progress/level/A1
   @Get('level/:levelId')
   async getLevelProgress(
     @Req() req: any,
     @Param('levelId') levelId: string,
-    @Query('type') type: string,
   ) {
-    return await this.progressService.getLevelProgress(req.user.id, levelId, this.validateType(type));
+    return await this.progressService.getLevelProgress(req.user.id, levelId);
   }
 
-  // GET /progress/level/A1/lessons?type=grammar
+  // GET /progress/level/A1/lessons
   @Get('level/:levelId/lessons')
   async getLessons(
     @Req() req: any,
     @Param('levelId') levelId: string,
-    @Query('type') type: string,
   ) {
-    return await this.progressService.getLessonsWithStatus(req.user.id, levelId, this.validateType(type));
+    return await this.progressService.getLessonsWithStatus(req.user.id, levelId);
   }
 }
