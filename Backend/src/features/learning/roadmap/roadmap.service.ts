@@ -148,12 +148,15 @@ export class RoadmapService {
           }
         }
 
+        const lessonTitle = vocab.topic_name || grammar.grammar_title || `Lesson ${i + 1}`;
+
         nodes.push({
           id: `${level}_L${i + 1}`,
           level,
           lessonIndex: i + 1,
           type: 'lesson',
-          label: `Lesson ${i + 1}`,
+          label: lessonTitle,
+          lessonName: lessonTitle,
           position,
           row,
           status,

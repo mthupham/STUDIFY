@@ -10,6 +10,7 @@ const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 export interface TaskNode {
   id: string | number;
   label: string;
+  lessonName?: string;
   status: "locked" | "unlocked" | "completed" | string;
   type: "vocabulary" | "grammar" | string;
 }
@@ -215,7 +216,7 @@ export default function Dashboard(): React.JSX.Element {
                       Active Lesson
                     </span>
                     <span className="text-base font-medium text-gray-900">
-                      {realTasks[0]?.label || "—"}
+                      {realTasks[0]?.lessonName || realTasks[0]?.label || "—"}
                     </span>
                   </div>
                 </div>
@@ -343,7 +344,7 @@ export default function Dashboard(): React.JSX.Element {
                     </div>
                     <div>
                       <h4 className="text-base font-medium text-gray-900">
-                        {node.label}
+                        {node.lessonName || node.label}
                       </h4>
                       <span className="text-xs text-gray-700">
                         {node.status}
