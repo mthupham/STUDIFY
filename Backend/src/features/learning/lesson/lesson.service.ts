@@ -310,6 +310,7 @@ async submitMultipleChoiceAnswer(
 }
 async submitPractice(
   lessonId: string,
+  skill: 'reading' | 'writing',
   answers: Record<string, string>,
   userId: number,
 ) {
@@ -334,35 +335,47 @@ async submitPractice(
     );
   }
 
-  const readingQuestions =
-    questionBank.reading_questions || [];
+  if (skill === 'writing') {
+    const writingQuestions = questionBank.writing_questions || [];
+    const testDetails = writingQuestions.map((question: any) => ({
+      questionId: question.question_id,
+      type: 'written',
+      originalType: question.type,
+      questionText: question.question_text,
+      userAnswer: answers[question.question_id] || '',
+      sampleAnswer: question.correct_answer || '',
+      status: 'review',
+      isCorrect: null,
+    }));
 
-  const writingQuestions =
-    questionBank.writing_questions || [];
+    return {
+      success: true,
+      lessonId,
+      questionBankLessonId: questionBank.lesson_id,
+      userId,
+      skill: 'writing',
+      gradingMode: 'self-review',
+      meta: {
+        totalQuestions: writingQuestions.length,
+      },
+      testDetails,
+      recommendation: 'Compare your answers with the sample responses.',
+    };
+  }
 
+  const readingQuestions = questionBank.reading_questions || [];
   const testDetails: any[] = [];
-
   let correctAnswersCount = 0;
-  let multipleChoiceCount = 0;
-  let writtenCount = 0;
 
   for (const question of readingQuestions) {
-    const userAnswer =
-      answers[question.question_id] || '';
-
-    const correctAnswer = String(
-      question.correct_answer || '',
-    );
-
+    const userAnswer = answers[question.question_id] || '';
+    const correctAnswer = String(question.correct_answer || '');
     const isCorrect =
-      this.normalizeText(userAnswer) ===
-      this.normalizeText(correctAnswer);
+      this.normalizeText(userAnswer) === this.normalizeText(correctAnswer);
 
     if (isCorrect) {
       correctAnswersCount++;
     }
-
-    multipleChoiceCount++;
 
     testDetails.push({
       questionId: question.question_id,
@@ -377,67 +390,40 @@ async submitPractice(
     });
   }
 
-  for (const question of writingQuestions) {
-    const userAnswer =
-      answers[question.question_id] || '';
-
-    writtenCount++;
-
-    testDetails.push({
-      questionId: question.question_id,
-      type: 'written',
-      originalType: question.type,
-      questionText: question.question_text,
-      userAnswer,
-      sampleAnswer: question.correct_answer || '',
-      status: 'review',
-      isCorrect: null,
-    });
-  }
-
-  const totalQuestions =
-    multipleChoiceCount + writtenCount;
-
-  const percentage =
-    multipleChoiceCount > 0
-      ? Math.round(
-          (correctAnswersCount / multipleChoiceCount) *
-            100,
-        )
-      : 0;
-
+  const totalQuestions = readingQuestions.length;
+  const incorrectAnswersCount = totalQuestions - correctAnswersCount;
+  const percentage = totalQuestions > 0
+    ? Math.round((correctAnswersCount / totalQuestions) * 100)
+    : 0;
   const feedback = {
-  message:
-    percentage >= 80
-      ? 'Great job!'
-      : percentage >= 50
-        ? 'Good effort. Keep practicing.'
-        : 'You should review this lesson again.',
-};
-
-const recommendation =
-  percentage >= 80
+    message:
+      percentage >= 80
+        ? 'Great job!'
+        : percentage >= 50
+          ? 'Good effort. Keep practicing.'
+          : 'You should review this lesson again.',
+  };
+  const recommendation = percentage >= 80
     ? 'Continue to the next lesson.'
     : 'Review incorrect answers before continuing.';
 
-
-return {
-  success: true,
-
-  lessonId,
-  questionBankLessonId: questionBank.lesson_id,
-  userId,
-  meta: {
-    totalQuestions,
-    multipleChoiceCount,
-    writtenCount,
-    correctAnswersCount,
-    percentage,
-  },
-  feedback,
-  testDetails,
-  recommendation,
-};
+  return {
+    success: true,
+    lessonId,
+    questionBankLessonId: questionBank.lesson_id,
+    userId,
+    skill: 'reading',
+    gradingMode: 'automatic',
+    meta: {
+      totalQuestions,
+      correctAnswersCount,
+      incorrectAnswersCount,
+      percentage,
+    },
+    feedback,
+    testDetails,
+    recommendation,
+  };
 }
 
   async markLessonComplete(lessonId: string, lessonType: 'VOCABULARY' | 'GRAMMAR', userId: number) {

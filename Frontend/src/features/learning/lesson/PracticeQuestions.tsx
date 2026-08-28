@@ -146,6 +146,7 @@ export const PracticeQuestions: React.FC = () => {
               : {}),
           },
           body: JSON.stringify({
+            skill,
             answers,
           }),
         },
