@@ -6,25 +6,6 @@ import {
   type StudyGroupSummary,
 } from "./services/studyGroupApi";
 
-const UPCOMING_MEETUPS = [
-  {
-    id: "1",
-    date: "14",
-    month: "OCT",
-    title: "Parisian Nomads",
-    subtitle: "Live Audio Chat • 18:00",
-    color: "sky",
-  },
-  {
-    id: "2",
-    date: "16",
-    month: "OCT",
-    title: "Nihongo Readers",
-    subtitle: "Kanji Workshop • 20:30",
-    color: "amber",
-  },
-];
-
 // ==========================================
 // COMPONENT CHÍNH
 // ==========================================
@@ -85,11 +66,6 @@ export default function StudyGroupHub() {
             ))}
 
           <CreateGroupCard />
-        </div>
-
-        <div className="space-y-6">
-          <EngagementCard />
-          <UpcomingEventsCard />
         </div>
       </div>
     </div>
@@ -383,114 +359,6 @@ function CreateGroupCard() {
       </div>
       <span className="text-base font-medium">Launch a new study circle</span>
     </button>
-  );
-}
-
-/**
- * Sidebar Card: Thống kê chỉ số tương tác
- */
-function EngagementCard() {
-  return (
-    <div className="p-6 bg-slate-50 border border-slate-200/80 rounded-2xl shadow-sm space-y-6">
-      <h4 className="text-sm font-semibold text-gray-900">Your Engagement</h4>
-
-      {/* Biểu đồ tròn tiến độ + Nhãn */}
-      <div className="flex items-center gap-4">
-        <div className="relative w-20 h-20 flex items-center justify-center">
-          {/* SVG Progress Circle */}
-          <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-            <path
-              className="text-slate-200"
-              strokeWidth="3.5"
-              stroke="currentColor"
-              fill="none"
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-            <path
-              className="text-sky-700"
-              strokeDasharray="70, 100"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              stroke="currentColor"
-              fill="none"
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-          </svg>
-          <span className="absolute text-xl font-bold text-gray-900">70%</span>
-        </div>
-
-        <div>
-          <span className="text-2xl font-bold text-sky-700 block">High</span>
-          <span className="text-xs text-gray-600 font-medium">
-            Participating in 3 groups
-          </span>
-        </div>
-      </div>
-
-      {/* Thanh Tiến độ Tăng trưởng từ vựng */}
-      <div className="space-y-2 pt-2 border-t border-slate-200/50">
-        <div className="flex justify-between text-xs font-medium">
-          <span className="text-gray-600">Vocabulary Retention</span>
-          <span className="text-gray-900 font-bold">+12%</span>
-        </div>
-        <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-          <div className="h-full bg-emerald-700 rounded-full w-[75%]" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/**
- * Sidebar Card: Danh sách lịch hẹn sắp tới
- */
-function UpcomingEventsCard() {
-  return (
-    <div className="p-6 bg-slate-50 border border-slate-200/80 rounded-2xl shadow-sm space-y-4">
-      <div className="flex justify-between items-center">
-        <h4 className="text-sm font-semibold text-gray-900">
-          Upcoming Meetups
-        </h4>
-        <button className="text-xs font-bold text-sky-700 hover:underline">
-          View All
-        </button>
-      </div>
-
-      <div className="space-y-3">
-        {UPCOMING_MEETUPS.map((event) => (
-          <div
-            key={event.id}
-            className="p-3 bg-white/60 border border-slate-100 rounded-xl flex items-center gap-3"
-          >
-            {/* Lịch / Ngày tháng */}
-            <div
-              className={`min-w-[44px] p-2 rounded-lg text-center ${
-                event.color === "sky"
-                  ? "bg-sky-100 text-sky-700"
-                  : "bg-amber-100 text-amber-800"
-              }`}
-            >
-              <div className="text-[10px] font-bold uppercase leading-none">
-                {event.month}
-              </div>
-              <div className="text-lg font-bold leading-tight mt-0.5">
-                {event.date}
-              </div>
-            </div>
-
-            {/* Chi tiết sự kiện */}
-            <div>
-              <h5 className="text-sm font-medium text-gray-900">
-                {event.title}
-              </h5>
-              <p className="text-xs text-gray-500 font-medium">
-                {event.subtitle}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
 

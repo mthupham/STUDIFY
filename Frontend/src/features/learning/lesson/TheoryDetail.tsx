@@ -520,7 +520,7 @@ export default function LessonDetail() {
   return (
     <div className="w-full min-h-screen p-4 md:p-8 flex flex-col gap-6 max-w-5xl mx-auto pb-28">
       {/* 1. Sticky Navigation Bar */}
-      <div className="sticky top-4 z-30 bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-md">
+      <div className="sticky top-4 z-999 bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/roadmap")}

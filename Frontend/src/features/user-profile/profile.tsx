@@ -278,19 +278,9 @@ export default function ProfilePage() {
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                   Email Address
                 </label>
-                {isEditing ? (
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
-                    placeholder="Enter your email"
-                  />
-                ) : (
                   <div className="w-full rounded-xl border border-slate-100 bg-slate-50/80 px-4 py-3 text-sm font-semibold text-slate-800">
                     {profileEmail}
                   </div>
-                )}
               </div>
 
               {/* Level Field */}
@@ -298,24 +288,9 @@ export default function ProfilePage() {
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                   Current Level
                 </label>
-                {isEditing ? (
-                  <select
-                    value={level}
-                    onChange={(e) => setLevel(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 bg-white"
-                  >
-                    <option value="A1">A1 - Beginner</option>
-                    <option value="A2">A2 - Elementary</option>
-                    <option value="B1">B1 - Intermediate</option>
-                    <option value="B2">B2 - Upper Intermediate</option>
-                    <option value="C1">C1 - Advanced</option>
-                    <option value="C2">C2 - Proficient</option>
-                  </select>
-                ) : (
                   <div className="w-full rounded-xl border border-slate-100 bg-slate-50/80 px-4 py-3 text-sm font-semibold text-slate-800">
                     {level} LEVEL
                   </div>
-                )}
               </div>
 
               {/* Language Field */}
