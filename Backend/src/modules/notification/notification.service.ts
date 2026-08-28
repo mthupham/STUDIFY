@@ -71,6 +71,7 @@ export class NotificationService {
 
   // Tạo notification "bài mới được mở khóa"
   async createLessonUnlockedNotification(userId: number, lessonId: string, lessonTitle: string) {
+    const unlockedMessage = `${lessonTitle} has been unlocked.`;
     const existing = await this.notificationModel.findOne({
       where: {
         userId,
@@ -84,8 +85,12 @@ export class NotificationService {
     await this.notificationModel.create({
       userId,
       type: NotificationType.LESSON_UNLOCKED,
+      /* Legacy localized copy retained in source history.
       title: 'Bài học mới được mở khóa!',
       message: `Bài "${lessonTitle}" đã sẵn sàng. Bắt đầu học ngay!`,
+      */
+      title: 'New lesson unlocked!',
+      message: unlockedMessage,
       lessonId,
       isRead: false,
     } as any);

@@ -12,7 +12,11 @@ import { PlacementTestModule } from './features/placement-test/placement-test.mo
 import { RoadmapModule } from './features/learning/roadmap/roadmap.module';
 import { LessonModule } from './features/learning/lesson/lesson.module'; 
 import { ChatModule } from './modules/chat/chat.module';
+import { VirtualStudyRoomModule } from './features/virtual-study-room/virtual-study-room.module';
+import { FlashcardModule } from './features/flashcard/flashcard.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { FileUploadModule } from './modules/file-upload/file-upload.module';
+import { SpeakingModule } from './features/ai-speaking/speaking/speaking.module'
 
 @Module({
   controllers: [AppController],
@@ -41,7 +45,11 @@ import { NotificationModule } from './modules/notification/notification.module';
     PlacementTestModule,
     RoadmapModule,
     LessonModule, 
+    VirtualStudyRoomModule,
+    FlashcardModule,
     NotificationModule,
+    FileUploadModule,
+    SpeakingModule,
   ],
 })
 export class AppModule {}

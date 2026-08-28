@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
+import { SelectLevelDto } from './dto/select_level.dto';
 
 
 @Controller('user')
@@ -24,8 +25,15 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Patch('onboarding')
   async updateOnboarding(@Req() req, @Body() dto: UpdateOnboardingDto) {
-    const user = await this.userService.updateOnboarding(req.user.id, dto.weeklyStudyHours);
+    const user = await this.userService.updateOnboarding(req.user.id, dto.weeklyStudyHours, dto.currentLevel);
     return { message: 'Onboarding pace updated', data: user };
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch('select-level')
+  async selectLevel(@Req() req, @Body() dto: SelectLevelDto) {
+    const user = await this.userService.chooseLevelManually(req.user.id, dto.level);
+    return { message: 'Level selected', data: user };
   }
 
 }

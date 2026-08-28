@@ -3,10 +3,10 @@ import LandingPage from "./features/landing page/LandingPage";
 import LoginForm from "./features/auth/components/LoginForm";
 import RegisterForm from "./features/auth/components/RegisterForm";
 import ForgotPasswordForm from "./features/auth/components/ForgotPasswordForm";
-import MainLayout from "./layouts/MainLayout.jsx";
-import DashboardPage from "./features/learning/dashboard/DashboardPage.jsx";
+import MainLayout from "./layouts/MainLayout.tsx";
+import DashboardPage from "./features/learning/dashboard/DashboardPage";
 import RoadmapPage from "./features/learning/roadmap/RoadmapPage.jsx";
-import UserProfile from "./features/user-profile/profile.jsx";
+import UserProfile from "./features/user-profile/profile";
 import OnboardingApp from "./features/onboarding/OnboardingApp.jsx";
 import Result from "./features/onboarding/ResultPlacementTest";
 import { useAuthStore } from "./features/auth/store/useAuthStore";
@@ -17,11 +17,26 @@ import PracticeQuestions from "./features/learning/lesson/PracticeQuestions";
 import ResultPractice from "./features/learning/lesson/ResultPractice";
 
 import StudyGroupHub from "./features/virtual-study-room/StudyGroup";
-import JoinGroup from "./features/virtual-study-room/JoinGroup";
-import NewGroup from "./features/virtual-study-room/CreateNewGroup";
-import MemberWorkspace from "./features/virtual-study-room/Workspace_Member";
-import LeaderWorkspace from "./features/virtual-study-room/Workspace_Leader";
-import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo";
+import JoinGroup from "./features/virtual-study-room/JoinGroup.tsx";
+import NewGroup from "./features/virtual-study-room/CreateNewGroup.tsx";
+import WorkspaceRouter from "./features/virtual-study-room/WorkspaceRouter";
+import EditGroupInfo from "./features/virtual-study-room/EditGroupInfo.tsx";
+import RepositoryUpload from "./features/virtual-study-room/RepositoryUpload.tsx";
+import TaskAssignmentDashboard from "./features/virtual-study-room/TaskAssignment.tsx";
+
+import Pomodoro from "./features/pomodoro/PomodoroTimer";
+import { FloatingPomodoroWidget } from "./features/pomodoro/FloatingPomodoroWidget";
+
+import FlashcardLibrary from "./features/flashcard/flashcard-decks";
+import DeckDetailView from "./features/flashcard/flashcard-detail-view.tsx";
+
+import VoiceLearningDashboard from "./features/ai-speaking/AISpeakingDashboard.tsx";
+
+//test chat
+import ChatTestLobby from "./features/virtual-study-room/ChatTestLobby.tsx";
+
+
+import GoogleSucessPage from "./features/auth/components/GoogleSucessPage.tsx";
 
 
 // Chặn vào Dashboard/Roadmap/... nếu chưa hoàn thành Onboarding
@@ -41,8 +56,20 @@ function OnboardingGuard({ children }) {
 function App() {
   return (
     <BrowserRouter>
+      <FloatingPomodoroWidget />
       <Routes>
 
+        //chat test
+        <Route
+          path="/chat-test-lobby"
+          element={
+            <MainLayout>
+              <ChatTestLobby />
+            </MainLayout>
+          }
+        />
+
+        <Route path="/auth/google/success" element={<GoogleSucessPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<LoginForm />} />
@@ -101,7 +128,27 @@ function App() {
           }
         />
         <Route
-          path="/lessons/practice/:lessonId"
+          path="/lesson/:level/:lessonIndex"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <LessonDetail />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/lessons/practice/reading/:lessonId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <PracticeQuestions />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/lessons/practice/writing/:lessonId"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -120,6 +167,17 @@ function App() {
             </OnboardingGuard>
           }
         />
+        <Route
+          path="/lessons/practice/:lessonId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <PracticeQuestions />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
         <Route
           path="/study-groups"
           element={
@@ -152,29 +210,29 @@ function App() {
         />
 
         <Route
-          path="/study-groups/workspace-member"
+          path="/study-groups/:groupId/workspace-member"
           element={
             <OnboardingGuard>
               <MainLayout>
-                <MemberWorkspace />
+                <WorkspaceRouter />
               </MainLayout>
             </OnboardingGuard>
           }
         />
 
         <Route
-          path="/study-groups/workspace-leader"
+          path="/study-groups/:groupId/workspace-leader"
           element={
             <OnboardingGuard>
               <MainLayout>
-                <LeaderWorkspace />
+                <WorkspaceRouter />
               </MainLayout>
             </OnboardingGuard>
           }
         />
 
         <Route
-          path="/study-groups/workspace-leader/edit-group"
+          path="/study-groups/:groupId/workspace-leader/edit-group"
           element={
             <OnboardingGuard>
               <MainLayout>
@@ -184,10 +242,86 @@ function App() {
           }
         />
 
+        <Route
+          path="/study-groups/:groupId/workspace-leader/repository"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <RepositoryUpload />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/study-groups/:groupId/workspace-leader/task-assignment"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <TaskAssignmentDashboard />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+        <Route
+          path="/study-groups/workspace-member"
+          element={<Navigate to="/study-groups/1/workspace-member" replace />}
+        />
+        <Route
+          path="/study-groups/workspace-leader"
+          element={<Navigate to="/study-groups/1/workspace-leader" replace />}
+        />
+        <Route
+          path="/study-groups/workspace-leader/task-assignment"
+          element={<Navigate to="/study-groups" replace />}
+        />
+        <Route
+          path="/dashboard/pomodoro"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <Pomodoro />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/flashcard"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <FlashcardLibrary />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/flashcard/:deckId"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <DeckDetailView />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
+
+        <Route
+          path="/ai-speaking"
+          element={
+            <OnboardingGuard>
+              <MainLayout>
+                <VoiceLearningDashboard />
+              </MainLayout>
+            </OnboardingGuard>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default App;

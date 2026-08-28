@@ -38,7 +38,9 @@ const ResultPage: React.FC = () => {
 
   const result = location.state?.result as PlacementResult;
 
-  const { user } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
+  const setAuthSession = useAuthStore((state) => state.setAuthSession);
   const markOnboardingCompleted = useAuthStore(
     (state) => state.markOnboardingCompleted,
   );
@@ -57,7 +59,16 @@ const ResultPage: React.FC = () => {
   console.log(result.testDetails);
 
   const handleStudyNow = () => {
-    markOnboardingCompleted();
+    if (user) {
+      const updatedUser = {
+        ...user,
+        currentLevel: result.assignedLevel,
+        hasCompletedOnboarding: true,
+      };
+      setAuthSession(updatedUser, token || "");
+    } else {
+      markOnboardingCompleted();
+    }
     navigate("/dashboard");
   };
   return (
@@ -135,10 +146,13 @@ const ResultPage: React.FC = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
                 height="18"
-                viewBox="0 0 24 24"
+                viewBox="0 0 18 18"
                 fill="none"
               >
-                <path d="M4 19V5H20V19H4ZM6 17H18V7H6V17Z" fill="#0058BE" />
+                <path
+                  d="M0 8V0H8V8H0ZM0 18V10H8V18H0ZM10 8V0H18V8H10ZM10 18V10H18V18H10ZM2 6H6V2H2V6ZM12 6H16V2H12V6ZM12 16H16V12H12V16ZM2 16H6V12H2V16Z"
+                  fill="#2170E4"
+                />
               </svg>
 
               <span className="text-sm font-semibold">Study Now</span>
@@ -180,11 +194,15 @@ const ResultPage: React.FC = () => {
                   const progress = result.meta.percentage ?? 0;
                   const radius = 52;
                   const circumference = 2 * Math.PI * radius;
-                  const offset = circumference - (progress / 100) * circumference;
+                  const offset =
+                    circumference - (progress / 100) * circumference;
 
                   return (
                     <div className="relative flex h-48 w-48 items-center justify-center">
-                      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 120 120">
+                      <svg
+                        className="absolute inset-0 h-full w-full"
+                        viewBox="0 0 120 120"
+                      >
                         <circle
                           cx="60"
                           cy="60"
@@ -208,7 +226,8 @@ const ResultPage: React.FC = () => {
 
                       <div className="relative text-center">
                         <h2 className="text-5xl font-bold text-[#151C27]">
-                          {result.meta.totalCorrect}/{result.meta.totalQuestions}
+                          {result.meta.totalCorrect}/
+                          {result.meta.totalQuestions}
                         </h2>
                         <p className="text-sm font-semibold text-[#424754]">
                           Correct

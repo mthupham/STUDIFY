@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuthStore } from "../auth/store/useAuthStore";
 
 // ==========================================
 // COMPONENT CHÍNH: JOIN GROUP CARD
@@ -12,10 +14,12 @@ export default function JoinGroupPage() {
 
   // Hàm xử lý chỉ cho phép nhập tối đa 6 ký tự số và tự động định dạng
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // Chỉ lấy chữ số
-    if (rawValue.length <= 6) {
-      setAccessCode(rawValue);
-    }
+    const cleanCode = e.target.value
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .toUpperCase()
+      .slice(0, 6);
+
+    setAccessCode(cleanCode);
   };
 
   // Định dạng hiển thị mã dạng "XXX-XXX"
@@ -38,35 +42,70 @@ export default function JoinGroupPage() {
       return;
     }
 
+    if (!token) {
+      setMessage("Your session has expired. Please log in again.");
+      setMessageType("error");
+      return;
+    }
+
     try {
-      // TODO: gọi API
+      setMessage("");
+      setMessageType("");
 
-      // ====== Demo ======
-      // 0 = success
-      // 1 = full
-      // 2 = invalid
+      const response = await axios.post(
+        `${apiBaseUrl}/groups/join`,
+        {
+          code: accessCode,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-      const result = Math.floor(Math.random() * 3);
+      setMessage(
+        response.data?.message || "Successfully joined the study group!",
+      );
+      setMessageType("success");
 
-      if (result === 0) {
-        setMessage("Successfully joined the study group!");
-        setMessageType("success");
+      const joinedGroup = response.data?.data?.group;
 
-        setTimeout(() => {
-          navigate("/study-groups");
-        }, 1500);
-      } else if (result === 1) {
-        setMessage("This study group is already full.");
-        setMessageType("warning");
+      setTimeout(() => {
+        navigate(
+          joinedGroup?.id
+            ? `/study-groups/${joinedGroup.id}/workspace-member`
+            : "/study-groups",
+        );
+      }, 1000);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        const backendMessage = error.response?.data?.message;
+
+        if (status === 404) {
+          setMessage("Invalid group access code.");
+        } else if (status === 409) {
+          setMessage("You are already a member of this study group.");
+        } else if (status === 401) {
+          setMessage("Your session has expired. Please log in again.");
+        } else if (Array.isArray(backendMessage)) {
+          setMessage(backendMessage.join(", "));
+        } else {
+          setMessage(
+            backendMessage || "Something went wrong. Please try again.",
+          );
+        }
       } else {
-        setMessage("Invalid group access code.");
-        setMessageType("error");
+        setMessage("Something went wrong. Please try again.");
       }
-    } catch {
-      setMessage("Something went wrong. Please try again.");
+
       setMessageType("error");
     }
   };
+
+  const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+  const { token } = useAuthStore();
 
   return (
     <div className="w-full flex items-center justify-center py-8 px-4">

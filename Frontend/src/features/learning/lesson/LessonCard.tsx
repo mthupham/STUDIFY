@@ -42,31 +42,35 @@ export const LessonCard: React.FC<LessonProps> = ({
       break;
   }
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      onClick?.();
-    }
-  };
+ const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+  if (status === "locked") {
+    return;
+  }
 
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    onClick?.();
+  }
+};
   return (
-    <article
-      role="button"
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={handleKeyDown}
-      className={`${baseCardStyle} ${statusCardStyle} cursor-pointer select-none hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]`}
-    >
+   <article
+  role="button"
+  tabIndex={status === "locked" ? -1 : 0}
+  onClick={status === "locked" ? undefined : onClick}
+  onKeyDown={handleKeyDown}
+  aria-disabled={status === "locked"}
+  className={`${baseCardStyle} ${statusCardStyle} ${
+    status === "locked"
+      ? "cursor-not-allowed"
+      : "cursor-pointer hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
+  } select-none`}
+>
       <header className="flex flex-col md:flex-row md:items-start justify-between gap-2 md:gap-3">
         <h3 className="m-0 text-slate-900 text-lg md:text-xl font-semibold leading-snug">
           {title}
         </h3>
         <span className={statusTextStyle}>{statusText}</span>
       </header>
-
-      <p className="m-0 mt-2 text-slate-600 text-sm leading-relaxed">
-        {description}
-      </p>
 
       {status === "ongoing" && (
         <div
@@ -82,34 +86,6 @@ export const LessonCard: React.FC<LessonProps> = ({
           />
         </div>
       )}
-
-      <div className="mt-2 text-slate-500 text-xs font-semibold inline-flex items-center gap-1.5">
-        <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4">
-          <rect
-            x="4"
-            y="5"
-            width="16"
-            height="14"
-            rx="2"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          />
-          <path
-            d="M8 9H16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M8 13H13"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </svg>
-        <span>Number of question</span>
-      </div>
     </article>
   );
 };
